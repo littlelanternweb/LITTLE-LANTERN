@@ -1,23 +1,22 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch"; // Need to ensure switch exists or use custom toggle
-import { Mail, CheckCircle2, XCircle, Send } from "lucide-react";
+import { Mail, CheckCircle2, XCircle, Send, Settings, Activity, AlertCircle } from "lucide-react";
 import { format } from "date-fns";
+import { motion, AnimatePresence } from "framer-motion";
 
 export function EmailSettingsClient({ initialSettings, logs }: { initialSettings: Record<string, boolean>, logs: any[] }) {
   const [settings, setSettings] = useState(initialSettings);
   const [isSaving, setIsSaving] = useState(false);
   const [isTesting, setIsTesting] = useState(false);
-  const [testEmail, setTestEmail] = useState("");
+  const [testEmail, setTestEmail] = useState("technexttechnologies@gmail.com");
 
   const handleToggle = async (key: string, value: boolean) => {
     const newSettings = { ...settings, [key]: value };
     setSettings(newSettings);
     
-    // Save to backend immediately
     try {
       await fetch("/api/admin/settings", {
         method: "POST",
@@ -26,6 +25,8 @@ export function EmailSettingsClient({ initialSettings, logs }: { initialSettings
       });
     } catch (e) {
       console.error("Failed to save setting");
+      // Revert if failed
+      setSettings(settings);
     }
   };
 
@@ -42,7 +43,7 @@ export function EmailSettingsClient({ initialSettings, logs }: { initialSettings
       });
       const data = await res.json();
       if (data.success) {
-        alert("Test email sent successfully! Check your inbox (or terminal if simulating).");
+        alert("Test email sent successfully! Check your inbox.");
       } else {
         alert("Failed to send test email. Check server logs.");
       }
@@ -64,43 +65,70 @@ export function EmailSettingsClient({ initialSettings, logs }: { initialSettings
   ];
 
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
       {/* Settings Column */}
-      <div className="xl:col-span-1 space-y-6">
-        <Card className="rounded-2xl border-stone-200/60 shadow-sm overflow-hidden">
-          <CardHeader className="bg-stone-50/50 border-b border-stone-100 py-4 px-6">
-            <CardTitle className="text-lg font-medium text-stone-800">Automations</CardTitle>
+      <div className="lg:col-span-5 space-y-8">
+        
+        {/* Automations */}
+        <Card className="rounded-3xl border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden bg-white">
+          <CardHeader className="border-b border-slate-50 bg-slate-50/50 p-6 sm:p-8">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                <Settings className="w-5 h-5" />
+              </div>
+              <div>
+                <CardTitle className="text-xl font-semibold text-slate-900">Automations</CardTitle>
+                <CardDescription className="text-slate-500 mt-1">Manage system-generated emails</CardDescription>
+              </div>
+            </div>
           </CardHeader>
-          <CardContent className="p-6 space-y-6">
+          <CardContent className="p-0 divide-y divide-slate-50">
             {Toggles.map((t) => (
-              <div key={t.key} className="flex items-start justify-between gap-4">
-                <div>
-                  <h4 className="text-sm font-medium text-stone-900">{t.label}</h4>
-                  <p className="text-xs text-stone-500 mt-1">{t.desc}</p>
+              <div key={t.key} className="flex items-center justify-between gap-4 p-6 sm:p-8 hover:bg-slate-50/50 transition-colors">
+                <div className="pr-8">
+                  <h4 className="text-[15px] font-semibold text-slate-900">{t.label}</h4>
+                  <p className="text-[13px] text-slate-500 mt-1.5 leading-relaxed">{t.desc}</p>
                 </div>
-                {/* Custom Toggle Switch */}
-                <label className="relative inline-flex items-center cursor-pointer shrink-0 mt-1">
-                  <input type="checkbox" className="sr-only peer" checked={settings[t.key]} onChange={(e) => handleToggle(t.key, e.target.checked)} />
-                  <div className="w-11 h-6 bg-stone-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#047857]"></div>
+                <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                  <input type="checkbox" className="sr-only peer" checked={settings[t.key] !== false} onChange={(e) => handleToggle(t.key, e.target.checked)} />
+                  <div className="w-12 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary shadow-inner"></div>
                 </label>
               </div>
             ))}
           </CardContent>
         </Card>
 
-        <Card className="rounded-2xl border-stone-200/60 shadow-sm overflow-hidden">
-          <CardHeader className="bg-stone-50/50 border-b border-stone-100 py-4 px-6">
-            <CardTitle className="text-lg font-medium text-stone-800">Send Test Email</CardTitle>
+        {/* Test Email */}
+        <Card className="rounded-3xl border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden bg-white">
+          <CardHeader className="p-6 sm:p-8 pb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
+                <Mail className="w-5 h-5" />
+              </div>
+              <div>
+                <CardTitle className="text-xl font-semibold text-slate-900">Test Delivery</CardTitle>
+                <CardDescription className="text-slate-500 mt-1">Send a simulated email</CardDescription>
+              </div>
+            </div>
           </CardHeader>
-          <CardContent className="p-6">
+          <CardContent className="p-6 sm:p-8 pt-2">
             <form onSubmit={handleTestEmail} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-1.5 text-stone-700">Recipient Email</label>
-                <input required type="email" value={testEmail} onChange={e => setTestEmail(e.target.value)} placeholder="name@example.com" className="w-full px-3 py-2 border border-stone-200 rounded-lg outline-none focus:ring-2 focus:ring-[#00A693] focus:border-[#00A693]" />
+                <input 
+                  required 
+                  type="email" 
+                  value={testEmail} 
+                  onChange={e => setTestEmail(e.target.value)} 
+                  placeholder="name@example.com" 
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm" 
+                />
               </div>
-              <Button type="submit" disabled={isTesting} className="w-full bg-[#047857] hover:bg-[#065F46] text-white rounded-lg">
-                <Send className="w-4 h-4 mr-2" />
-                {isTesting ? "Sending..." : "Send Test"}
+              <Button type="submit" disabled={isTesting} className="w-full bg-slate-900 hover:bg-slate-800 text-white h-12 rounded-xl text-sm font-medium shadow-md">
+                {isTesting ? (
+                  <span className="flex items-center gap-2"><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"/> Sending...</span>
+                ) : (
+                  <span className="flex items-center gap-2"><Send className="w-4 h-4" /> Send Test Email</span>
+                )}
               </Button>
             </form>
           </CardContent>
@@ -108,49 +136,59 @@ export function EmailSettingsClient({ initialSettings, logs }: { initialSettings
       </div>
 
       {/* Logs Column */}
-      <div className="xl:col-span-2">
-        <Card className="rounded-2xl border-stone-200/60 shadow-sm overflow-hidden">
-          <CardHeader className="bg-stone-50/50 border-b border-stone-100 py-4 px-6 flex flex-row items-center justify-between">
-            <CardTitle className="text-lg font-medium text-stone-800">Activity Log</CardTitle>
-            <span className="text-xs text-stone-500 font-medium">Last 50 Emails</span>
+      <div className="lg:col-span-7">
+        <Card className="rounded-3xl border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden bg-white h-full flex flex-col">
+          <CardHeader className="border-b border-slate-50 bg-slate-50/50 p-6 sm:p-8 flex flex-row items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center text-orange-600">
+                <Activity className="w-5 h-5" />
+              </div>
+              <div>
+                <CardTitle className="text-xl font-semibold text-slate-900">Activity Log</CardTitle>
+                <CardDescription className="text-slate-500 mt-1">Recent automated communications</CardDescription>
+              </div>
+            </div>
+            <span className="text-[11px] uppercase tracking-wider font-semibold text-slate-400 bg-slate-200/50 px-3 py-1 rounded-full">Last 50</span>
           </CardHeader>
-          <CardContent className="p-0">
+          <CardContent className="p-0 flex-1 overflow-hidden">
             {logs.length === 0 ? (
-              <div className="p-10 text-center text-stone-500">
-                <Mail className="w-10 h-10 mx-auto text-stone-300 mb-4" />
-                <p>No emails have been sent yet.</p>
+              <div className="h-full min-h-[400px] flex flex-col items-center justify-center text-slate-500 space-y-4 p-8">
+                <div className="w-16 h-16 rounded-full bg-slate-50 flex items-center justify-center border border-slate-100">
+                  <Mail className="w-8 h-8 text-slate-300" />
+                </div>
+                <p className="text-sm font-medium">No emails have been sent yet.</p>
               </div>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm text-left">
-                  <thead className="bg-stone-50 text-stone-500 font-medium border-b border-stone-100">
-                    <tr>
-                      <th className="px-6 py-4">Status</th>
-                      <th className="px-6 py-4">Recipient</th>
-                      <th className="px-6 py-4">Type / Subject</th>
-                      <th className="px-6 py-4 text-right">Date</th>
+              <div className="overflow-x-auto h-full max-h-[800px] overflow-y-auto">
+                <table className="w-full text-sm text-left whitespace-nowrap">
+                  <thead className="bg-white sticky top-0 z-10 shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
+                    <tr className="text-slate-500 font-medium text-[13px]">
+                      <th className="px-8 py-4 font-medium">Status</th>
+                      <th className="px-8 py-4 font-medium">Recipient</th>
+                      <th className="px-8 py-4 font-medium">Type / Subject</th>
+                      <th className="px-8 py-4 text-right font-medium">Date</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-stone-100 bg-white">
+                  <tbody className="divide-y divide-slate-50">
                     {logs.map((log) => (
-                      <tr key={log.id} className="hover:bg-stone-50/50 transition-colors">
-                        <td className="px-6 py-4">
+                      <tr key={log.id} className="hover:bg-slate-50/80 transition-colors group">
+                        <td className="px-8 py-4">
                           {log.status === "SUCCESS" ? (
-                            <div className="flex items-center text-emerald-600 gap-1.5 font-medium">
-                              <CheckCircle2 className="w-4 h-4" /> Sent
+                            <div className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-lg text-xs font-semibold">
+                              <CheckCircle2 className="w-3.5 h-3.5" /> Sent
                             </div>
                           ) : (
-                            <div className="flex items-center text-rose-600 gap-1.5 font-medium" title={log.error || "Unknown Error"}>
-                              <XCircle className="w-4 h-4" /> Failed
+                            <div className="inline-flex items-center gap-1.5 bg-rose-50 text-rose-700 px-2.5 py-1 rounded-lg text-xs font-semibold cursor-help" title={log.error || "Unknown Error"}>
+                              <AlertCircle className="w-3.5 h-3.5" /> Failed
                             </div>
                           )}
                         </td>
-                        <td className="px-6 py-4 font-medium text-stone-900">{log.recipient}</td>
-                        <td className="px-6 py-4">
-                          <div className="text-xs font-semibold text-stone-500 mb-0.5">{log.type}</div>
-                          <div className="text-stone-800 truncate max-w-[200px]" title={log.subject}>{log.subject}</div>
+                        <td className="px-8 py-4 font-medium text-slate-900">{log.recipient}</td>
+                        <td className="px-8 py-4">
+                          <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">{log.type}</div>
+                          <div className="text-slate-700 truncate max-w-[250px]" title={log.subject}>{log.subject}</div>
                         </td>
-                        <td className="px-6 py-4 text-right text-stone-500 text-xs">
+                        <td className="px-8 py-4 text-right text-slate-500 text-[13px]">
                           {format(new Date(log.createdAt), "MMM d, h:mm a")}
                         </td>
                       </tr>

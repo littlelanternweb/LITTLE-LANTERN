@@ -44,18 +44,18 @@ export function Navbar() {
     >
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 lg:px-8" aria-label="Global">
         <div className="flex lg:flex-1">
-          <Link href="/" className="-m-1.5 p-1.5 flex items-center gap-3 group">
+          <Link href="/" className="-m-1.5 p-1.5 flex items-center gap-4 group">
             <span className="sr-only">Little Lantern</span>
-            <div className="relative overflow-hidden rounded-md h-10 w-10 shadow-sm border border-stone-100 group-hover:shadow-md transition-shadow">
+            <div className="relative overflow-hidden rounded-lg h-14 w-14 shadow-[0_2px_10px_rgba(0,0,0,0.06)] border border-slate-100 group-hover:shadow-[0_4px_15px_rgba(0,0,0,0.08)] transition-all">
               <Image src="/logo.jpg" alt="Little Lantern Logo" fill className="object-cover" />
             </div>
-            <span className="font-display font-semibold text-2xl tracking-tight text-[#292524] hidden sm:inline-block">Little Lantern</span>
+            <span className="font-display font-semibold text-[26px] tracking-tight text-slate-900 hidden sm:inline-block">Little Lantern</span>
           </Link>
         </div>
         <div className="flex lg:hidden">
           <button
             type="button"
-            className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-[#292524] hover:bg-stone-100 transition-colors"
+            className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-slate-800 hover:bg-slate-100 transition-colors"
             onClick={() => setMobileMenuOpen(true)}
           >
             <span className="sr-only">Open main menu</span>
@@ -69,12 +69,12 @@ export function Navbar() {
               href={item.href}
               className={cn(
                 "text-[15px] font-medium leading-6 transition-all duration-300 relative group",
-                pathname === item.href ? "text-[#047857]" : "text-[#57534E] hover:text-[#292524]"
+                pathname === item.href ? "text-primary" : "text-slate-600 hover:text-slate-900"
               )}
             >
               {item.name}
               <span className={cn(
-                "absolute -bottom-1 left-0 h-[2px] bg-[#047857] transition-all duration-300",
+                "absolute -bottom-1 left-0 h-[2px] bg-primary transition-all duration-300",
                 pathname === item.href ? "w-full" : "w-0 group-hover:w-full"
               )}></span>
             </Link>
@@ -82,7 +82,7 @@ export function Navbar() {
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end gap-5 items-center">
           <Link href="/specialists">
-            <Button variant="default" className="bg-[#00A693] hover:bg-[#065F46] text-white rounded-md px-7 py-5 text-sm font-medium hover-lift shadow-[0_4px_15px_rgba(0,166,147,0.15)] transition-all">
+            <Button variant="default" className="bg-primary hover:bg-primary/90 text-white rounded-md px-7 py-5 text-sm font-medium hover-lift shadow-[0_4px_15px_rgba(0,166,147,0.15)] transition-all">
               Book Consultation
             </Button>
           </Link>
@@ -96,7 +96,7 @@ export function Navbar() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="lg:hidden fixed inset-0 z-50 bg-[#292524]/40 backdrop-blur-sm" 
+            className="lg:hidden fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm" 
             onClick={() => setMobileMenuOpen(false)} 
           >
             <motion.div 
@@ -104,19 +104,19 @@ export function Navbar() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", bounce: 0, duration: 0.4 }}
-              className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-[#FCFBF9] px-6 py-6 sm:max-w-sm shadow-2xl border-l border-[#F5F5F4]"
+              className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm shadow-2xl border-l border-slate-100"
               onClick={e => e.stopPropagation()}
             >
               <div className="flex items-center justify-between">
                 <Link href="/" className="-m-1.5 p-1.5 flex items-center gap-3" onClick={() => setMobileMenuOpen(false)}>
-                  <div className="relative h-10 w-10 rounded-md overflow-hidden shadow-sm border border-stone-100">
+                  <div className="relative h-12 w-12 rounded-lg overflow-hidden shadow-sm border border-slate-100">
                     <Image src="/logo.jpg" alt="Little Lantern Logo" fill className="object-cover" />
                   </div>
-                  <span className="font-display font-semibold text-2xl text-[#292524]">Little Lantern</span>
+                  <span className="font-display font-semibold text-2xl text-slate-900">Little Lantern</span>
                 </Link>
                 <button
                   type="button"
-                  className="-m-2.5 rounded-full p-2.5 text-[#57534E] hover:bg-stone-100 transition-colors"
+                  className="-m-2.5 rounded-full p-2.5 text-slate-500 hover:bg-slate-100 transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <span className="sr-only">Close menu</span>
