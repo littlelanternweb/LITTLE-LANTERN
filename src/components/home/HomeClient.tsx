@@ -1,17 +1,34 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, MapPin, CheckCircle2, ChevronRight, Clock, Star, Phone, CalendarDays, ShieldCheck, HeartPulse, BrainCircuit, Users } from "lucide-react";
-import { useState } from "react";
+import { ArrowRight, MapPin, CheckCircle2, Clock, Star, Phone, CalendarDays, ShieldCheck, HeartPulse, BrainCircuit, Users } from "lucide-react";
+import { useRef } from "react";
 
+
+// Reusable scroll-triggered section wrapper
+function AnimatedSection({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-80px" });
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 32 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
 
 // Animation Variants
 const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
+  hidden: { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } }
 };
 
 const staggerContainer = {
@@ -94,36 +111,40 @@ export function HomeClient({ specialists }: { specialists: any[] }) {
       {/* 2. TRUST STRIP */}
       <section className="border-y border-slate-100 bg-secondary/50 py-10">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center sm:text-left">
-            <div className="flex flex-col sm:flex-row items-center gap-3">
-              <HeartPulse className="w-6 h-6 text-primary flex-shrink-0" />
-              <span className="text-sm font-medium text-slate-700">Personalized Support</span>
+          <AnimatedSection>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center sm:text-left">
+              {[
+                { icon: <HeartPulse className="w-6 h-6 text-primary flex-shrink-0" />, label: "Personalized Support" },
+                { icon: <Users className="w-6 h-6 text-primary flex-shrink-0" />, label: "Qualified Professionals" },
+                { icon: <BrainCircuit className="w-6 h-6 text-primary flex-shrink-0" />, label: "Child-Centred Approach" },
+                { icon: <CalendarDays className="w-6 h-6 text-primary flex-shrink-0" />, label: "Convenient Booking" },
+              ].map((item, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                  className="flex flex-col sm:flex-row items-center gap-3"
+                >
+                  {item.icon}
+                  <span className="text-sm font-medium text-slate-700">{item.label}</span>
+                </motion.div>
+              ))}
             </div>
-            <div className="flex flex-col sm:flex-row items-center gap-3">
-              <Users className="w-6 h-6 text-primary flex-shrink-0" />
-              <span className="text-sm font-medium text-slate-700">Qualified Professionals</span>
-            </div>
-            <div className="flex flex-col sm:flex-row items-center gap-3">
-              <BrainCircuit className="w-6 h-6 text-primary flex-shrink-0" />
-              <span className="text-sm font-medium text-slate-700">Child-Centred Approach</span>
-            </div>
-            <div className="flex flex-col sm:flex-row items-center gap-3">
-              <CalendarDays className="w-6 h-6 text-primary flex-shrink-0" />
-              <span className="text-sm font-medium text-slate-700">Convenient Booking</span>
-            </div>
-          </div>
+          </AnimatedSection>
         </div>
       </section>
 
       {/* 3. SERVICES SECTION */}
       <section id="services" className="py-24 bg-white">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="max-w-3xl mb-16">
+          <AnimatedSection className="max-w-3xl mb-16">
             <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Support designed around your child</h2>
             <p className="mt-4 text-lg text-slate-600">
               We offer comprehensive, multidisciplinary services tailored to meet the developmental, emotional, and educational needs of every child.
             </p>
-          </div>
+          </AnimatedSection>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
@@ -134,8 +155,15 @@ export function HomeClient({ specialists }: { specialists: any[] }) {
               { title: "Behavioural Support", slug: "behavioural-support", desc: "Strategies to manage and improve difficult behaviors." },
               { title: "Learning Support", slug: "learning-support", desc: "Focused interventions for specific academic difficulties." },
             ].map((service, i) => (
-              <div key={i} className="group relative bg-white border border-slate-100 rounded-2xl p-8 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:border-primary/20 transition-all">
-                <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors">
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ duration: 0.5, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
+                className="group relative bg-white border border-slate-100 rounded-2xl p-8 hover:shadow-[0_8px_30px_rgb(0,0,0,0.05)] hover:border-primary/20 hover:-translate-y-1 transition-all duration-300"
+              >
+                <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors duration-300">
                   <CheckCircle2 className="w-5 h-5" />
                 </div>
                 <h3 className="text-xl font-semibold text-slate-900 mb-2">{service.title}</h3>
@@ -143,22 +171,23 @@ export function HomeClient({ specialists }: { specialists: any[] }) {
                 <Link href={`/specialists?service=${service.slug}`} className="inline-flex items-center text-sm font-medium text-primary group-hover:text-primary/80">
                   Book this service <ArrowRight className="ml-1 w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </Link>
-              </div>
+              </motion.div>
             ))}
           </div>
           
-          <div className="mt-12 text-center">
+          <AnimatedSection className="mt-12 text-center" delay={0.2}>
             <Button asChild variant="outline" className="rounded-md border-slate-200">
               <Link href="/services">View All 13 Services</Link>
             </Button>
-          </div>
+          </AnimatedSection>
         </div>
       </section>
+
 
       {/* 4. SPECIALISTS SECTION */}
       <section id="specialists" className="py-24 bg-secondary/30 border-t border-slate-100">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-16">
+          <AnimatedSection className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-16">
             <div className="max-w-2xl">
               <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Meet our specialists</h2>
               <p className="mt-4 text-lg text-slate-600">
@@ -168,11 +197,19 @@ export function HomeClient({ specialists }: { specialists: any[] }) {
             <Button asChild variant="outline" className="shrink-0 rounded-md bg-white">
               <Link href="/specialists">View Directory</Link>
             </Button>
-          </div>
+          </AnimatedSection>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {specialists.slice(0, 3).map((spec) => (
-              <div key={spec.id} className="bg-white border border-slate-100 rounded-2xl overflow-hidden hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all">
+            {specialists.slice(0, 3).map((spec, i) => (
+              <motion.div
+                key={spec.id}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ duration: 0.5, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                whileHover={{ y: -4 }}
+                className="bg-white border border-slate-100 rounded-2xl overflow-hidden shadow-[0_2px_8px_rgb(0,0,0,0.03)] hover:shadow-[0_12px_35px_rgb(0,0,0,0.07)] transition-shadow duration-300"
+              >
                 <div className="aspect-[4/3] relative bg-slate-100">
                   {spec.imageUrl ? (
                     <Image src={spec.imageUrl} alt={spec.name} fill className="object-cover" />
@@ -194,7 +231,7 @@ export function HomeClient({ specialists }: { specialists: any[] }) {
                     </Link>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
             
             {specialists.length === 0 && (
@@ -206,19 +243,31 @@ export function HomeClient({ specialists }: { specialists: any[] }) {
         </div>
       </section>
 
+
       {/* 5. ABOUT / APPROACH */}
       <section id="about" className="py-24 bg-white">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-sm bg-slate-100">
+            <motion.div
+              initial={{ opacity: 0, x: -32 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+              className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-sm bg-slate-100"
+            >
               <Image 
                 src="https://images.unsplash.com/photo-1587654780291-39c9404d746b?q=80&w=1000&auto=format&fit=crop" 
                 alt="Child playing with wooden blocks" 
                 fill 
                 className="object-cover"
               />
-            </div>
-            <div>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, x: 32 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+            >
               <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl mb-6">Our approach to care</h2>
               <div className="space-y-6 text-lg text-slate-600">
                 <p>
@@ -230,16 +279,24 @@ export function HomeClient({ specialists }: { specialists: any[] }) {
               </div>
               <ul className="mt-8 space-y-4">
                 {['Practical, step-by-step guidance', 'Close partnership with parents', 'Comfortable, non-clinical environment', 'Focus on real-world results'].map((item, i) => (
-                  <li key={i} className="flex items-center gap-3 text-slate-700">
+                  <motion.li
+                    key={i}
+                    initial={{ opacity: 0, x: 16 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: 0.2 + i * 0.07, ease: [0.22, 1, 0.36, 1] }}
+                    className="flex items-center gap-3 text-slate-700"
+                  >
                     <CheckCircle2 className="w-5 h-5 text-primary" />
                     <span>{item}</span>
-                  </li>
+                  </motion.li>
                 ))}
               </ul>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
+
 
       {/* 6. LOCATION & CONTACT */}
       <section id="contact" className="py-24 bg-secondary/30 border-t border-slate-100">

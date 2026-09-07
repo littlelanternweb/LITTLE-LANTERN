@@ -3,85 +3,120 @@
 import { Phone, CalendarDays } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
+
+// New WhatsApp logo (2024 redesign — filled, rounded square style)
+const WhatsAppIcon = ({ className }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 175.216 175.552" className={className}>
+    <defs>
+      <linearGradient id="wa-gradient" x1="85.915" y1="132.085" x2="85.916" y2="43.932" gradientUnits="userSpaceOnUse">
+        <stop offset="0" stopColor="#20b038"/>
+        <stop offset="1" stopColor="#60d66a"/>
+      </linearGradient>
+    </defs>
+    <path fill="url(#wa-gradient)" d="M87.6 0C39.3 0 0 39.3 0 87.6c0 15.9 4.3 30.8 11.8 43.7L0 175.6l45.8-11.6c12.4 6.7 26.6 10.6 41.7 10.6 48.3 0 87.6-39.3 87.6-87.6C175.2 39.3 135.9 0 87.6 0z"/>
+    <path fill="#fff" d="M131.5 107.6c-1.8-3-3.5-4.9-5.2-5.6-1.3-.5-2.8-.8-4.4-.8-1 0-2.1.1-3.2.4-1.9.5-3.7 1.4-5.4 2.5-1.2.8-2.3 1.8-3.1 2.9l-.2.3c-1.3 2-3.2 2.4-5.1 1.5-7.6-3.8-14.3-9.2-19.5-15.9-2.4-3-4.2-6.5-5-10.2-.3-1.3 0-2.5.8-3.5l2.3-2.8c1.3-1.5 2.2-3.3 2.7-5.2.5-2 .4-4.1-.3-6.1l-4.6-12.3c-.9-2.5-2.8-4.2-5.2-4.7-1.1-.2-2.2-.3-3.3-.3-3.6 0-7.1 1.3-9.7 3.8-5.5 5.1-8 12.3-7.2 19.6 1.5 13.3 8.4 25.2 17.5 35 9.1 9.8 21 17.7 34.2 20.8 3.9.9 7.9 1.4 11.9 1.4 5 0 9.7-1 13.9-3.1 5.4-2.6 8.8-7.7 9-13.4.1-1.7-.5-3.5-1.9-5z"/>
+  </svg>
+);
 
 export function FloatingActions() {
   const pathname = usePathname();
+  const [showTooltip, setShowTooltip] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  // Hide on admin routes
-  if (pathname?.startsWith("/admin")) {
-    return null;
-  }
+  useEffect(() => {
+    // Delay mount so button slides in after page load
+    const t = setTimeout(() => setMounted(true), 800);
+    return () => clearTimeout(t);
+  }, []);
+
+  if (pathname?.startsWith("/admin")) return null;
 
   const WHATSAPP_NUMBER = "919961757373";
   const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=Hello%20Little%20Lantern%2C%20I%20would%20like%20to%20know%20more%20about%20your%20consultation%20services.`;
   const PHONE_LINK = "tel:+919961757373";
 
-  const WhatsAppIcon = ({ className }: { className?: string }) => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={className}>
-      <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-14.416c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm.029 18.88c-1.161 0-2.305-.292-3.318-.844l-3.677.964.984-3.595c-.607-1.052-.927-2.246-.926-3.468.001-3.825 3.113-6.937 6.937-6.937 3.825 0 6.938 3.112 6.938 6.938-.001 3.825-3.113 6.937-6.938 6.938z"/>
-    </svg>
-  );
-
   return (
     <>
-      {/* Desktop & Tablet Floating WhatsApp Button */}
-      <div className="fixed bottom-6 right-6 z-40 hidden sm:flex flex-col items-end gap-3">
-        <a 
-          href={WHATSAPP_LINK}
-          target="_blank" 
-          rel="noreferrer"
-          className="group relative flex items-center justify-center w-14 h-14 rounded-full bg-[#25D366] text-white shadow-[0_8px_30px_rgba(37,211,102,0.3)] hover:shadow-[0_12px_40px_rgba(37,211,102,0.4)] hover:bg-[#20bd5a] transition-all duration-300 hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-[#25D366]/30"
-          aria-label="Chat with Little Lantern on WhatsApp"
-        >
-          <WhatsAppIcon className="w-7 h-7 relative z-10" />
+      {/* Desktop Floating WhatsApp Button */}
+      <AnimatePresence>
+        {mounted && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.5, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ type: "spring", stiffness: 260, damping: 20 }}
+            className="fixed bottom-6 right-6 z-40 hidden sm:flex flex-col items-end gap-3"
+          >
+            {/* Tooltip */}
+            <AnimatePresence>
+              {showTooltip && (
+                <motion.span
+                  initial={{ opacity: 0, x: 10, scale: 0.95 }}
+                  animate={{ opacity: 1, x: 0, scale: 1 }}
+                  exit={{ opacity: 0, x: 10, scale: 0.95 }}
+                  transition={{ duration: 0.15 }}
+                  className="bg-slate-900 text-white px-4 py-2 rounded-xl text-sm font-medium shadow-xl whitespace-nowrap"
+                >
+                  Chat on WhatsApp
+                </motion.span>
+              )}
+            </AnimatePresence>
 
-          {/* Tooltip on Hover */}
-          <span className="absolute right-full mr-4 bg-[#1C1917] text-white px-4 py-2 rounded-xl text-sm font-medium shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap border border-[#292524]">
-            Chat on WhatsApp
-          </span>
-        </a>
-      </div>
+            <motion.a
+              href={WHATSAPP_LINK}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Chat with Little Lantern on WhatsApp"
+              onMouseEnter={() => setShowTooltip(true)}
+              onMouseLeave={() => setShowTooltip(false)}
+              whileHover={{ scale: 1.1, y: -3 }}
+              whileTap={{ scale: 0.95 }}
+              className="relative flex items-center justify-center w-14 h-14 rounded-full bg-[#25D366] text-white shadow-[0_8px_30px_rgba(37,211,102,0.35)] focus:outline-none focus:ring-4 focus:ring-[#25D366]/30"
+            >
+              {/* Pulse ring */}
+              <span className="absolute inset-0 rounded-full bg-[#25D366] animate-ping opacity-30" />
+              <WhatsAppIcon className="w-7 h-7 relative z-10" />
+            </motion.a>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {/* Mobile Action Bar (Hidden on sm and above) */}
-      <div className="sm:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-t border-[#F5F5F4] px-4 py-3 shadow-[0_-4px_20px_rgb(0,0,0,0.05)] pb-safe flex gap-2">
-        <a 
-          href={PHONE_LINK} 
-          className="flex-1 flex flex-col items-center justify-center py-2 bg-[#FCFBF9] text-[#1C1917] rounded-xl border border-[#F5F5F4] hover:bg-[#F5F5F4] transition-colors focus:outline-none focus:ring-2 focus:ring-[#1C1917]"
+      {/* Mobile Bottom Action Bar */}
+      <motion.div
+        initial={{ y: 100 }}
+        animate={{ y: 0 }}
+        transition={{ type: "spring", stiffness: 300, damping: 30, delay: 0.6 }}
+        className="sm:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-t border-slate-100 px-4 py-3 pb-safe flex gap-2 shadow-[0_-4px_20px_rgb(0,0,0,0.05)]"
+      >
+        <a
+          href={PHONE_LINK}
+          className="flex-1 flex flex-col items-center justify-center py-2 bg-slate-50 text-slate-900 rounded-xl border border-slate-100 active:bg-slate-100 transition-colors"
           aria-label="Call Little Lantern"
         >
-          <Phone className="w-5 h-5 mb-1 text-[#57534E]" />
-          <span className="text-[10px] font-medium uppercase tracking-wider text-[#57534E]">Call</span>
+          <Phone className="w-5 h-5 mb-1 text-slate-600" />
+          <span className="text-[10px] font-medium uppercase tracking-wider text-slate-600">Call</span>
         </a>
-        
-        <a 
+
+        <a
           href={WHATSAPP_LINK}
-          target="_blank" 
+          target="_blank"
           rel="noreferrer"
-          className="flex-1 flex flex-col items-center justify-center py-2 bg-[#25D366]/10 text-[#1da851] rounded-xl border border-[#25D366]/20 transition-colors focus:outline-none focus:ring-2 focus:ring-[#25D366]"
-          aria-label="Chat with Little Lantern on WhatsApp"
+          className="flex-1 flex flex-col items-center justify-center py-2 bg-[#25D366]/10 rounded-xl border border-[#25D366]/20 active:bg-[#25D366]/20 transition-colors"
+          aria-label="Chat on WhatsApp"
         >
           <WhatsAppIcon className="w-5 h-5 mb-1" />
-          <span className="text-[10px] font-medium uppercase tracking-wider">WhatsApp</span>
+          <span className="text-[10px] font-medium uppercase tracking-wider text-[#128C7E]">WhatsApp</span>
         </a>
 
-        <Link href="/specialists" className="flex-[1.5] flex flex-col items-center justify-center py-2 bg-gradient-to-br from-[#00A693] to-[#047857] text-white rounded-xl shadow-[0_4px_15px_rgba(0,166,147,0.3)] transition-colors focus:outline-none focus:ring-2 focus:ring-[#00A693] focus:ring-offset-2">
-          <CalendarDays className="w-5 h-5 mb-1" />
-          <span className="text-[10px] font-medium uppercase tracking-wider text-white">Book Now</span>
-        </Link>
-      </div>
-
-      {/* Mobile Floating WhatsApp Button (Positioned above the action bar to prevent overlap) */}
-      <div className="sm:hidden fixed bottom-24 right-4 z-40">
-        <a 
-          href={WHATSAPP_LINK}
-          target="_blank" 
-          rel="noreferrer"
-          className="relative flex items-center justify-center w-12 h-12 rounded-full bg-[#25D366] text-white shadow-[0_8px_20px_rgba(37,211,102,0.3)] focus:outline-none focus:ring-4 focus:ring-[#25D366]/30"
-          aria-label="Chat with Little Lantern on WhatsApp"
+        <Link
+          href="/specialists"
+          className="flex-[1.5] flex flex-col items-center justify-center py-2 bg-primary text-white rounded-xl shadow-[0_4px_15px_rgba(0,166,147,0.25)] active:bg-primary/90 transition-colors"
         >
-          <WhatsAppIcon className="w-6 h-6 relative z-10" />
-        </a>
-      </div>
+          <CalendarDays className="w-5 h-5 mb-1" />
+          <span className="text-[10px] font-medium uppercase tracking-wider">Book Now</span>
+        </Link>
+      </motion.div>
     </>
   );
 }
