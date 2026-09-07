@@ -142,41 +142,42 @@ export function BookingWidget({ specialistId, fee }: { specialistId: string, fee
 
   if (step === 4) {
     return (
-      <Card className="border-green-100 shadow-md">
-        <CardContent className="pt-6 text-center space-y-4">
-          <div className="w-16 h-16 bg-green-100 text-green-600 rounded-md flex items-center justify-center mx-auto mb-4">
-            <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-          </div>
-          <h3 className="text-xl font-bold text-slate-900">Booking Confirmed!</h3>
-          <p className="text-slate-600">Your consultation is scheduled for {date && format(date, "MMMM d, yyyy")} at {selectedSlot}.</p>
-          <p className="text-sm text-slate-500">We've sent a confirmation email to {email}.</p>
-        </CardContent>
-      </Card>
+      <div className="text-center space-y-4 py-8">
+        <div className="w-20 h-20 bg-green-50 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
+          <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+        </div>
+        <h3 className="text-2xl font-bold text-slate-900">Booking Confirmed!</h3>
+        <p className="text-slate-600 text-lg">Your consultation is scheduled for <strong>{date && format(date, "MMMM d, yyyy")}</strong> at <strong>{selectedSlot}</strong>.</p>
+        
+        <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 inline-block my-4 text-left">
+          <p className="text-sm text-slate-700 flex items-center justify-between gap-6 mb-1">
+            <span>Advance Paid:</span> <strong>₹{Math.round(fee * 0.25)}</strong>
+          </p>
+          <p className="text-sm text-slate-700 flex items-center justify-between gap-6">
+            <span>Balance due at clinic:</span> <strong>₹{fee - Math.round(fee * 0.25)}</strong>
+          </p>
+        </div>
+        
+        <p className="text-sm text-slate-500 mt-4">We've sent a confirmation email to {email}.</p>
+      </div>
     );
   }
 
   return (
-    <Card className="shadow-[0_8px_30px_rgb(0,0,0,0.04)] border-slate-100 rounded-3xl overflow-hidden">
-      <CardHeader className="bg-slate-50 border-b border-slate-100 py-6 px-8">
-        <CardTitle className="text-xl font-medium text-slate-900 flex justify-between items-center">
-          <span>Book Consultation</span>
-          <span className="text-primary bg-primary/10 px-3 py-1 rounded-md text-sm">₹{fee}</span>
-        </CardTitle>
-        
-        {/* Progress Indicator */}
-        {step < 4 && (
-          <div className="flex items-center gap-2 mt-6">
-            {[1, 2, 3].map(i => (
-              <div key={i} className="flex-1 h-1.5 rounded-md bg-slate-200 overflow-hidden">
-                <div 
-                  className={`h-full bg-primary transition-all duration-500 ${step >= i ? 'w-full' : 'w-0'}`} 
-                />
-              </div>
-            ))}
-          </div>
-        )}
-      </CardHeader>
-      <CardContent className="p-8">
+    <div>
+      {/* Step Progress Bar */}
+      {step < 4 && (
+        <div className="flex items-center gap-2 mb-8">
+          {[1, 2, 3].map(i => (
+            <div key={i} className="flex-1 h-1.5 rounded-full bg-slate-100 overflow-hidden">
+              <div 
+                className={`h-full bg-primary transition-all duration-500 ${step >= i ? 'w-full' : 'w-0'}`} 
+              />
+            </div>
+          ))}
+        </div>
+      )}
+      <div>
         
         {step === 1 && (
           <div className="space-y-6">
@@ -347,7 +348,14 @@ export function BookingWidget({ specialistId, fee }: { specialistId: string, fee
               <div className="space-y-2 text-[15px]">
                 <p className="text-slate-500 flex justify-between"><span>Date:</span> <strong className="text-slate-900">{date && format(date, "MMM d, yyyy")}</strong></p>
                 <p className="text-slate-500 flex justify-between"><span>Time:</span> <strong className="text-slate-900">{selectedSlot} (60 min)</strong></p>
-                <p className="text-slate-500 flex justify-between pt-2 border-t border-slate-200"><span>Total Fee:</span> <strong className="text-primary">₹{fee}</strong></p>
+                <div className="pt-3 mt-3 border-t border-slate-200 space-y-2">
+                  <p className="text-slate-500 flex justify-between text-sm"><span>Total Consultation Fee:</span> <span>₹{fee}</span></p>
+                  <p className="text-slate-900 font-medium flex justify-between"><span>Advance Payment (25%):</span> <span className="text-primary">₹{Math.round(fee * 0.25)}</span></p>
+                  <p className="text-slate-500 flex justify-between text-xs mt-1 bg-slate-100 p-2 rounded-lg">
+                    <span>Balance to pay at clinic:</span> 
+                    <strong>₹{fee - Math.round(fee * 0.25)}</strong>
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -358,13 +366,13 @@ export function BookingWidget({ specialistId, fee }: { specialistId: string, fee
                 onClick={handleCheckout}
                 disabled={!childName || !childAge || !childGender || !reason || isSubmitting}
               >
-                {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : "Pay & Confirm"}
+                {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : `Pay ₹${Math.round(fee * 0.25)} Advance`}
               </Button>
             </div>
           </div>
         )}
+      </div>
 
-      </CardContent>
       <div className="bg-slate-50 border-t border-[#F5F5F4] p-4 text-center">
         <a 
           href="https://wa.me/919961757373?text=Hello%20Little%20Lantern%2C%20I%20need%20help%20with%20booking%20a%20consultation." 
@@ -376,6 +384,6 @@ export function BookingWidget({ specialistId, fee }: { specialistId: string, fee
           Need help booking? Chat with us on WhatsApp
         </a>
       </div>
-    </Card>
+    </div>
   );
 }

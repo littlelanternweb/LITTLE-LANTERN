@@ -84,10 +84,13 @@ export async function POST(req: Request) {
       }
     });
 
+    // Calculate 25% advance amount
+    const advanceAmount = Math.round(specialist.consultationFee * 0.25);
+
     // 6. Create Razorpay order (if keys exist)
     if (razorpay) {
       const order = await razorpay.orders.create({
-        amount: specialist.consultationFee * 100, // in paise
+        amount: advanceAmount * 100, // in paise
         currency: "INR",
         receipt: appointment.id
       });
@@ -102,7 +105,7 @@ export async function POST(req: Request) {
       // Mock flow if no keys (for local development)
       return NextResponse.json({
         orderId: `mock_order_${Date.now()}`,
-        amount: specialist.consultationFee * 100,
+        amount: advanceAmount * 100,
         currency: "INR",
         appointmentId: appointment.id,
         mock: true
