@@ -179,53 +179,80 @@ export function BookingWidget({ specialistId, fee }: { specialistId: string, fee
       <CardContent className="p-8">
         
         {step === 1 && (
-          <div className="space-y-8">
-            <div>
-              <Label className="text-[15px] font-medium text-slate-900 mb-4 block">01 — Select Date</Label>
-              <Calendar
-                mode="single"
-                selected={date}
-                onSelect={setDate}
-                disabled={(d) => d < new Date(new Date().setHours(0,0,0,0))}
-                className="rounded-2xl border border-slate-100 bg-white mx-auto w-fit shadow-sm"
-              />
-            </div>
-            
-            {date && (
+          <div className="space-y-6">
+            {/* Two-column: calendar | time slots */}
+            <div className="grid lg:grid-cols-[1fr_220px] gap-6 items-start">
+              {/* Calendar — full width, large */}
               <div>
-                <Label className="text-[15px] font-medium text-slate-900 mb-4 block">02 — Available Time</Label>
-                {loadingSlots ? (
-                  <div className="flex justify-center py-6"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>
+                <Label className="text-[13px] font-semibold text-slate-500 uppercase tracking-widest mb-3 block">Select Date</Label>
+                <div className="border border-slate-100 rounded-2xl overflow-hidden bg-white shadow-sm">
+                  <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={setDate}
+                    disabled={(d) => d < new Date(new Date().setHours(0,0,0,0))}
+                    className="w-full p-4"
+                  />
+                </div>
+              </div>
+
+              {/* Time slots — right column */}
+              <div>
+                <Label className="text-[13px] font-semibold text-slate-500 uppercase tracking-widest mb-3 block">
+                  {date ? `${format(date, "EEE, MMM d")}` : "Select a date first"}
+                </Label>
+
+                {!date ? (
+                  <div className="border border-dashed border-slate-200 rounded-2xl h-48 flex items-center justify-center text-slate-400 text-sm text-center px-4">
+                    Pick a date to see available times
+                  </div>
+                ) : loadingSlots ? (
+                  <div className="border border-slate-100 rounded-2xl h-48 flex items-center justify-center bg-white">
+                    <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                  </div>
                 ) : slots.length === 0 ? (
-                  <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 text-center">
-                    <p className="text-sm text-slate-500">No available slots on this date.</p>
+                  <div className="border border-slate-100 rounded-2xl h-48 flex flex-col items-center justify-center bg-white text-center px-4 gap-2">
+                    <span className="text-2xl">😔</span>
+                    <p className="text-sm font-medium text-slate-700">No slots available</p>
+                    <p className="text-xs text-slate-400">Try another date</p>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-3 gap-3">
-                    {slots.map(s => (
-                      <button
-                        key={s.startTime}
-                        onClick={() => setSelectedSlot(s.startTime)}
-                        className={`py-3 px-2 text-sm rounded-xl border font-medium transition-all duration-300 ${
-                          selectedSlot === s.startTime 
-                            ? 'bg-[#1C1917] text-white border-[#1C1917] shadow-md scale-[1.02]' 
-                            : 'bg-white text-slate-700 border-slate-200 hover:border-slate-300 hover:bg-slate-50'
-                        }`}
-                      >
-                        {s.startTime}
-                      </button>
-                    ))}
+                  <div className="border border-slate-100 rounded-2xl bg-white overflow-hidden">
+                    <div className="max-h-[340px] overflow-y-auto p-3 space-y-2">
+                      {slots.map(s => (
+                        <button
+                          key={s.startTime}
+                          onClick={() => setSelectedSlot(s.startTime)}
+                          className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium border transition-all duration-200 ${
+                            selectedSlot === s.startTime
+                              ? 'bg-primary text-white border-primary shadow-[0_2px_12px_rgba(0,166,147,0.25)]'
+                              : 'bg-white text-slate-700 border-slate-100 hover:border-primary/40 hover:bg-primary/5'
+                          }`}
+                        >
+                          <span>{s.startTime}</span>
+                          <span className={`text-xs ${selectedSlot === s.startTime ? 'text-white/70' : 'text-slate-400'}`}>60 min</span>
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
+            </div>
+
+            {/* Selected summary chip */}
+            {date && selectedSlot && (
+              <div className="flex items-center gap-3 px-4 py-3 bg-primary/5 border border-primary/15 rounded-xl text-sm font-medium text-primary">
+                <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                {format(date, "EEEE, MMMM d, yyyy")} at {selectedSlot}
+              </div>
             )}
-            
+
             <Button 
-              className="w-full bg-[#1C1917] hover:bg-[#292524] text-white rounded-md h-14 text-base font-medium transition-all shadow-md hover:shadow-lg disabled:opacity-50" 
+              className="w-full bg-primary hover:bg-primary/90 text-white rounded-xl h-13 text-base font-medium transition-all shadow-sm disabled:opacity-40" 
               disabled={!date || !selectedSlot}
               onClick={handleNext}
             >
-              Continue to Details
+              Continue to Details →
             </Button>
           </div>
         )}
