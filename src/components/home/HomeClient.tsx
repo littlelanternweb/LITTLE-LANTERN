@@ -132,12 +132,12 @@ export function HomeClient({ specialists }: { specialists: any[] }) {
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              { title: "Child Counselling", desc: "Professional support for emotional and behavioral challenges." },
-              { title: "Special Education", desc: "Tailored educational support for children with learning differences." },
-              { title: "Speech & Language", desc: "Therapy to improve communication and speech clarity." },
-              { title: "Occupational Therapy", desc: "Developing fine motor skills and sensory processing abilities." },
-              { title: "Behavioural Support", desc: "Strategies to manage and improve difficult behaviors." },
-              { title: "Learning Support", desc: "Focused interventions for specific academic difficulties." },
+              { title: "Child Counselling", slug: "child-counselling", desc: "Professional support for emotional and behavioral challenges." },
+              { title: "Special Education", slug: "special-education", desc: "Tailored educational support for children with learning differences." },
+              { title: "Speech & Language", slug: "speech-language-support", desc: "Therapy to improve communication and speech clarity." },
+              { title: "Occupational Therapy", slug: "occupational-therapy", desc: "Developing fine motor skills and sensory processing abilities." },
+              { title: "Behavioural Support", slug: "behavioural-support", desc: "Strategies to manage and improve difficult behaviors." },
+              { title: "Learning Support", slug: "learning-support", desc: "Focused interventions for specific academic difficulties." },
             ].map((service, i) => (
               <div key={i} className="group relative bg-white border border-slate-100 rounded-2xl p-8 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:border-primary/20 transition-all">
                 <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors">
@@ -145,8 +145,8 @@ export function HomeClient({ specialists }: { specialists: any[] }) {
                 </div>
                 <h3 className="text-xl font-semibold text-slate-900 mb-2">{service.title}</h3>
                 <p className="text-slate-600 mb-6 text-sm leading-relaxed">{service.desc}</p>
-                <Link href={`/services#${service.title.toLowerCase().replace(/\s+/g, '-')}`} className="inline-flex items-center text-sm font-medium text-primary group-hover:text-primary/80">
-                  Learn more <ArrowRight className="ml-1 w-4 h-4 transition-transform group-hover:translate-x-1" />
+                <Link href={`/specialists?service=${service.slug}`} className="inline-flex items-center text-sm font-medium text-primary group-hover:text-primary/80">
+                  Book this service <ArrowRight className="ml-1 w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </Link>
               </div>
             ))}
