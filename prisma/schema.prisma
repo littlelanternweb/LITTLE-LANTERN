@@ -1,0 +1,205 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      String   // SUPER_ADMIN, MANAGER, RECEPTIONIST, HR, FINANCE
+  createdAt DateTime @default(now())
+}
+
+model Specialist {
+  id             String   @id @default(cuid())
+  name           String
+  designation    String
+  qualifications String
+  experience     Int      // years
+  languages      String
+  bio            String
+  category       String   @default("Special Educator") // Professional category
+  specialization String   @default("General")
+  consultationType String @default("In-Person") // e.g. In-Person, Online, Hybrid
+  consultationFee Float
+  isActive       Boolean  @default(true)
+  imageUrl       String?
+  
+  services       Service[]       @relation("SpecialistToService")
+  availability   Availability[]
+  appointments   Appointment[]
+  lockedSlots    LockedSlot[]
+}
+
+model Service {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String
+  imageUrl    String?
+  
+  specialists Specialist[] @relation("SpecialistToService")
+}
+
+// Defines weekly schedule (e.g., Monday 09:00 - 17:00)
+model Availability {
+  id           String     @id @default(cuid())
+  specialistId String
+  dayOfWeek    Int        // 0-6
+  startTime    String     // "09:00"
+  endTime      String     // "17:00"
+  specialist   Specialist @relation(fields: [specialistId], references: [id])
+}
+
+// For leaves or admin locks
+model LockedSlot {
+  id           String     @id @default(cuid())
+  specialistId String
+  date         DateTime   // specific date
+  startTime    String?    // If null, whole day is locked
+  endTime      String?
+  reason       String?
+  specialist   Specialist @relation(fields: [specialistId], references: [id])
+}
+
+model Customer {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  phone     String
+  
+  children     Child[]
+  appointments Appointment[]
+  createdAt    DateTime @default(now())
+}
+
+model Child {
+  id           String   @id @default(cuid())
+  customerId   String
+  name         String
+  dob          DateTime?
+  age          Int?
+  gender       String
+  school       String?
+  gradeClass   String?
+  relationship String   // e.g., Mother, Father (context of the customer)
+  
+  customer     Customer @relation(fields: [customerId], references: [id])
+  appointments Appointment[]
+}
+
+model ActivityLog {
+  id        String   @id @default(cuid())
+  userId    String?  // Admin who performed the action
+  action    String   // e.g., "APPOINTMENT_CANCELLED"
+  entity    String   // e.g., "Appointment"
+  entityId  String
+  details   String?
+  createdAt DateTime @default(now())
+}
+
+model Appointment {
+  id              String     @id @default(cuid())
+  specialistId    String
+  customerId      String
+  childId         String
+  date            DateTime
+  startTime       String
+  endTime         String
+  status          String     // PENDING, CONFIRMED, CANCELLED, COMPLETED
+  
+  reason             String
+  additionalInfo     String?
+  cancellationReason String?
+  
+  specialist      Specialist @relation(fields: [specialistId], references: [id])
+  customer        Customer   @relation(fields: [customerId], references: [id])
+  child           Child      @relation(fields: [childId], references: [id])
+  payment         Payment?
+  
+  createdAt       DateTime   @default(now())
+}
+
+// Temporary hold during checkout (10 mins)
+model SlotHold {
+  id           String   @id @default(cuid())
+  specialistId String
+  date         DateTime
+  startTime    String
+  expiresAt    DateTime
+  
+  @@unique([specialistId, date, startTime])
+}
+
+model Payment {
+  id              String      @id @default(cuid())
+  appointmentId   String      @unique
+  razorpayOrderId String      @unique
+  razorpayPaymentId String?
+  amount          Float
+  status          String      // PENDING, SUCCESS, FAILED, REFUNDED
+  
+  appointment     Appointment @relation(fields: [appointmentId], references: [id])
+  createdAt       DateTime    @default(now())
+}
+
+model JobOpening {
+  id           String   @id @default(cuid())
+  title        String
+  department   String
+  location     String
+  experience   String
+  type         String   // Full-time, Part-time, Contract
+  description  String
+  requirements String?
+  isPublished  Boolean  @default(true)
+  closingDate  DateTime?
+  isFilled     Boolean  @default(false)
+  
+  applications JobApplication[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model JobApplication {
+  id             String   @id @default(cuid())
+  name           String
+  email          String
+  phone          String
+  position       String
+  jobOpeningId   String?
+  jobOpening     JobOpening? @relation(fields: [jobOpeningId], references: [id])
+  qualifications String
+  experience     String
+  currentOrg     String?
+  specialisation String?
+  resumeUrl      String
+  message        String?
+  status         String   // NEW, REVIEWING, SHORTLISTED, SELECTED, REJECTED
+  createdAt      DateTime @default(now())
+}
+
+model Setting {
+  key   String @id
+  value String
+  
+  updatedAt DateTime @updatedAt
+}
+
+model EmailLog {
+  id        String   @id @default(cuid())
+  type      String   // e.g., BOOKING_CONFIRMATION, REMINDER_24H
+  recipient String
+  subject   String
+  status    String   // SUCCESS, FAILED
+  relatedId String?  // ID of the Appointment or JobApplication
+  error     String?
+  
+  createdAt DateTime @default(now())
+}
