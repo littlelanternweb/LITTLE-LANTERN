@@ -6,12 +6,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, MapPin, CheckCircle2, ChevronRight, Clock, Star, Phone, CalendarDays, ShieldCheck, HeartPulse, BrainCircuit, Users } from "lucide-react";
 import { useState } from "react";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+
 
 // Animation Variants
 const fadeUp = {
@@ -227,14 +222,14 @@ export function HomeClient({ specialists }: { specialists: any[] }) {
               <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl mb-6">Our approach to care</h2>
               <div className="space-y-6 text-lg text-slate-600">
                 <p>
-                  At Little Lantern, we believe every child has a unique light. Our approach is deeply rooted in child-centred care, focusing on discovering and nurturing individual strengths rather than just addressing challenges.
+                  We provide a warm, welcoming space where children can feel entirely comfortable. Rather than focusing solely on challenges, we look at your child's unique strengths and build from there.
                 </p>
                 <p>
-                  We partner closely with parents and families, creating a holistic ecosystem of support. Our environment is deliberately designed to feel safe, welcoming, and entirely non-clinical, encouraging children to express themselves freely.
+                  We work closely with parents to understand what's happening at home and school, creating practical, step-by-step plans that make a real difference in daily life. Our clinic is designed to feel like a place to play and learn, completely avoiding the intimidating atmosphere of a traditional hospital.
                 </p>
               </div>
               <ul className="mt-8 space-y-4">
-                {['Evidence-based interventions', 'Collaborative family approach', 'Neurodiversity affirming', 'Play-based methodologies'].map((item, i) => (
+                {['Practical, step-by-step guidance', 'Close partnership with parents', 'Comfortable, non-clinical environment', 'Focus on real-world results'].map((item, i) => (
                   <li key={i} className="flex items-center gap-3 text-slate-700">
                     <CheckCircle2 className="w-5 h-5 text-primary" />
                     <span>{item}</span>
@@ -295,57 +290,23 @@ export function HomeClient({ specialists }: { specialists: any[] }) {
                   </Button>
                 </div>
               </div>
-              <div className="bg-slate-200 min-h-[300px] lg:min-h-full relative">
-                 {/* Clean Map Placeholder - In a real app this would be a Google Maps iframe */}
-                 <div className="absolute inset-0 flex items-center justify-center bg-slate-100 text-slate-400 p-6 text-center">
-                    <div>
-                      <MapPin className="w-12 h-12 mx-auto mb-4 text-slate-300" />
-                      <p>Interactive Map Component</p>
-                    </div>
-                 </div>
+              <div className="bg-slate-200 min-h-[300px] lg:min-h-full relative overflow-hidden rounded-r-[2rem]">
+                 <iframe 
+                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3916.035342674488!2d76.2307844!3d11.1851941!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba631b1c55d0121%3A0x8e87d1dfc83690d7!2sWandoor%2C%20Kerala%20679328!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin" 
+                   width="100%" 
+                   height="100%" 
+                   style={{ border: 0, position: 'absolute', inset: 0 }} 
+                   allowFullScreen 
+                   loading="lazy" 
+                   referrerPolicy="no-referrer-when-downgrade"
+                 />
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 7. FAQ */}
-      <section className="py-24 bg-white">
-        <div className="mx-auto max-w-3xl px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold tracking-tight text-slate-900">Frequently Asked Questions</h2>
-            <p className="mt-4 text-lg text-slate-600">Common questions about our services and booking process.</p>
-          </div>
-          
-          <Accordion type="single" collapsible className="w-full">
-            {[
-              {
-                q: "How do I book a consultation?",
-                a: "You can easily book a consultation through our website by visiting the Specialists directory, selecting a professional, and choosing an available time slot. An advance payment of ₹150 is required to confirm the booking."
-              },
-              {
-                q: "What should we bring to the first session?",
-                a: "Please bring any previous medical records, school reports, or assessments related to your child's development. Most importantly, bring an open mind!"
-              },
-              {
-                q: "Are parents involved in the sessions?",
-                a: "Absolutely. We strongly believe in a family-centered approach. Depending on the child's age and needs, parents are actively involved in setting goals and practicing strategies at home."
-              },
-              {
-                q: "How long is a typical consultation?",
-                a: "A standard consultation slot is 60 minutes, which includes time for direct interaction, parent feedback, and clinical documentation."
-              }
-            ].map((faq, i) => (
-              <AccordionItem key={i} value={`item-${i}`} className="border-slate-100">
-                <AccordionTrigger className="text-left font-medium text-slate-900 hover:text-primary">{faq.q}</AccordionTrigger>
-                <AccordionContent className="text-slate-600 leading-relaxed">
-                  {faq.a}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </div>
-      </section>
+
 
     </div>
   );
