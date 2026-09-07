@@ -70,7 +70,7 @@ export function HomeClient({ specialists }: { specialists: any[] }) {
                   <Link href="/specialists">Book a Consultation</Link>
                 </Button>
                 <Button asChild variant="outline" size="lg" className="rounded-md h-12 px-8 text-base border-slate-200 hover:bg-slate-50">
-                  <Link href="#services">Explore Our Services</Link>
+                  <Link href="/careers">Become Our Faculty</Link>
                 </Button>
               </motion.div>
             </motion.div>
@@ -141,19 +141,16 @@ export function HomeClient({ specialists }: { specialists: any[] }) {
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <AnimatedSection className="max-w-3xl mb-16">
             <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Support designed around your child</h2>
-            <p className="mt-4 text-lg text-slate-600">
-              We offer comprehensive, multidisciplinary services tailored to meet the developmental, emotional, and educational needs of every child.
-            </p>
           </AnimatedSection>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              { title: "Child Counselling", slug: "child-counselling", desc: "Professional support for emotional and behavioral challenges." },
-              { title: "Special Education", slug: "special-education", desc: "Tailored educational support for children with learning differences." },
-              { title: "Speech & Language", slug: "speech-language-support", desc: "Therapy to improve communication and speech clarity." },
-              { title: "Occupational Therapy", slug: "occupational-therapy", desc: "Developing fine motor skills and sensory processing abilities." },
-              { title: "Behavioural Support", slug: "behavioural-support", desc: "Strategies to manage and improve difficult behaviors." },
-              { title: "Learning Support", slug: "learning-support", desc: "Focused interventions for specific academic difficulties." },
+              { title: "Child Counselling", slug: "child-counselling" },
+              { title: "Special Education", slug: "special-education" },
+              { title: "Speech & Language", slug: "speech-language-support" },
+              { title: "Occupational Therapy", slug: "occupational-therapy" },
+              { title: "Behavioural Support", slug: "behavioural-support" },
+              { title: "Learning Support", slug: "learning-support" },
             ].map((service, i) => (
               <motion.div
                 key={i}
@@ -166,8 +163,7 @@ export function HomeClient({ specialists }: { specialists: any[] }) {
                 <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors duration-300">
                   <CheckCircle2 className="w-5 h-5" />
                 </div>
-                <h3 className="text-xl font-semibold text-slate-900 mb-2">{service.title}</h3>
-                <p className="text-slate-600 mb-6 text-sm leading-relaxed">{service.desc}</p>
+                <h3 className="text-xl font-semibold text-slate-900 mb-4">{service.title}</h3>
                 <Link href={`/specialists?service=${service.slug}`} className="inline-flex items-center text-sm font-medium text-primary group-hover:text-primary/80">
                   Book this service <ArrowRight className="ml-1 w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </Link>
@@ -177,7 +173,7 @@ export function HomeClient({ specialists }: { specialists: any[] }) {
           
           <AnimatedSection className="mt-12 text-center" delay={0.2}>
             <Button asChild variant="outline" className="rounded-md border-slate-200">
-              <Link href="/services">View All 13 Services</Link>
+              <Link href="/specialists">View All Services</Link>
             </Button>
           </AnimatedSection>
         </div>
