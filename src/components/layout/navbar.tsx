@@ -82,14 +82,6 @@ export function Navbar() {
           ))}
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end gap-5 items-center">
-          <div className="hidden xl:flex items-center gap-5 mr-2">
-            <a href="tel:+919961757373" className="text-sm font-medium text-[#57534E] hover:text-[#047857] transition-colors flex items-center gap-2">
-              <span className="w-8 h-8 rounded-full bg-[#F5F5F4] flex items-center justify-center group-hover:bg-[#E6F8F3] transition-colors">
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
-              </span>
-              99617 57373
-            </a>
-          </div>
           <Link href="/specialists">
             <Button variant="default" className="bg-[#00A693] hover:bg-[#065F46] text-white rounded-md px-7 py-5 text-sm font-medium hover-lift shadow-[0_4px_15px_rgba(0,166,147,0.15)] transition-all">
               Book Consultation

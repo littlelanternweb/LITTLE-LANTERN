@@ -6,17 +6,17 @@ import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 
-// New WhatsApp logo (2024 redesign — filled, rounded square style)
+// Official WhatsApp 2024 icon — white silhouette, works on any background
 const WhatsAppIcon = ({ className }: { className?: string }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 175.216 175.552" className={className}>
-    <defs>
-      <linearGradient id="wa-gradient" x1="85.915" y1="132.085" x2="85.916" y2="43.932" gradientUnits="userSpaceOnUse">
-        <stop offset="0" stopColor="#20b038"/>
-        <stop offset="1" stopColor="#60d66a"/>
-      </linearGradient>
-    </defs>
-    <path fill="url(#wa-gradient)" d="M87.6 0C39.3 0 0 39.3 0 87.6c0 15.9 4.3 30.8 11.8 43.7L0 175.6l45.8-11.6c12.4 6.7 26.6 10.6 41.7 10.6 48.3 0 87.6-39.3 87.6-87.6C175.2 39.3 135.9 0 87.6 0z"/>
-    <path fill="#fff" d="M131.5 107.6c-1.8-3-3.5-4.9-5.2-5.6-1.3-.5-2.8-.8-4.4-.8-1 0-2.1.1-3.2.4-1.9.5-3.7 1.4-5.4 2.5-1.2.8-2.3 1.8-3.1 2.9l-.2.3c-1.3 2-3.2 2.4-5.1 1.5-7.6-3.8-14.3-9.2-19.5-15.9-2.4-3-4.2-6.5-5-10.2-.3-1.3 0-2.5.8-3.5l2.3-2.8c1.3-1.5 2.2-3.3 2.7-5.2.5-2 .4-4.1-.3-6.1l-4.6-12.3c-.9-2.5-2.8-4.2-5.2-4.7-1.1-.2-2.2-.3-3.3-.3-3.6 0-7.1 1.3-9.7 3.8-5.5 5.1-8 12.3-7.2 19.6 1.5 13.3 8.4 25.2 17.5 35 9.1 9.8 21 17.7 34.2 20.8 3.9.9 7.9 1.4 11.9 1.4 5 0 9.7-1 13.9-3.1 5.4-2.6 8.8-7.7 9-13.4.1-1.7-.5-3.5-1.9-5z"/>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 448 512"
+    fill="currentColor"
+    className={className}
+    aria-hidden="true"
+  >
+    {/* Font Awesome WhatsApp path — clean modern shape */}
+    <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/>
   </svg>
 );
 
@@ -26,7 +26,6 @@ export function FloatingActions() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // Delay mount so button slides in after page load
     const t = setTimeout(() => setMounted(true), 800);
     return () => clearTimeout(t);
   }, []);
@@ -39,30 +38,34 @@ export function FloatingActions() {
 
   return (
     <>
-      {/* Desktop Floating WhatsApp Button */}
+      {/* ── DESKTOP: Floating WhatsApp ── */}
       <AnimatePresence>
         {mounted && (
           <motion.div
             initial={{ opacity: 0, scale: 0.5, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ type: "spring", stiffness: 260, damping: 20 }}
-            className="fixed bottom-6 right-6 z-40 hidden sm:flex flex-col items-end gap-3"
+            exit={{ opacity: 0, scale: 0.5 }}
+            transition={{ type: "spring", stiffness: 280, damping: 22 }}
+            className="fixed bottom-7 right-7 z-50 hidden sm:flex flex-col items-end gap-3"
           >
-            {/* Tooltip */}
+            {/* Animated tooltip */}
             <AnimatePresence>
               {showTooltip && (
-                <motion.span
-                  initial={{ opacity: 0, x: 10, scale: 0.95 }}
+                <motion.div
+                  initial={{ opacity: 0, x: 8, scale: 0.95 }}
                   animate={{ opacity: 1, x: 0, scale: 1 }}
-                  exit={{ opacity: 0, x: 10, scale: 0.95 }}
+                  exit={{ opacity: 0, x: 8, scale: 0.95 }}
                   transition={{ duration: 0.15 }}
-                  className="bg-slate-900 text-white px-4 py-2 rounded-xl text-sm font-medium shadow-xl whitespace-nowrap"
+                  className="bg-slate-900 text-white text-sm font-medium px-4 py-2 rounded-xl shadow-xl whitespace-nowrap"
                 >
                   Chat on WhatsApp
-                </motion.span>
+                  {/* Arrow */}
+                  <span className="absolute right-[-5px] top-1/2 -translate-y-1/2 border-[5px] border-transparent border-l-slate-900" />
+                </motion.div>
               )}
             </AnimatePresence>
 
+            {/* Button */}
             <motion.a
               href={WHATSAPP_LINK}
               target="_blank"
@@ -70,53 +73,64 @@ export function FloatingActions() {
               aria-label="Chat with Little Lantern on WhatsApp"
               onMouseEnter={() => setShowTooltip(true)}
               onMouseLeave={() => setShowTooltip(false)}
-              whileHover={{ scale: 1.1, y: -3 }}
-              whileTap={{ scale: 0.95 }}
-              className="relative flex items-center justify-center w-14 h-14 rounded-full bg-[#25D366] text-white shadow-[0_8px_30px_rgba(37,211,102,0.35)] focus:outline-none focus:ring-4 focus:ring-[#25D366]/30"
+              whileHover={{ scale: 1.08, y: -2 }}
+              whileTap={{ scale: 0.93 }}
+              className="relative flex items-center justify-center w-14 h-14 rounded-full bg-[#25D366] text-white shadow-[0_4px_20px_rgba(37,211,102,0.4)] focus:outline-none focus-visible:ring-4 focus-visible:ring-[#25D366]/40"
             >
-              {/* Pulse ring */}
-              <span className="absolute inset-0 rounded-full bg-[#25D366] animate-ping opacity-30" />
+              {/* Pulse halo */}
+              <motion.span
+                className="absolute inset-0 rounded-full bg-[#25D366]"
+                animate={{ scale: [1, 1.5], opacity: [0.4, 0] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeOut" }}
+              />
               <WhatsAppIcon className="w-7 h-7 relative z-10" />
             </motion.a>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Mobile Bottom Action Bar */}
+      {/* ── MOBILE: Sticky bottom action bar ── */}
       <motion.div
         initial={{ y: 100 }}
         animate={{ y: 0 }}
-        transition={{ type: "spring", stiffness: 300, damping: 30, delay: 0.6 }}
-        className="sm:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-t border-slate-100 px-4 py-3 pb-safe flex gap-2 shadow-[0_-4px_20px_rgb(0,0,0,0.05)]"
+        transition={{ type: "spring", stiffness: 300, damping: 30, delay: 0.5 }}
+        className="sm:hidden fixed bottom-0 left-0 right-0 z-50 flex gap-2 px-3 py-3 bg-white/95 backdrop-blur-xl border-t border-slate-100 shadow-[0_-4px_24px_rgb(0,0,0,0.06)]"
+        style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}
       >
+        {/* Call */}
         <a
           href={PHONE_LINK}
-          className="flex-1 flex flex-col items-center justify-center py-2 bg-slate-50 text-slate-900 rounded-xl border border-slate-100 active:bg-slate-100 transition-colors"
-          aria-label="Call Little Lantern"
+          className="flex-1 flex flex-col items-center justify-center gap-0.5 py-2 rounded-xl bg-slate-50 border border-slate-100 active:bg-slate-100 transition-colors"
+          aria-label="Call us"
         >
-          <Phone className="w-5 h-5 mb-1 text-slate-600" />
-          <span className="text-[10px] font-medium uppercase tracking-wider text-slate-600">Call</span>
+          <Phone className="w-[18px] h-[18px] text-slate-500" />
+          <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 mt-0.5">Call</span>
         </a>
 
+        {/* WhatsApp */}
         <a
           href={WHATSAPP_LINK}
           target="_blank"
           rel="noreferrer"
-          className="flex-1 flex flex-col items-center justify-center py-2 bg-[#25D366]/10 rounded-xl border border-[#25D366]/20 active:bg-[#25D366]/20 transition-colors"
-          aria-label="Chat on WhatsApp"
+          className="flex-1 flex flex-col items-center justify-center gap-0.5 py-2 rounded-xl bg-[#25D366]/10 border border-[#25D366]/20 active:bg-[#25D366]/20 transition-colors"
+          aria-label="WhatsApp"
         >
-          <WhatsAppIcon className="w-5 h-5 mb-1" />
-          <span className="text-[10px] font-medium uppercase tracking-wider text-[#128C7E]">WhatsApp</span>
+          <WhatsAppIcon className="w-[18px] h-[18px] text-[#128C7E]" />
+          <span className="text-[10px] font-semibold uppercase tracking-wider text-[#128C7E] mt-0.5">WhatsApp</span>
         </a>
 
+        {/* Book */}
         <Link
           href="/specialists"
-          className="flex-[1.5] flex flex-col items-center justify-center py-2 bg-primary text-white rounded-xl shadow-[0_4px_15px_rgba(0,166,147,0.25)] active:bg-primary/90 transition-colors"
+          className="flex-[1.6] flex flex-col items-center justify-center gap-0.5 py-2 rounded-xl bg-primary text-white active:bg-primary/90 transition-colors shadow-[0_2px_12px_rgba(0,166,147,0.25)]"
         >
-          <CalendarDays className="w-5 h-5 mb-1" />
-          <span className="text-[10px] font-medium uppercase tracking-wider">Book Now</span>
+          <CalendarDays className="w-[18px] h-[18px]" />
+          <span className="text-[10px] font-semibold uppercase tracking-wider mt-0.5">Book Now</span>
         </Link>
       </motion.div>
+
+      {/* ── MOBILE: Spacer so page content isn't hidden behind the bar ── */}
+      <div className="sm:hidden h-[72px]" aria-hidden="true" />
     </>
   );
 }
