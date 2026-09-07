@@ -17,16 +17,16 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   }
 
   return (
-    <div className="min-h-screen bg-[#FCFBF9] flex font-inter selection:bg-[#FFEDD5] selection:text-[#9A3412]">
+    <div className="min-h-screen bg-slate-50 flex font-inter selection:bg-primary/20 selection:text-primary">
       {/* Premium Sidebar */}
       <AdminSidebar session={session} />
 
       {/* Main content */}
       <main className="flex-1 flex flex-col h-screen overflow-hidden">
         {/* Mobile header placeholder */}
-        <header className="md:hidden bg-white border-b border-[#F5F5F4] p-4 flex items-center justify-between shadow-sm z-10">
-           <span className="font-display font-semibold text-lg text-[#1C1917]">Little Lantern Admin</span>
-           <a href="/api/auth/signout" className="text-[#A8A29E] hover:text-[#1C1917]"><LogOut className="w-5 h-5" /></a>
+        <header className="md:hidden bg-white border-b border-slate-100 p-4 flex items-center justify-between shadow-sm z-10">
+           <span className=" font-semibold text-lg text-slate-900">Little Lantern Admin</span>
+           <a href="/api/auth/signout" className="text-slate-400 hover:text-slate-900"><LogOut className="w-5 h-5" /></a>
         </header>
 
         <div className="flex-1 overflow-y-auto p-6 lg:p-10">

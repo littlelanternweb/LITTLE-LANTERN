@@ -1,41 +1,41 @@
 @import "tailwindcss";
 
 :root {
-  /* Warm neutral foundation */
-  --background: 40 20% 98%; /* #FCFBF9 - Off white warm */
-  --foreground: 20 10% 15%; /* #292524 - Deep charcoal */
+  /* Ultra-clean warm white foundation */
+  --background: 0 0% 100%; /* Pure white for maximum contrast */
+  --foreground: 220 15% 15%; /* Soft slate gray, much softer than stark black */
   
   --card: 0 0% 100%;
-  --card-foreground: 20 10% 15%;
+  --card-foreground: 220 15% 15%;
   
   --popover: 0 0% 100%;
-  --popover-foreground: 20 10% 15%;
+  --popover-foreground: 220 15% 15%;
   
-  /* Primary: Muted Earthy Terracotta/Amber */
-  --primary: 25 35% 45%; 
-  --primary-foreground: 40 20% 98%;
+  /* Primary: Persian Green */
+  --primary: 173 100% 33%; /* #00A693 */
+  --primary-foreground: 0 0% 100%;
   
-  /* Secondary: Soft warm beige */
-  --secondary: 40 15% 90%;
-  --secondary-foreground: 25 35% 30%;
+  /* Secondary: Very subtle warm neutral */
+  --secondary: 40 15% 96%; /* #F5F4F0 */
+  --secondary-foreground: 173 100% 20%; /* Darker green */
   
   /* Muted */
-  --muted: 40 10% 94%;
-  --muted-foreground: 25 10% 45%;
+  --muted: 210 10% 96%;
+  --muted-foreground: 215 15% 45%;
   
   /* Accent: Gentle warm light */
-  --accent: 35 25% 92%;
-  --accent-foreground: 25 35% 30%;
+  --accent: 173 30% 95%; /* Very light tint of Persian Green */
+  --accent-foreground: 173 100% 25%;
   
-  --destructive: 0 70% 50%;
+  --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 98%;
   
-  --border: 40 10% 88%;
-  --input: 40 10% 88%;
-  --ring: 25 35% 45%;
+  --border: 220 13% 91%;
+  --input: 220 13% 91%;
+  --ring: 173 100% 33%;
   
-  /* Subtle rounded corners, not oversized */
-  --radius: 0.3rem; 
+  /* Premium modern radius - moderate */
+  --radius: 0.5rem; 
 }
 
 @theme inline {
@@ -74,7 +74,8 @@ body {
 
 /* Typography Utility for Display Font */
 .font-display {
-  font-family: var(--font-playfair), serif;
+  font-family: var(--font-inter), sans-serif;
+  letter-spacing: -0.02em;
 }
 
 /* Micro-interaction base classes */

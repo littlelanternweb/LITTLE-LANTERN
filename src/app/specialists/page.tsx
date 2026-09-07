@@ -14,13 +14,13 @@ export default async function SpecialistsPage(props: { searchParams: { q?: strin
   const services = await prisma.service.findMany({ orderBy: { name: 'asc' } });
 
   return (
-    <div className="min-h-screen bg-[#FCFBF9] pt-32 pb-24">
+    <div className="min-h-screen bg-slate-50 pt-32 pb-24">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         
         {/* Header */}
         <div className="mb-16 text-center max-w-3xl mx-auto">
-          <h1 className="font-display text-4xl font-medium text-[#1C1917] sm:text-5xl tracking-tight">Our Specialists</h1>
-          <p className="mt-6 text-lg text-[#78716C] font-light leading-relaxed">
+          <h1 className=" text-4xl font-medium text-slate-900 sm:text-5xl tracking-tight">Our Specialists</h1>
+          <p className="mt-6 text-lg text-slate-600 font-light leading-relaxed">
             Find the right expert for your child's unique needs. Our multidisciplinary team is here to guide you with warmth and deep professional insight.
           </p>
         </div>
@@ -44,7 +44,7 @@ export default async function SpecialistsPage(props: { searchParams: { q?: strin
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link 
               href="/specialists"
-              className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${!searchParams.service ? 'bg-[#1C1917] text-white shadow-lg scale-105' : 'bg-white text-[#57534E] border border-[#F5F5F4] hover:border-[#D6D3D1] hover:bg-[#FCFBF9]'}`}
+              className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${!searchParams.service ? 'bg-[#1C1917] text-white shadow-lg scale-105' : 'bg-white text-slate-700 border border-[#F5F5F4] hover:border-[#D6D3D1] hover:bg-slate-50'}`}
             >
               All Experts
             </Link>
@@ -52,7 +52,7 @@ export default async function SpecialistsPage(props: { searchParams: { q?: strin
               <Link
                 key={s.id}
                 href={`/specialists?service=${s.slug}${searchParams.q ? `&q=${searchParams.q}` : ''}`}
-                className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${searchParams.service === s.slug ? 'bg-[#FFEDD5] text-[#9A3412] shadow-md border border-[#FDBA74]/30 scale-105' : 'bg-white text-[#57534E] border border-[#F5F5F4] hover:border-[#D6D3D1] hover:bg-[#FCFBF9]'}`}
+                className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${searchParams.service === s.slug ? 'bg-[#FFEDD5] text-[#9A3412] shadow-md border border-[#FDBA74]/30 scale-105' : 'bg-white text-slate-700 border border-[#F5F5F4] hover:border-[#D6D3D1] hover:bg-slate-50'}`}
               >
                 {s.name}
               </Link>
@@ -63,8 +63,8 @@ export default async function SpecialistsPage(props: { searchParams: { q?: strin
         {/* Listing */}
         {specialists.length === 0 ? (
           <div className="text-center py-32 bg-white rounded-2xl border border-[#F5F5F4] shadow-sm">
-            <h3 className="text-xl font-display font-medium text-[#1C1917]">No specialists found</h3>
-            <p className="text-[#78716C] mt-3 font-light">Try adjusting your filters or search query.</p>
+            <h3 className="text-xl  font-medium text-slate-900">No specialists found</h3>
+            <p className="text-slate-600 mt-3 font-light">Try adjusting your filters or search query.</p>
             <Link href="/specialists" className="mt-6 inline-flex items-center text-[#9A3412] font-medium hover:text-[#7C2D12]">
               Clear filters <ChevronRight className="w-4 h-4 ml-1" />
             </Link>
@@ -81,13 +81,13 @@ export default async function SpecialistsPage(props: { searchParams: { q?: strin
                       <img src={s.imageUrl} alt={s.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-stone-100 to-stone-200">
-                        <span className="text-5xl font-display text-stone-300">{s.name.charAt(0)}</span>
+                        <span className="text-5xl  text-stone-300">{s.name.charAt(0)}</span>
                       </div>
                     )}
                     {/* Tags overlay */}
                     <div className="absolute top-4 left-4 right-4 flex flex-wrap gap-2">
                       {s.services.slice(0, 2).map(srv => (
-                        <span key={srv.id} className="inline-flex items-center rounded-md bg-white/90 backdrop-blur px-2.5 py-1 text-xs font-medium text-[#57534E] shadow-sm">
+                        <span key={srv.id} className="inline-flex items-center rounded-md bg-white/90 backdrop-blur px-2.5 py-1 text-xs font-medium text-slate-700 shadow-sm">
                           {srv.name}
                         </span>
                       ))}
@@ -96,10 +96,10 @@ export default async function SpecialistsPage(props: { searchParams: { q?: strin
                   
                   {/* Content */}
                   <div className="p-6 flex flex-col flex-grow">
-                    <h3 className="font-display text-2xl font-medium text-[#1C1917] group-hover:text-[#9A3412] transition-colors">{s.name}</h3>
+                    <h3 className=" text-2xl font-medium text-slate-900 group-hover:text-[#9A3412] transition-colors">{s.name}</h3>
                     <p className="text-[#9A3412] text-sm font-medium mt-1">{s.designation}</p>
                     
-                    <div className="mt-6 space-y-3 text-[13px] text-[#78716C] flex-grow">
+                    <div className="mt-6 space-y-3 text-[13px] text-slate-600 flex-grow">
                       <div className="flex items-start gap-3">
                         <Award className="w-4 h-4 text-[#D6D3D1] shrink-0 mt-0.5" />
                         <span className="leading-relaxed">{s.qualifications}</span>
@@ -118,7 +118,7 @@ export default async function SpecialistsPage(props: { searchParams: { q?: strin
                   {/* Footer CTA */}
                   <div className="p-6 pt-0 mt-auto flex items-center justify-between">
                     <div className="text-sm">
-                      <span className="font-semibold text-[#1C1917]">₹{s.consultationFee}</span>
+                      <span className="font-semibold text-slate-900">₹{s.consultationFee}</span>
                       <span className="text-[#A8A29E]"> / session</span>
                     </div>
                     <Button variant="ghost" className="text-[#9A3412] hover:text-[#7C2D12] hover:bg-[#FFEDD5]/50 px-0 h-auto font-medium rounded-none group-hover:translate-x-1 transition-all">

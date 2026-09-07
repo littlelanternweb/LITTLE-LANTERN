@@ -91,7 +91,7 @@ export function Navbar() {
             </a>
           </div>
           <Link href="/specialists">
-            <Button variant="default" className="bg-gradient-to-br from-[#00A693] to-[#047857] hover:brightness-110 text-white rounded-full px-7 py-5 text-sm font-medium hover-lift shadow-[0_4px_15px_rgba(0,166,147,0.3)] transition-all">
+            <Button variant="default" className="bg-[#00A693] hover:bg-[#065F46] text-white rounded-md px-7 py-5 text-sm font-medium hover-lift shadow-[0_4px_15px_rgba(0,166,147,0.15)] transition-all">
               Book Consultation
             </Button>
           </Link>
@@ -153,7 +153,7 @@ export function Navbar() {
                     <Link
                       href="/specialists"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block w-full rounded-full px-3 py-4 text-center text-base font-medium text-white bg-gradient-to-br from-[#00A693] to-[#047857] hover:brightness-110 hover:shadow-lg transition-all"
+                      className="block w-full rounded-md px-3 py-4 text-center text-base font-medium text-white bg-[#00A693] hover:bg-[#065F46] hover:shadow-lg transition-all"
                     >
                       Book Consultation
                     </Link>
