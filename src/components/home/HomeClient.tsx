@@ -105,7 +105,7 @@ export function HomeClient({ specialists }: { specialists: any[] }) {
               initial={{ opacity: 0, scale: 0.97 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.25 }}
-              className="relative lg:ml-auto w-full max-w-sm aspect-[4/3]"
+              className="relative lg:ml-auto w-full max-w-sm aspect-[5/4]"
             >
               <div className="absolute inset-0 bg-secondary rounded-2xl -rotate-2 scale-105 origin-bottom-right transition-transform" />
               <div className="relative h-full w-full rounded-2xl overflow-hidden shadow-sm border border-slate-100 bg-slate-50">
@@ -113,7 +113,7 @@ export function HomeClient({ specialists }: { specialists: any[] }) {
                   src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=800&auto=format&fit=crop" 
                   alt="Therapist helping child" 
                   fill 
-                  className="object-cover"
+                  className="object-cover object-top"
                   priority
                 />
               </div>
@@ -222,35 +222,34 @@ export function HomeClient({ specialists }: { specialists: any[] }) {
             {specialists.slice(0, 4).map((spec, i) => (
               <motion.div
                 key={spec.id}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 15 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
-                transition={{ duration: 0.4, delay: i * 0.1, ease: "easeOut" }}
-                className="group bg-white border border-slate-100 rounded-xl overflow-hidden hover:shadow-[0_4px_20px_rgb(0,0,0,0.04)] transition-all duration-300"
+                transition={{ duration: 0.3, delay: i * 0.05, ease: "easeOut" }}
+                className="group bg-white border border-slate-100 rounded-xl overflow-hidden hover:shadow-[0_4px_16px_rgb(0,0,0,0.04)] hover:border-primary/20 transition-all duration-300 flex flex-col"
               >
-                <div className="aspect-[4/5] relative bg-slate-100 overflow-hidden">
+                <div className="h-[200px] relative bg-slate-50 overflow-hidden">
                   {spec.imageUrl ? (
-                    <Image src={spec.imageUrl} alt={spec.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <Image src={spec.imageUrl} alt={spec.name} fill className="object-cover object-top group-hover:scale-105 transition-transform duration-500" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-slate-300">
-                      <Users className="w-10 h-10" />
+                    <div className="w-full h-full flex items-center justify-center text-slate-300 bg-gradient-to-br from-slate-50 to-slate-100">
+                      <Users className="w-8 h-8" />
                     </div>
                   )}
                 </div>
-                <div className="p-5">
-                  <div className="text-[13px] font-medium text-primary mb-1">{spec.designation}</div>
-                  <h3 className="text-base font-bold text-slate-900 mb-2 truncate">{spec.name}</h3>
-                  <p className="text-[13px] text-slate-500 line-clamp-2 mb-4 leading-relaxed">{spec.bio || "Dedicated professional committed to child development."}</p>
+                <div className="p-4 flex flex-col flex-grow">
+                  <div className="text-[12px] font-semibold text-primary mb-1 uppercase tracking-wider">{spec.category}</div>
+                  <h3 className="text-sm font-bold text-slate-900 mb-0.5 truncate">{spec.name}</h3>
+                  <div className="text-[12px] text-slate-500 truncate mb-4">{spec.designation}</div>
                   
-                  <div className="flex items-center justify-between pt-4 border-t border-slate-100">
-                    <div className="text-[13px] text-slate-600 font-medium">₹{spec.consultationFee} / hr</div>
-                    <motion.a 
+                  <div className="mt-auto flex items-center justify-between pt-3 border-t border-slate-100">
+                    <div className="text-[12px] text-slate-600 font-medium">₹{spec.consultationFee} / hr</div>
+                    <Link 
                       href={`/specialists/${spec.id}`} 
-                      whileTap={{ scale: 0.95 }}
-                      className="text-[13px] font-semibold text-primary hover:text-primary/80 transition-colors"
+                      className="text-[12px] font-bold text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
                     >
-                      Book →
-                    </motion.a>
+                      Book <ArrowRight className="w-3 h-3" />
+                    </Link>
                   </div>
                 </div>
               </motion.div>
@@ -266,7 +265,7 @@ export function HomeClient({ specialists }: { specialists: any[] }) {
       </section>
 
       {/* 5. ABOUT / APPROACH */}
-      <section id="about" className="py-16 bg-white">
+      <section id="about" className="py-16 bg-white border-y border-slate-100">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <motion.div
@@ -274,7 +273,7 @@ export function HomeClient({ specialists }: { specialists: any[] }) {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: 0.5, ease: "easeOut" }}
-              className="relative aspect-[4/3] max-w-lg mx-auto lg:mx-0 w-full rounded-2xl overflow-hidden shadow-sm bg-slate-100"
+              className="relative aspect-[5/4] max-w-md mx-auto lg:mx-0 w-full rounded-2xl overflow-hidden shadow-sm bg-slate-100"
             >
               <Image 
                 src="https://images.unsplash.com/photo-1587654780291-39c9404d746b?q=80&w=800&auto=format&fit=crop" 

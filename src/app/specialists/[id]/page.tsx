@@ -28,10 +28,11 @@ export default async function SpecialistProfilePage(props: { params: { id: strin
           <span className="text-[#1C1917]">{specialist.name}</span>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        {/* Row 1: Specialist profile info + sidebar */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-12">
           
           {/* Main Info Column */}
-          <div className="lg:col-span-7 xl:col-span-8 space-y-10">
+          <div className="lg:col-span-8 space-y-10">
             
             {/* Header Profile */}
             <div className="bg-white rounded-3xl p-8 sm:p-10 border border-[#F5F5F4] shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col sm:flex-row gap-10 items-start">
@@ -86,25 +87,36 @@ export default async function SpecialistProfilePage(props: { params: { id: strin
 
           </div>
 
-          {/* Booking Column */}
-          <div className="lg:col-span-5 xl:col-span-4">
-            <div className="sticky top-32">
-              <BookingWidget specialistId={specialist.id} fee={specialist.consultationFee} />
-              
-              <div className="mt-8 bg-[#FCFBF9] border border-[#F5F5F4] rounded-2xl p-8 text-[15px] text-[#78716C] shadow-sm">
-                <h4 className="font-display text-xl font-medium text-[#1C1917] mb-3">Need help booking?</h4>
-                <p className="font-light leading-relaxed">If you face any issues while booking, please contact our support desk.</p>
-                <div className="mt-6 pt-6 border-t border-[#E7E5E4] space-y-2">
-                  <p className="font-medium text-[#292524] flex items-center gap-2">
-                    <span className="text-[#9A3412]">+91 90000 00000</span>
-                  </p>
-                  <p className="font-medium text-[#292524]">hello@littlelantern.com</p>
-                </div>
+          {/* Right sidebar: help card */}
+          <div className="lg:col-span-4">
+            <div className="sticky top-32 bg-[#FCFBF9] border border-[#F5F5F4] rounded-2xl p-8 text-[15px] text-[#78716C] shadow-sm">
+              <h4 className="font-display text-xl font-medium text-[#1C1917] mb-3">Need help booking?</h4>
+              <p className="font-light leading-relaxed">If you face any issues while booking, please contact our support desk.</p>
+              <div className="mt-6 pt-6 border-t border-[#E7E5E4] space-y-2">
+                <p className="font-medium text-[#292524] flex items-center gap-2">
+                  <span className="text-[#9A3412]">+91 99617 57373</span>
+                </p>
+                <p className="font-medium text-[#292524]">littlelanternweb@gmail.com</p>
               </div>
             </div>
           </div>
 
         </div>
+
+        {/* Row 2: Full-width Booking Widget */}
+        <div className="bg-white rounded-3xl border border-[#F5F5F4] shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden">
+          <div className="px-8 pt-8 pb-2 border-b border-slate-100 flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-semibold text-slate-900">Book a Consultation</h2>
+              <p className="text-slate-500 text-sm mt-1">with {specialist.name}</p>
+            </div>
+            <span className="text-primary bg-primary/10 px-4 py-2 rounded-xl text-base font-semibold">₹{specialist.consultationFee}</span>
+          </div>
+          <div className="p-8">
+            <BookingWidget specialistId={specialist.id} fee={specialist.consultationFee} />
+          </div>
+        </div>
+
       </div>
     </div>
   );

@@ -2,196 +2,155 @@
 
 import { useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowRight, MapPin, Briefcase, GraduationCap, Clock, ChevronRight } from "lucide-react";
+import { ArrowRight, MapPin, Briefcase, ChevronRight, UserPlus, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ApplicationModal } from "./ApplicationModal";
 import Link from "next/link";
 import Image from "next/image";
 
+const FACULTY_CATEGORIES = [
+  "Clinical Psychologist",
+  "Child Psychologist",
+  "Counsellor",
+  "Child & Adolescent Counsellor",
+  "Special or Remedial Educator",
+  "Educational Psychologist",
+  "Career Counsellor",
+  "Occupational Therapist",
+  "Speech & Language Therapist",
+  "Behaviour Therapist",
+  "ABA Therapist",
+  "Learning Support Specialist",
+  "Parent & Family Counsellor",
+  "Audiologist",
+  "Teacher / Faculty",
+  "Consultant"
+];
+
 export function CareersClient({ initialOpenings }: { initialOpenings: any[] }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedJob, setSelectedJob] = useState<any | null>(null);
   
-  const { scrollYProgress } = useScroll();
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-
   const openModal = (job: any = null) => {
     setSelectedJob(job);
     setIsModalOpen(true);
   };
 
   return (
-    <div className="relative isolate bg-white selection:bg-[#00A693]/30 selection:text-[#047857]">
+    <div className="relative isolate bg-slate-50 selection:bg-primary/20 selection:text-primary pb-16">
       
       {/* HERO SECTION */}
-      <section className="relative min-h-[90vh] flex items-center pt-20 overflow-hidden bg-white">
-        
-        <div className="absolute inset-0 -z-10 overflow-hidden bg-[#FCFBF9]">
-          <div className="absolute inset-0 bg-gradient-to-b from-[#F5F5F4] to-[#FCFBF9]" />
-        </div>
-
-        <div className="mx-auto max-w-7xl px-6 lg:px-8 w-full z-10 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          
+      <section className="relative pt-32 pb-16 overflow-hidden bg-white border-b border-slate-100">
+        <div className="mx-auto max-w-5xl px-6 lg:px-8 text-center z-10 relative">
           <motion.div 
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, ease: "easeOut" }}
-            className="max-w-2xl"
+            transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <span className="inline-block py-1.5 px-4 rounded-full bg-[#00A693]/10 border border-[#00A693]/20 text-[#047857] text-xs font-semibold tracking-widest mb-6 uppercase">
-              Join Our Team
+            <span className="inline-flex items-center gap-2 py-1.5 px-4 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold tracking-wider mb-6 uppercase">
+              <UserPlus className="w-3.5 h-3.5" /> Join Our Team
             </span>
-            <h1 className="font-display text-5xl md:text-7xl font-medium tracking-tight text-[#1C1917] leading-[1.05]">
-              Make a meaningful difference in a <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00A693] to-[#047857]">child's journey.</span>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 leading-[1.15]">
+              Become Our Faculty
             </h1>
-            <p className="mt-6 text-lg md:text-xl leading-relaxed text-[#57534E] font-light">
-              We’re looking for caring, skilled professionals who believe every child deserves the right support to grow with confidence.
+            <p className="mt-6 text-lg text-slate-600 font-light max-w-2xl mx-auto leading-relaxed">
+              We are a premium child development centre seeking skilled, caring professionals. Make a meaningful difference alongside a world-class multidisciplinary team.
             </p>
-            <div className="mt-10 flex flex-col sm:flex-row items-center gap-6">
-              <Link href="#openings" className="w-full sm:w-auto">
-                <Button size="lg" className="w-full sm:w-auto bg-gradient-to-br from-[#00A693] to-[#047857] hover:brightness-110 text-white rounded-full h-14 px-8 text-[16px] shadow-[0_8px_20px_rgba(0,166,147,0.2)] transition-all duration-300 hover:-translate-y-1 font-medium border-0">
-                  View Opportunities
-                </Button>
-              </Link>
-              <button onClick={() => openModal()} className="text-[16px] font-medium text-[#047857] hover:text-[#00A693] transition-colors py-2 flex items-center gap-2 group">
-                Apply Now
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </button>
-            </div>
-          </motion.div>
-
-          {/* Premium Human Photography */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, rotateY: -10 }}
-            animate={{ opacity: 1, scale: 1, rotateY: 0 }}
-            transition={{ duration: 1.2, ease: "easeOut", delay: 0.2 }}
-            className="relative aspect-[4/5] rounded-[2.5rem] overflow-hidden shadow-2xl preserve-3d group hidden lg:block"
-          >
-            <div className="absolute inset-0 bg-gradient-to-t from-[#047857]/40 to-transparent mix-blend-overlay z-10 transition-opacity duration-1000 group-hover:opacity-20" />
-            <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=800&auto=format&fit=crop" alt="Professionals collaborating" className="w-full h-full object-cover transform transition-transform duration-[2000ms] group-hover:scale-105" />
-          </motion.div>
-        </div>
-      </section>
-
-      {/* WHY JOIN US */}
-      <section className="py-24 bg-[#F5F5F4] relative border-y border-[#E7E5E4]">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="font-display text-3xl md:text-4xl font-medium text-[#1C1917] tracking-tight mb-4">Why Little Lantern?</h2>
-            <p className="text-lg text-[#78716C] font-light">Join a premium centre dedicated to world-class developmental support.</p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { title: "Meaningful Work", desc: "Make a positive difference in children's lives every day." },
-              { title: "Collaborative Team", desc: "Work alongside experts from multiple disciplines." },
-              { title: "Professional Growth", desc: "Develop your skills through meaningful practice." },
-              { title: "Child-Centred", desc: "Be part of a team that puts every child’s needs first." }
-            ].map((feature, idx) => (
-              <motion.div 
-                key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
-                className="bg-white p-8 rounded-3xl shadow-sm border border-[#E7E5E4] hover:shadow-md transition-shadow"
-              >
-                <div className="w-12 h-12 rounded-full bg-[#F0FDF4] border border-[#D1FAE5] flex items-center justify-center mb-6">
-                  <div className="w-3 h-3 rounded-full bg-[#00A693]" />
-                </div>
-                <h3 className="text-xl font-display font-medium text-[#1C1917] mb-3">{feature.title}</h3>
-                <p className="text-[#57534E] text-sm leading-relaxed font-light">{feature.desc}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* OPEN OPPORTUNITIES */}
-      <section id="openings" className="py-32 bg-white relative">
-        <div className="mx-auto max-w-5xl px-6 lg:px-8">
-          <div className="mb-16">
-            <h2 className="font-display text-4xl md:text-5xl font-medium text-[#1C1917] tracking-tight mb-4">Open Opportunities</h2>
-            <p className="text-lg text-[#78716C] font-light">Find the role that matches your expertise and passion.</p>
-          </div>
-
-          {initialOpenings.length === 0 ? (
-            <div className="text-center py-20 bg-[#FCFBF9] rounded-3xl border border-[#F5F5F4]">
-              <h3 className="text-xl font-medium text-[#292524] mb-2">No specific openings at the moment</h3>
-              <p className="text-[#78716C] mb-8">We are always on the lookout for great talent. Feel free to submit a general application.</p>
-              <Button onClick={() => openModal()} className="bg-white text-[#047857] border border-[#047857]/20 hover:bg-[#F0FDF4] rounded-full px-8 shadow-sm">
-                Submit General Application
+            <div className="mt-10 flex flex-col sm:flex-row justify-center items-center gap-4">
+              <Button onClick={() => openModal()} size="lg" className="w-full sm:w-auto bg-primary hover:bg-primary/95 text-white rounded-full h-12 px-8 text-[15px] shadow-sm transition-all font-medium">
+                Apply to Join Our Faculty
               </Button>
             </div>
-          ) : (
-            <div className="space-y-6">
-              {initialOpenings.map((job) => (
-                <motion.div 
-                  key={job.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  className="group bg-white border border-[#E7E5E4] p-8 rounded-3xl hover:border-[#00A693]/50 hover:shadow-[0_8px_30px_rgba(0,166,147,0.08)] transition-all duration-300"
-                >
-                  <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
-                    <div>
-                      <div className="flex flex-wrap gap-2 mb-4">
-                        <span className="px-3 py-1 bg-[#F5F5F4] text-[#57534E] rounded-full text-xs font-semibold uppercase tracking-wider">{job.department}</span>
-                        <span className="px-3 py-1 bg-[#F0FDF4] text-[#047857] rounded-full text-xs font-semibold uppercase tracking-wider">{job.type}</span>
-                      </div>
-                      <h3 className="text-2xl font-display font-medium text-[#1C1917] mb-3">{job.title}</h3>
-                      <p className="text-[#57534E] text-[15px] leading-relaxed mb-6 max-w-3xl font-light">
-                        {job.description}
-                      </p>
-                      
-                      <div className="flex flex-wrap items-center gap-6 text-sm text-[#78716C]">
-                        <div className="flex items-center gap-2">
-                          <MapPin className="w-4 h-4 text-[#00A693]" /> {job.location}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Briefcase className="w-4 h-4 text-[#00A693]" /> {job.experience}
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="shrink-0 mt-2 md:mt-0">
-                      <Button onClick={() => openModal(job)} className="w-full md:w-auto bg-[#047857] hover:bg-[#065F46] text-white rounded-full px-8 shadow-sm">
-                        Apply Now
-                      </Button>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          )}
+          </motion.div>
         </div>
       </section>
 
-      {/* FINAL CTA */}
-      <section className="py-32 bg-[#1C1917] relative overflow-hidden text-center">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#00A693]/20 to-transparent pointer-events-none" />
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="relative z-10 max-w-2xl mx-auto px-6"
-        >
-          <div className="flex justify-center mb-8">
-            <div className="w-16 h-16 relative rounded-2xl overflow-hidden shadow-xl border border-white/20">
-              <Image src="/logo.jpg" alt="Little Lantern" fill className="object-cover" />
+      {/* PROFESSIONAL CATEGORIES DIRECTORY */}
+      <section className="py-16 md:py-24">
+        <div className="mx-auto max-w-6xl px-6 lg:px-8">
+          <div className="mb-10 text-center sm:text-left">
+            <h2 className="text-2xl md:text-3xl font-semibold text-slate-900 tracking-tight">Professional Categories</h2>
+            <p className="mt-3 text-[15px] text-slate-500 font-light">Select your area of expertise to submit your profile.</p>
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {FACULTY_CATEGORIES.map((cat, idx) => (
+              <motion.button 
+                key={cat}
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ duration: 0.4, delay: idx * 0.03, ease: "easeOut" }}
+                onClick={() => openModal({ title: cat })}
+                className="group flex items-center justify-between text-left bg-white border border-slate-200 rounded-xl px-5 py-4 transition-all duration-200 hover:border-primary/40 hover:shadow-sm hover:-translate-y-0.5 hover:bg-primary/[0.03]"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-slate-50 border border-slate-100 group-hover:bg-primary/10 group-hover:border-primary/20 flex items-center justify-center shrink-0 transition-colors">
+                    <Users className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors" />
+                  </div>
+                  <span className="text-[14px] font-semibold text-slate-800 group-hover:text-primary transition-colors leading-tight">{cat}</span>
+                </div>
+                <ChevronRight className="w-4 h-4 text-slate-300 transform transition-all duration-200 group-hover:translate-x-1 group-hover:text-primary shrink-0" />
+              </motion.button>
+            ))}
+          </div>
+
+          <div className="mt-16 flex justify-center">
+            <div className="inline-flex items-center gap-4 bg-white px-6 py-4 rounded-2xl border border-slate-200 shadow-sm max-w-lg">
+              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                <Briefcase className="w-5 h-5 text-primary" />
+              </div>
+              <div className="text-left">
+                <h4 className="text-[15px] font-semibold text-slate-900">Don't see your exact role?</h4>
+                <p className="text-[13px] text-slate-500 mt-0.5">Submit your profile under 'Consultant' and our team will review it.</p>
+              </div>
             </div>
           </div>
-          <h2 className="font-display text-4xl md:text-5xl font-medium text-white mb-6 tracking-tight">
-            Ready to help children move forward?
-          </h2>
-          <Button onClick={() => openModal()} size="lg" className="mt-8 bg-white text-[#047857] hover:bg-[#F0FDF4] rounded-full px-10 text-[16px] font-medium border-0 shadow-xl transition-transform hover:-translate-y-1">
-            Apply to Join Us
-          </Button>
-        </motion.div>
+        </div>
       </section>
 
-      <ApplicationModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} selectedJob={selectedJob} />
+      {/* SPECIFIC OPENINGS (if any exist from DB, display compactly) */}
+      {initialOpenings.length > 0 && (
+        <section className="py-16 bg-white border-y border-slate-100">
+          <div className="mx-auto max-w-4xl px-6 lg:px-8">
+            <div className="mb-8 text-center sm:text-left">
+              <h2 className="text-2xl md:text-3xl font-semibold text-slate-900 tracking-tight">Current Openings</h2>
+            </div>
+            
+            <div className="space-y-4">
+              {initialOpenings.map((job) => (
+                <div 
+                  key={job.id}
+                  className="group bg-slate-50 border border-slate-200 p-6 rounded-2xl hover:border-primary/30 hover:bg-white transition-all duration-300"
+                >
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                      <div className="flex flex-wrap gap-2 mb-2">
+                        <span className="px-2.5 py-1 bg-white border border-slate-200 text-slate-600 rounded-md text-[11px] font-semibold uppercase tracking-wider">{job.department}</span>
+                        <span className="px-2.5 py-1 bg-primary/10 border border-primary/20 text-primary rounded-md text-[11px] font-semibold uppercase tracking-wider">{job.type}</span>
+                      </div>
+                      <h3 className="text-lg font-semibold text-slate-900 mb-1">{job.title}</h3>
+                      <div className="flex flex-wrap items-center gap-4 text-[13px] text-slate-500">
+                        <div className="flex items-center gap-1.5">
+                          <MapPin className="w-3.5 h-3.5" /> {job.location}
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <Briefcase className="w-3.5 h-3.5" /> {job.experience}
+                        </div>
+                      </div>
+                    </div>
+                    <Button onClick={() => openModal(job)} className="w-full md:w-auto bg-slate-900 hover:bg-slate-800 text-white rounded-lg h-10 px-6 shadow-sm text-sm">
+                      Apply to Join
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {isModalOpen && <ApplicationModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} selectedJob={selectedJob} />}
     </div>
   );
 }

@@ -2,13 +2,17 @@
 
 import { prisma } from "@/lib/db";
 
-export async function getSpecialists(searchParams?: { service?: string; q?: string }) {
+export async function getSpecialists(searchParams?: { service?: string; q?: string; category?: string }) {
   const where: any = { isActive: true };
 
   if (searchParams?.service) {
     where.services = {
       some: { slug: searchParams.service }
     };
+  }
+  
+  if (searchParams?.category) {
+    where.category = searchParams.category;
   }
 
   if (searchParams?.q) {

@@ -1,5 +1,4 @@
 import { getSpecialists } from "@/app/actions/specialists";
-import { prisma } from "@/lib/db";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -7,19 +6,20 @@ import { MapPin, Clock, Languages, Award, ChevronRight, Search } from "lucide-re
 import { Input } from "@/components/ui/input";
 import { FadeIn, FadeInItem } from "@/components/ui/fade-in";
 
+import { CategoryFilter } from "@/components/specialists/CategoryFilter";
+
 export const revalidate = 60; // ISR
 
-export default async function SpecialistsPage(props: { searchParams: { q?: string; service?: string } }) {
+export default async function SpecialistsPage(props: { searchParams: { q?: string; service?: string; category?: string } }) {
   const searchParams = await props.searchParams;
   const specialists = await getSpecialists(searchParams);
-  const services = await prisma.service.findMany({ orderBy: { name: 'asc' } });
 
   return (
     <div className="min-h-screen bg-slate-50 pt-24 pb-16">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         
         {/* Header */}
-        <FadeIn className="mb-10 text-center max-w-2xl mx-auto">
+        <FadeIn className="mb-8 text-center max-w-2xl mx-auto">
           <h1 className="text-3xl font-bold text-slate-900 sm:text-4xl tracking-tight">Our Specialists</h1>
           <p className="mt-4 text-base text-slate-600 font-light leading-relaxed">
             Find the right expert for your child's unique needs. Our multidisciplinary team is here to guide you with warmth and professional insight.
@@ -27,7 +27,7 @@ export default async function SpecialistsPage(props: { searchParams: { q?: strin
         </FadeIn>
 
         {/* Filters & Search */}
-        <FadeIn delay={0.1} className="mb-12">
+        <FadeIn delay={0.1} className="mb-8">
           <form className="relative max-w-3xl mx-auto group">
             <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
               <Search className="w-5 h-5 text-slate-400 group-focus-within:text-primary transition-colors" />
@@ -39,26 +39,10 @@ export default async function SpecialistsPage(props: { searchParams: { q?: strin
               defaultValue={searchParams.q}
               className="w-full pl-14 pr-6 py-6 bg-white border-2 border-slate-100 hover:border-slate-200 focus-visible:border-primary focus-visible:ring-4 focus-visible:ring-primary/10 rounded-xl text-base shadow-[0_4px_20px_rgb(0,0,0,0.02)] transition-all duration-300 placeholder:text-slate-400"
             />
-            {searchParams.service && <input type="hidden" name="service" value={searchParams.service} />}
+            {searchParams.category && <input type="hidden" name="category" value={searchParams.category} />}
           </form>
 
-          <div className="mt-8 flex flex-wrap justify-center gap-2.5 max-w-4xl mx-auto">
-            <Link 
-              href="/specialists"
-              className={`px-5 py-2 rounded-full text-[13px] font-medium transition-all duration-300 ${!searchParams.service ? 'bg-slate-800 text-white shadow-md scale-105' : 'bg-white text-slate-600 border border-slate-200 hover:border-slate-300 hover:bg-slate-50'}`}
-            >
-              All Experts
-            </Link>
-            {services.map(s => (
-              <Link
-                key={s.id}
-                href={`/specialists?service=${s.slug}${searchParams.q ? `&q=${searchParams.q}` : ''}`}
-                className={`px-5 py-2 rounded-full text-[13px] font-medium transition-all duration-300 ${searchParams.service === s.slug ? 'bg-primary/10 text-primary shadow-sm border border-primary/20 scale-105' : 'bg-white text-slate-600 border border-slate-200 hover:border-slate-300 hover:bg-slate-50'}`}
-              >
-                {s.name}
-              </Link>
-            ))}
-          </div>
+          <CategoryFilter />
         </FadeIn>
 
         {/* Listing */}
@@ -77,10 +61,10 @@ export default async function SpecialistsPage(props: { searchParams: { q?: strin
                 <Link href={`/specialists/${s.id}`} className="group block h-full">
                   <div className="h-full bg-white rounded-xl border border-slate-100 overflow-hidden transition-all duration-300 hover:shadow-[0_8px_30px_-10px_rgba(0,166,147,0.15)] hover:-translate-y-1 hover:border-primary/20 flex flex-col">
                     {/* Image container - using a more compact aspect ratio */}
-                    <div className="relative aspect-[4/5] sm:aspect-square lg:aspect-[4/5] w-full overflow-hidden bg-slate-50">
+                    <div className="relative aspect-[4/5] w-full max-h-[260px] sm:max-h-[320px] overflow-hidden bg-slate-50">
                       {s.imageUrl ? (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={s.imageUrl} alt={s.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                        <img src={s.imageUrl} alt={s.name} className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105" />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100">
                           <span className="text-4xl text-slate-300">{s.name.charAt(0)}</span>
