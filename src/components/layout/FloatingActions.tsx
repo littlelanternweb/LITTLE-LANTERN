@@ -96,10 +96,10 @@ export function FloatingActions() {
         <motion.a
           whileTap={{ scale: 0.97 }}
           href={PHONE_LINK}
-          className="flex-[0.85] flex items-center justify-center gap-2 h-[56px] rounded-2xl bg-slate-50 border border-slate-200 text-slate-700 transition-colors"
+          className="flex-[0.85] flex items-center justify-center gap-2 h-[56px] rounded-2xl bg-primary/[0.04] border border-primary/20 text-primary hover:bg-primary/[0.08] transition-colors"
           aria-label="Call Now"
         >
-          <Phone className="w-5 h-5 text-slate-500" />
+          <Phone className="w-5 h-5 text-primary" />
           <span className="text-[14px] font-semibold">Call Now</span>
         </motion.a>
 

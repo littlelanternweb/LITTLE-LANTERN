@@ -14,6 +14,7 @@ const navigation = [
   { name: "About", href: "/#about" },
   { name: "Services", href: "/#services" },
   { name: "Specialists", href: "/#specialists" },
+  { name: "Be Our Faculty", href: "/careers" },
 ];
 
 export function Navbar() {

@@ -175,10 +175,10 @@ export function HomeClient({ specialists }: { specialists: any[] }) {
               >
                 <Link 
                   href={`/specialists?service=${service.slug}`} 
-                  className="group flex items-center justify-between bg-white border border-slate-200 rounded-xl px-5 py-4 transition-all duration-250 ease-out hover:shadow-[0_4px_16px_rgba(0,166,147,0.12)] hover:border-primary/40 hover:-translate-y-0.5 hover:bg-primary/[0.015]"
+                  className="group flex items-center justify-between bg-primary/[0.04] border border-primary/20 rounded-xl px-5 py-4 transition-all duration-250 ease-out hover:shadow-[0_4px_16px_rgba(0,166,147,0.15)] hover:border-primary/40 hover:-translate-y-0.5 hover:bg-primary/[0.08]"
                 >
-                  <span className="text-[15px] font-medium text-slate-800 transition-colors">{service.title}</span>
-                  <ArrowRight className="w-4 h-4 text-primary transform transition-transform duration-250 ease-out group-hover:translate-x-1" />
+                  <span className="text-[15px] font-semibold text-slate-800 group-hover:text-primary transition-colors">{service.title}</span>
+                  <ArrowRight className="w-5 h-5 text-primary transform transition-transform duration-250 ease-out group-hover:translate-x-1" />
                 </Link>
               </motion.div>
             ))}
