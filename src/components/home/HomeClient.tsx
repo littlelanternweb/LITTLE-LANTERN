@@ -40,18 +40,25 @@ const staggerContainer = {
 
 const ALL_SERVICES = [
   { title: "Child Counselling", slug: "child-counselling" },
-  { title: "Individual Counselling", slug: "individual-counselling" },
-  { title: "Group Counselling", slug: "group-counselling" },
+  { title: "Adolescent Counselling", slug: "adolescent-counselling" },
+  { title: "Parent Counselling", slug: "parent-counselling" },
+  { title: "Family Counselling", slug: "family-counselling" },
+  { title: "Behaviour Therapy", slug: "behaviour-therapy" },
+  { title: "Psychological Assessment", slug: "psychological-assessment" },
+  { title: "Developmental Assessment", slug: "developmental-assessment" },
+  { title: "Learning Assessment", slug: "learning-assessment" },
   { title: "Special Education", slug: "special-education" },
+  { title: "Remedial Education", slug: "remedial-education" },
   { title: "Speech & Language Support", slug: "speech-language-support" },
   { title: "Occupational Therapy", slug: "occupational-therapy" },
-  { title: "Behavioural Support", slug: "behavioural-support" },
-  { title: "Learning Support", slug: "learning-support" },
-  { title: "Psychological Consultation", slug: "psychological-consultation" },
-  { title: "Psychometric Testing", slug: "psychometric-testing" },
-  { title: "Career Counselling", slug: "career-counselling" },
-  { title: "Remedial Teaching", slug: "remedial-teaching" },
-  { title: "Parent Counselling", slug: "parent-counselling" }
+  { title: "ABA Therapy", slug: "aba-therapy" },
+  { title: "Play Therapy", slug: "play-therapy" },
+  { title: "Social Skills Training", slug: "social-skills-training" },
+  { title: "Life Skills Training", slug: "life-skills-training" },
+  { title: "ADHD Support", slug: "adhd-support" },
+  { title: "Autism Support", slug: "autism-support" },
+  { title: "Learning Disability Support", slug: "learning-disability-support" },
+  { title: "Career Counselling", slug: "career-counselling" }
 ];
 
 export function HomeClient({ specialists }: { specialists: any[] }) {
@@ -175,9 +182,9 @@ export function HomeClient({ specialists }: { specialists: any[] }) {
               >
                 <Link 
                   href={`/specialists?service=${service.slug}`} 
-                  className="group flex items-center justify-between bg-primary/[0.04] border border-primary/20 rounded-xl px-5 py-4 transition-all duration-250 ease-out hover:shadow-[0_4px_16px_rgba(0,166,147,0.15)] hover:border-primary/40 hover:-translate-y-0.5 hover:bg-primary/[0.08]"
+                  className="group flex items-center justify-between bg-primary/10 border border-primary/30 rounded-xl px-5 py-4 transition-all duration-250 ease-out hover:shadow-[0_4px_20px_rgba(0,166,147,0.2)] hover:border-primary/50 hover:-translate-y-0.5 hover:bg-primary/20"
                 >
-                  <span className="text-[15px] font-semibold text-slate-800 group-hover:text-primary transition-colors">{service.title}</span>
+                  <span className="text-[15px] font-bold text-slate-800 group-hover:text-primary transition-colors">{service.title}</span>
                   <ArrowRight className="w-5 h-5 text-primary transform transition-transform duration-250 ease-out group-hover:translate-x-1" />
                 </Link>
               </motion.div>
