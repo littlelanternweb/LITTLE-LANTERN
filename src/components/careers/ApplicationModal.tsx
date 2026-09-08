@@ -119,7 +119,7 @@ export function ApplicationModal({ isOpen, onClose, selectedJob }: { isOpen: boo
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-[#292524] mb-1.5">Highest Qualification *</label>
-                        <input required type="text" value={formData.qualifications} onChange={e => setFormData({...formData, qualifications: e.target.value})} placeholder="e.g. M.Sc in Clinical Psychology" className="w-full px-4 py-3 rounded-xl border border-[#E7E5E4] bg-[#FCFBF9] focus:outline-none focus:ring-2 focus:ring-[#00A693]/20 focus:border-[#00A693] transition-all" />
+                        <input required type="text" value={formData.qualifications} onChange={e => setFormData({...formData, qualifications: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-[#E7E5E4] bg-[#FCFBF9] focus:outline-none focus:ring-2 focus:ring-[#00A693]/20 focus:border-[#00A693] transition-all" />
                       </div>
                     </div>
                   )}
@@ -129,7 +129,7 @@ export function ApplicationModal({ isOpen, onClose, selectedJob }: { isOpen: boo
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div>
                           <label className="block text-sm font-medium text-[#292524] mb-1.5">Years of Experience *</label>
-                          <input required type="text" value={formData.experience} onChange={e => setFormData({...formData, experience: e.target.value})} placeholder="e.g. 5 Years" className="w-full px-4 py-3 rounded-xl border border-[#E7E5E4] bg-[#FCFBF9] focus:outline-none focus:ring-2 focus:ring-[#00A693]/20 focus:border-[#00A693] transition-all" />
+                          <input required type="text" value={formData.experience} onChange={e => setFormData({...formData, experience: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-[#E7E5E4] bg-[#FCFBF9] focus:outline-none focus:ring-2 focus:ring-[#00A693]/20 focus:border-[#00A693] transition-all" />
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-[#292524] mb-1.5">Current Organization</label>
@@ -138,7 +138,7 @@ export function ApplicationModal({ isOpen, onClose, selectedJob }: { isOpen: boo
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-[#292524] mb-1.5">Areas of Specialisation</label>
-                        <input type="text" value={formData.specialisation} onChange={e => setFormData({...formData, specialisation: e.target.value})} placeholder="e.g. Autism, ADHD, Early Intervention" className="w-full px-4 py-3 rounded-xl border border-[#E7E5E4] bg-[#FCFBF9] focus:outline-none focus:ring-2 focus:ring-[#00A693]/20 focus:border-[#00A693] transition-all" />
+                        <input type="text" value={formData.specialisation} onChange={e => setFormData({...formData, specialisation: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-[#E7E5E4] bg-[#FCFBF9] focus:outline-none focus:ring-2 focus:ring-[#00A693]/20 focus:border-[#00A693] transition-all" />
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-[#292524] mb-1.5">Cover Letter / Message</label>

@@ -264,19 +264,19 @@ export function BookingWidget({ specialistId, fee }: { specialistId: string, fee
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label className="text-slate-700">Parent Name</Label>
-                <Input value={parentName} onChange={e => setParentName(e.target.value)} placeholder="Jane Doe" className="h-12 rounded-xl border-slate-200 focus-visible:ring-[#00A693]" required />
+                <Input value={parentName} onChange={e => setParentName(e.target.value)} className="h-12 rounded-xl border-slate-200 focus-visible:ring-[#00A693]" required />
               </div>
               <div className="space-y-2">
                 <Label className="text-slate-700">Phone</Label>
-                <Input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+91 98765 43210" className="h-12 rounded-xl border-slate-200 focus-visible:ring-[#00A693]" required />
+                <Input type="tel" value={phone} onChange={e => setPhone(e.target.value)} className="h-12 rounded-xl border-slate-200 focus-visible:ring-[#00A693]" required />
               </div>
               <div className="space-y-2">
                 <Label className="text-slate-700">Email</Label>
-                <Input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="jane@example.com" className="h-12 rounded-xl border-slate-200 focus-visible:ring-[#00A693]" required />
+                <Input type="email" value={email} onChange={e => setEmail(e.target.value)} className="h-12 rounded-xl border-slate-200 focus-visible:ring-[#00A693]" required />
               </div>
               <div className="space-y-2">
                 <Label className="text-slate-700">Relationship with Child</Label>
-                <Input value={relationship} onChange={e => setRelationship(e.target.value)} placeholder="Mother, Father, Guardian..." className="h-12 rounded-xl border-slate-200 focus-visible:ring-[#00A693]" required />
+                <Input value={relationship} onChange={e => setRelationship(e.target.value)} className="h-12 rounded-xl border-slate-200 focus-visible:ring-[#00A693]" required />
               </div>
             </div>
             
@@ -299,12 +299,12 @@ export function BookingWidget({ specialistId, fee }: { specialistId: string, fee
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label className="text-slate-700">Child Name</Label>
-                <Input value={childName} onChange={e => setChildName(e.target.value)} placeholder="John Doe" className="h-12 rounded-xl border-slate-200 focus-visible:ring-[#00A693]" required />
+                <Input value={childName} onChange={e => setChildName(e.target.value)} className="h-12 rounded-xl border-slate-200 focus-visible:ring-[#00A693]" required />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label className="text-slate-700">Age</Label>
-                  <Input type="number" min="0" max="18" value={childAge} onChange={e => setChildAge(e.target.value)} placeholder="e.g. 5" className="h-12 rounded-xl border-slate-200 focus-visible:ring-[#00A693]" required />
+                  <Input type="number" min="0" max="18" value={childAge} onChange={e => setChildAge(e.target.value)} className="h-12 rounded-xl border-slate-200 focus-visible:ring-[#00A693]" required />
                 </div>
                 <div className="space-y-2">
                   <Label className="text-slate-700">Gender</Label>

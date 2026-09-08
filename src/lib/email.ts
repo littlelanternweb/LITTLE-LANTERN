@@ -66,26 +66,27 @@ const sendEmail = async (
   return { success: status === "SUCCESS", error: errorMsg };
 };
 
-const baseUrl = process.env.NEXTAUTH_URL || "https://littlelantern.com";
+const baseUrl = process.env.NEXTAUTH_URL || "https://littlelantern.vercel.app";
 const premiumWrapper = (content: string) => `
 <!DOCTYPE html>
 <html>
 <head>
 <style>
-  body { margin: 0; padding: 0; background-color: #F5F5F4; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-  .container { max-w: 600px; margin: 40px auto; background: #ffffff; border-radius: 24px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.02); }
-  .header { padding: 40px; text-align: center; border-bottom: 1px solid #F5F5F4; }
-  .logo-img { width: 48px; height: 48px; border-radius: 12px; margin-bottom: 12px; border: 1px solid #E7E5E4; object-fit: cover; }
-  .logo { font-size: 24px; font-weight: 600; color: #1C1917; letter-spacing: -0.5px; }
-  .content { padding: 40px; color: #57534E; font-size: 16px; line-height: 1.6; font-weight: 300; }
-  .title { color: #047857; font-size: 24px; font-weight: 500; margin: 0 0 24px 0; letter-spacing: -0.5px; }
-  .box { background: #FCFBF9; border: 1px solid #F5F5F4; border-radius: 16px; padding: 24px; margin: 32px 0; }
+  body { margin: 0; padding: 0; background-color: #F8FAF9; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  .container { max-width: 600px; margin: 40px auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 30px rgba(0,166,147,0.04); border: 1px solid #F1F5F4; }
+  .header { padding: 48px 40px; text-align: center; border-bottom: 1px solid #F1F5F4; background: #ffffff; }
+  .logo-img { width: 64px; height: 64px; border-radius: 14px; margin-bottom: 16px; border: 1px solid #E2E8F0; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+  .logo { font-size: 22px; font-weight: 600; color: #0F172A; letter-spacing: -0.5px; }
+  .content { padding: 48px 40px; color: #475569; font-size: 16px; line-height: 1.6; font-weight: 400; }
+  .title { color: #00A693; font-size: 24px; font-weight: 600; margin: 0 0 24px 0; letter-spacing: -0.5px; }
+  .box { background: #F8FAF9; border: 1px solid #F1F5F4; border-radius: 12px; padding: 24px; margin: 32px 0; }
   .box-row { display: flex; margin-bottom: 12px; }
-  .box-label { font-weight: 500; color: #1C1917; width: 120px; flex-shrink: 0; }
-  .box-value { color: #57534E; }
-  .footer { padding: 40px; text-align: center; background: #1C1917; color: #A8A29E; font-size: 13px; line-height: 1.6; }
-  .footer strong { color: #FFFFFF; font-weight: 500; }
-  .btn { display: inline-block; background: #047857; color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 100px; font-weight: 500; margin-top: 32px; font-size: 15px; }
+  .box-row:last-child { margin-bottom: 0; }
+  .box-label { font-weight: 500; color: #334155; width: 130px; flex-shrink: 0; font-size: 14px; }
+  .box-value { color: #0F172A; font-weight: 500; font-size: 14px; }
+  .footer { padding: 40px; text-align: center; background: #0F172A; color: #94A3B8; font-size: 13px; line-height: 1.6; }
+  .footer strong { color: #FFFFFF; font-weight: 600; font-size: 14px; }
+  .btn { display: inline-block; background: #00A693; color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-weight: 500; margin-top: 32px; font-size: 15px; box-shadow: 0 4px 12px rgba(0,166,147,0.2); }
 </style>
 </head>
 <body>

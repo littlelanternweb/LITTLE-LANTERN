@@ -19,8 +19,8 @@ export function Footer() {
           {/* Brand Col */}
           <div className="lg:col-span-4 space-y-6">
             <div className="flex items-center gap-3">
-              <div className="relative h-10 w-10 rounded-md overflow-hidden border border-slate-100">
-                <Image src="/logo.jpg" alt="Little Lantern Logo" fill className="object-cover" />
+              <div className="relative h-10 w-10 rounded-md overflow-hidden border border-slate-100 bg-white">
+                <img src="/logo.jpg" alt="Little Lantern Logo" className="w-full h-full object-cover" />
               </div>
               <span className="font-semibold text-xl text-slate-900">Little Lantern</span>
             </div>

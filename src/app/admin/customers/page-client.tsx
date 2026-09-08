@@ -251,7 +251,7 @@ export function CustomersClient({ initialCustomers, specialists }: { initialCust
 
               <div>
                 <label className="block text-sm font-medium mb-1 text-slate-700">Reason for Visit</label>
-                <input required type="text" placeholder="e.g. Initial Assessment" value={aForm.reason} onChange={e => setAForm({...aForm, reason: e.target.value})} className="w-full px-3 py-2 border rounded-md outline-none focus:ring-2 focus:ring-[#00A693]" />
+                <input required type="text" value={aForm.reason} onChange={e => setAForm({...aForm, reason: e.target.value})} className="w-full px-3 py-2 border rounded-md outline-none focus:ring-2 focus:ring-[#00A693]" />
               </div>
 
               <div className="pt-4 flex justify-end gap-3 border-t border-slate-100 mt-6">
