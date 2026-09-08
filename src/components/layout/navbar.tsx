@@ -81,9 +81,11 @@ export function Navbar() {
           ))}
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end items-center">
-          <Button asChild variant="default" className="bg-primary hover:bg-primary/90 text-white rounded-md h-9 px-5 text-sm font-medium shadow-[0_2px_10px_rgba(0,166,147,0.15)] transition-all">
-            <Link href="/specialists">Book Consultation</Link>
-          </Button>
+          <motion.div whileHover={{ y: -1, boxShadow: "0 4px 12px rgba(0,166,147,0.2)" }} whileTap={{ scale: 0.97 }}>
+            <Button asChild variant="default" className="bg-primary hover:bg-primary/95 text-white rounded-md h-9 px-5 text-sm font-medium shadow-[0_2px_8px_rgba(0,166,147,0.15)] transition-colors">
+              <Link href="/specialists">Book Consultation</Link>
+            </Button>
+          </motion.div>
         </div>
       </nav>
 
@@ -139,13 +141,14 @@ export function Navbar() {
                     ))}
                   </div>
                   <div className="py-6">
-                    <Link
+                    <motion.a
                       href="/specialists"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block w-full rounded-md px-3 py-4 text-center text-base font-medium text-white bg-[#00A693] hover:bg-[#065F46] hover:shadow-lg transition-all"
+                      whileTap={{ scale: 0.97 }}
+                      className="block w-full rounded-md px-3 py-4 text-center text-base font-medium text-white bg-primary hover:bg-primary/90 hover:shadow-lg transition-all"
                     >
                       Book Consultation
-                    </Link>
+                    </motion.a>
                   </div>
                 </div>
               </div>

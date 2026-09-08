@@ -3,7 +3,7 @@
 import { Phone, CalendarDays } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useState, useEffect } from "react";
 
 // Official WhatsApp 2024 icon - white silhouette
@@ -23,6 +23,7 @@ export function FloatingActions() {
   const pathname = usePathname();
   const [showTooltip, setShowTooltip] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     const t = setTimeout(() => setMounted(true), 800);
@@ -71,7 +72,7 @@ export function FloatingActions() {
               aria-label="Chat with Little Lantern on WhatsApp"
               onMouseEnter={() => setShowTooltip(true)}
               onMouseLeave={() => setShowTooltip(false)}
-              animate={{ scale: [1, 1.03, 1] }}
+              animate={prefersReducedMotion ? {} : { scale: [1, 1.03, 1] }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
               whileHover={{ scale: 1.06, y: -2, transition: { duration: 0.2 } }}
               whileTap={{ scale: 0.95 }}
@@ -88,33 +89,41 @@ export function FloatingActions() {
         initial={{ y: "100%" }}
         animate={{ y: 0 }}
         transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-        className="sm:hidden fixed bottom-0 left-0 right-0 z-40 flex items-center gap-3 px-4 py-3 bg-white/95 backdrop-blur-xl border-t border-slate-100 shadow-[0_-2px_15px_rgba(0,0,0,0.03)]"
-        style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}
+        className="sm:hidden fixed bottom-0 left-0 right-0 z-40 flex items-center gap-3 px-4 py-3.5 bg-white/95 backdrop-blur-xl border-t border-slate-100 shadow-[0_-4px_24px_rgba(0,0,0,0.04)]"
+        style={{ paddingBottom: "calc(0.875rem + env(safe-area-inset-bottom))" }}
       >
         {/* Call Now */}
         <motion.a
           whileTap={{ scale: 0.97 }}
           href={PHONE_LINK}
-          className="flex-1 flex items-center justify-center gap-2 h-12 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 transition-colors"
+          className="flex-[0.85] flex items-center justify-center gap-2 h-[56px] rounded-2xl bg-slate-50 border border-slate-200 text-slate-700 transition-colors"
           aria-label="Call Now"
         >
-          <Phone className="w-[18px] h-[18px]" />
-          <span className="text-[13px] font-semibold">Call Now</span>
+          <Phone className="w-5 h-5 text-slate-500" />
+          <span className="text-[14px] font-semibold">Call Now</span>
         </motion.a>
 
-        {/* Book Now */}
+        {/* Book Now (Primary conversion action with subtle breathing effect) */}
         <motion.a
+          animate={prefersReducedMotion ? {} : { 
+            boxShadow: [
+              '0 4px 14px rgba(0,166,147,0.25)', 
+              '0 8px 24px rgba(0,166,147,0.45)', 
+              '0 4px 14px rgba(0,166,147,0.25)'
+            ] 
+          }}
+          transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
           whileTap={{ scale: 0.97 }}
           href="/specialists"
-          className="flex-1 flex items-center justify-center gap-2 h-12 rounded-xl bg-primary text-white shadow-[0_2px_12px_rgba(0,166,147,0.2)]"
+          className="flex-[1.15] flex items-center justify-center gap-2 h-[56px] rounded-2xl bg-primary text-white shadow-[0_4px_14px_rgba(0,166,147,0.25)] relative overflow-hidden"
         >
-          <CalendarDays className="w-[18px] h-[18px]" />
-          <span className="text-[13px] font-semibold">Book Now</span>
+          <CalendarDays className="w-5 h-5" />
+          <span className="text-[15px] font-semibold tracking-wide">Book Now</span>
         </motion.a>
       </motion.div>
 
       {/* Spacer so page content isn't hidden behind the bar on mobile */}
-      <div className="sm:hidden h-[80px]" style={{ paddingBottom: "env(safe-area-inset-bottom)" }} aria-hidden="true" />
+      <div className="sm:hidden h-[90px]" style={{ paddingBottom: "env(safe-area-inset-bottom)" }} aria-hidden="true" />
     </>
   );
 }

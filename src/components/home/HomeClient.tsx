@@ -27,14 +27,14 @@ function AnimatedSection({ children, className = "", delay = 0 }: { children: Re
 // Animation Variants
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } }
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } }
 };
 
 const staggerContainer = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.08 }
+    transition: { staggerChildren: 0.12, delayChildren: 0.05 }
   }
 };
 
@@ -81,19 +81,23 @@ export function HomeClient({ specialists }: { specialists: any[] }) {
               </motion.p>
               
               <motion.div variants={fadeUp} className="flex flex-col sm:flex-row gap-3">
-                <Button asChild className="bg-primary hover:bg-primary/90 text-white rounded-md h-11 px-6 text-sm font-medium">
-                  <Link href="/specialists">Book Consultation</Link>
-                </Button>
-                <Button asChild variant="outline" className="rounded-md h-11 px-6 text-sm font-medium border-slate-200 hover:bg-slate-50">
-                  <Link href="/careers">Become Our Faculty</Link>
-                </Button>
+                <motion.div whileHover={{ y: -2, boxShadow: "0 6px 16px rgba(0,166,147,0.2)" }} whileTap={{ scale: 0.98 }}>
+                  <Button asChild className="w-full sm:w-auto bg-primary hover:bg-primary/95 text-white rounded-md h-11 px-6 text-sm font-medium shadow-[0_2px_8px_rgba(0,166,147,0.1)] transition-colors">
+                    <Link href="/specialists">Book Consultation</Link>
+                  </Button>
+                </motion.div>
+                <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}>
+                  <Button asChild variant="outline" className="w-full sm:w-auto rounded-md h-11 px-6 text-sm font-medium border-slate-200 hover:bg-slate-50 transition-colors">
+                    <Link href="/careers">Become Our Faculty</Link>
+                  </Button>
+                </motion.div>
               </motion.div>
             </motion.div>
 
             <motion.div 
-              initial={{ opacity: 0, scale: 0.98 }}
+              initial={{ opacity: 0, scale: 0.97 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
+              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.25 }}
               className="relative lg:ml-auto w-full max-w-sm aspect-[4/3]"
             >
               <div className="absolute inset-0 bg-secondary rounded-2xl -rotate-2 scale-105 origin-bottom-right transition-transform" />
@@ -167,13 +171,14 @@ export function HomeClient({ specialists }: { specialists: any[] }) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
                 transition={{ duration: 0.4, delay: i * 0.04, ease: "easeOut" }}
+                whileTap={{ scale: 0.98 }}
               >
                 <Link 
                   href={`/specialists?service=${service.slug}`} 
-                  className="group flex items-center justify-between bg-white border border-slate-200 rounded-xl px-5 py-4 transition-all duration-200 hover:shadow-[0_4px_12px_rgba(0,166,147,0.15)] hover:border-primary/30 hover:-translate-y-0.5 hover:bg-primary/[0.02] active:scale-[0.98] active:bg-primary active:text-white"
+                  className="group flex items-center justify-between bg-white border border-slate-200 rounded-xl px-5 py-4 transition-all duration-250 ease-out hover:shadow-[0_4px_16px_rgba(0,166,147,0.12)] hover:border-primary/40 hover:-translate-y-0.5 hover:bg-primary/[0.015]"
                 >
-                  <span className="text-[15px] font-medium text-slate-800 group-active:text-white transition-colors">{service.title}</span>
-                  <ArrowRight className="w-4 h-4 text-primary group-active:text-white transform transition-transform duration-200 group-hover:translate-x-1" />
+                  <span className="text-[15px] font-medium text-slate-800 transition-colors">{service.title}</span>
+                  <ArrowRight className="w-4 h-4 text-primary transform transition-transform duration-250 ease-out group-hover:translate-x-1" />
                 </Link>
               </motion.div>
             ))}
@@ -222,9 +227,13 @@ export function HomeClient({ specialists }: { specialists: any[] }) {
                   
                   <div className="flex items-center justify-between pt-4 border-t border-slate-100">
                     <div className="text-[13px] text-slate-600 font-medium">₹{spec.consultationFee} / hr</div>
-                    <Link href={`/specialists/${spec.id}`} className="text-[13px] font-semibold text-primary hover:text-primary/80 transition-colors">
+                    <motion.a 
+                      href={`/specialists/${spec.id}`} 
+                      whileTap={{ scale: 0.95 }}
+                      className="text-[13px] font-semibold text-primary hover:text-primary/80 transition-colors"
+                    >
                       Book →
-                    </Link>
+                    </motion.a>
                   </div>
                 </div>
               </motion.div>
