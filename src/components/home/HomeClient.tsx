@@ -4,7 +4,7 @@ import { motion, useInView } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, MapPin, CheckCircle2, Clock, Star, Phone, ShieldCheck, Users } from "lucide-react";
+import { ArrowRight, MapPin, CheckCircle2, Clock, Star, Phone, ShieldCheck, Users, Heart, BookOpen } from "lucide-react";
 import { useRef } from "react";
 
 // Reusable scroll-triggered section wrapper
@@ -137,26 +137,36 @@ export function HomeClient({ specialists }: { specialists: any[] }) {
       {/* 2. TRUST BANNER */}
       <section className="border-y border-slate-100 bg-slate-50/50 py-8">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <AnimatedSection className="flex flex-col sm:flex-row items-center justify-center gap-x-12 gap-y-6 text-center sm:text-left">
+          <AnimatedSection className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6 text-center sm:text-left">
             <div className="flex items-center gap-3 text-slate-600">
               <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                 <CheckCircle2 className="w-5 h-5 text-primary" />
               </div>
-              <span className="text-sm font-medium">Licensed<br/>Professionals</span>
+              <span className="text-sm font-medium">RCI-Approved<br/>Professionals</span>
             </div>
-            <div className="hidden sm:block w-px h-10 bg-slate-200" />
             <div className="flex items-center gap-3 text-slate-600">
               <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                 <Star className="w-5 h-5 text-primary" />
               </div>
               <span className="text-sm font-medium">Personalized<br/>Treatment</span>
             </div>
-            <div className="hidden sm:block w-px h-10 bg-slate-200" />
             <div className="flex items-center gap-3 text-slate-600">
               <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                 <ShieldCheck className="w-5 h-5 text-primary" />
               </div>
               <span className="text-sm font-medium">Safe &<br/>Confidential</span>
+            </div>
+            <div className="flex items-center gap-3 text-slate-600">
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                <Heart className="w-5 h-5 text-primary" />
+              </div>
+              <span className="text-sm font-medium">Child-Centred<br/>Care</span>
+            </div>
+            <div className="flex items-center gap-3 text-slate-600">
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                <BookOpen className="w-5 h-5 text-primary" />
+              </div>
+              <span className="text-sm font-medium">Evidence-Based<br/>Support</span>
             </div>
           </AnimatedSection>
         </div>
