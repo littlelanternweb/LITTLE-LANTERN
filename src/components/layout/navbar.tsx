@@ -36,20 +36,20 @@ export function Navbar() {
   return (
     <header 
       className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-all duration-500",
+        "fixed inset-x-0 top-0 z-50 transition-all duration-400",
         scrolled 
-          ? "bg-[#FCFBF9]/90 backdrop-blur-md border-b border-[#F5F5F4] py-3 shadow-sm" 
-          : "bg-transparent py-5"
+          ? "bg-white/90 backdrop-blur-md border-b border-slate-100 py-2.5 shadow-sm" 
+          : "bg-transparent py-4"
       )}
     >
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 lg:px-8" aria-label="Global">
         <div className="flex lg:flex-1">
-          <Link href="/" className="-m-1.5 p-1.5 flex items-center gap-4 group">
+          <Link href="/" className="-m-1.5 p-1.5 flex items-center gap-3.5 group">
             <span className="sr-only">Little Lantern</span>
-            <div className="relative overflow-hidden rounded-lg h-14 w-14 shadow-[0_2px_10px_rgba(0,0,0,0.06)] border border-slate-100 group-hover:shadow-[0_4px_15px_rgba(0,0,0,0.08)] transition-all">
+            <div className="relative overflow-hidden rounded-[0.4rem] h-10 w-10 sm:h-11 sm:w-11 shadow-sm border border-slate-100 group-hover:shadow-md transition-all">
               <Image src="/logo.jpg" alt="Little Lantern Logo" fill className="object-cover" />
             </div>
-            <span className="font-display font-semibold text-[26px] tracking-tight text-slate-900 hidden sm:inline-block">Little Lantern</span>
+            <span className="font-display font-semibold text-xl sm:text-[22px] tracking-tight text-slate-900 hidden sm:inline-block">Little Lantern</span>
           </Link>
         </div>
         <div className="flex lg:hidden">
@@ -62,14 +62,14 @@ export function Navbar() {
             <Menu className="h-6 w-6" aria-hidden="true" />
           </button>
         </div>
-        <div className="hidden lg:flex lg:gap-x-10">
+        <div className="hidden lg:flex lg:gap-x-8">
           {navigation.map((item) => (
             <Link
               key={item.name}
               href={item.href}
               className={cn(
-                "text-[15px] font-medium leading-6 transition-all duration-300 relative group",
-                pathname === item.href ? "text-primary" : "text-slate-600 hover:text-slate-900"
+                "text-sm font-medium leading-6 transition-all duration-200 relative group",
+                pathname === item.href ? "text-primary" : "text-slate-600 hover:text-primary"
               )}
             >
               {item.name}
@@ -80,12 +80,10 @@ export function Navbar() {
             </Link>
           ))}
         </div>
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end gap-5 items-center">
-          <Link href="/specialists">
-            <Button variant="default" className="bg-primary hover:bg-primary/90 text-white rounded-md px-7 py-5 text-sm font-medium hover-lift shadow-[0_4px_15px_rgba(0,166,147,0.15)] transition-all">
-              Book Consultation
-            </Button>
-          </Link>
+        <div className="hidden lg:flex lg:flex-1 lg:justify-end items-center">
+          <Button asChild variant="default" className="bg-primary hover:bg-primary/90 text-white rounded-md h-9 px-5 text-sm font-medium shadow-[0_2px_10px_rgba(0,166,147,0.15)] transition-all">
+            <Link href="/specialists">Book Consultation</Link>
+          </Button>
         </div>
       </nav>
 
