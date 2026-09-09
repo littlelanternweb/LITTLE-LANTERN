@@ -235,5 +235,42 @@ export const emailTemplates = {
       <p style="color: #A8A29E; font-size: 14px;">Previous Slot: ${oldDate} at ${oldTime}</p>
     `;
     return sendEmail(to, subject, premiumWrapper(content), "RESCHEDULE", relatedId);
+  },
+
+  // 8. Faculty Welcome
+  facultyWelcome: async (to: string, name: string, tempPassword: string) => {
+    const subject = `Welcome to Little Lantern Faculty`;
+    const content = `
+      <h2 class="title">Welcome to Little Lantern!</h2>
+      <p>Dear ${name},</p>
+      <p>Your faculty account has been created successfully. You can now log in to the Little Lantern portal to view your assigned appointments.</p>
+      <div class="box">
+        <div class="box-row"><div class="box-label">Login Email</div><div class="box-value">${to}</div></div>
+        <div class="box-row"><div class="box-label">Temporary Password</div><div class="box-value">${tempPassword}</div></div>
+      </div>
+      <p>Please log in and update your password immediately.</p>
+      <div style="text-align: center; margin-top: 32px;">
+        <a href="${VERCEL_URL}/admin/login" style="background-color: #00A693; color: white; padding: 12px 24px; text-decoration: none; border-radius: 99px; font-weight: 600; display: inline-block;">Log In to Faculty Dashboard</a>
+      </div>
+    `;
+    return sendEmail(to, subject, premiumWrapper(content), "FACULTY_WELCOME");
+  },
+
+  // 9. Assignment Notification
+  assignmentNotification: async (to: string, name: string, apptDetails: any) => {
+    const subject = `New Appointment Assigned — Little Lantern`;
+    const content = `
+      <h2 class="title">New Appointment Assigned</h2>
+      <p>Dear ${name},</p>
+      <p>A new appointment has been assigned to you.</p>
+      <div class="box">
+        <div class="box-row"><div class="box-label">Date</div><div class="box-value">${apptDetails.date}</div></div>
+        <div class="box-row"><div class="box-label">Time</div><div class="box-value">${apptDetails.time}</div></div>
+        <div class="box-row"><div class="box-label">Child/Patient</div><div class="box-value">${apptDetails.patient}</div></div>
+        <div class="box-row"><div class="box-label">Service</div><div class="box-value">${apptDetails.service}</div></div>
+      </div>
+      <p>Please log in to your Little Lantern faculty dashboard to view complete details.</p>
+    `;
+    return sendEmail(to, subject, premiumWrapper(content), "ASSIGNMENT_NOTIFICATION", apptDetails.id);
   }
 };

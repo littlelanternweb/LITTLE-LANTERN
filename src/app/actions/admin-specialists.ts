@@ -2,12 +2,17 @@
 
 import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
+import bcrypt from "bcryptjs";
+import crypto from "crypto";
 
 export async function createSpecialist(data: any) {
   try {
     const { services, ...rest } = data;
     
-    await prisma.specialist.create({
+    // Ensure advanceAmount is float
+    if (rest.advanceAmount) rest.advanceAmount = parseFloat(rest.advanceAmount);
+    
+    const specialist = await prisma.specialist.create({
       data: {
         ...rest,
         // Assuming services is an array of service IDs
@@ -18,6 +23,11 @@ export async function createSpecialist(data: any) {
         })
       }
     });
+
+    // Auto-create faculty user if active and email provided
+    if (specialist.email && specialist.status === "ACTIVE" && !specialist.userId) {
+      await setupFacultyUser(specialist);
+    }
 
     revalidatePath("/admin/specialists");
     revalidatePath("/specialists");
@@ -31,8 +41,10 @@ export async function updateSpecialist(id: string, data: any) {
   try {
     const { services, ...rest } = data;
     
+    if (rest.advanceAmount) rest.advanceAmount = parseFloat(rest.advanceAmount);
+    
     // For simplicity, we just set the new services array (replacing old ones)
-    await prisma.specialist.update({
+    const specialist = await prisma.specialist.update({
       where: { id },
       data: {
         ...rest,
@@ -43,6 +55,11 @@ export async function updateSpecialist(id: string, data: any) {
         })
       }
     });
+
+    // Auto-create faculty user if they just became active or email was added
+    if (specialist.email && specialist.status === "ACTIVE" && !specialist.userId) {
+      await setupFacultyUser(specialist);
+    }
 
     revalidatePath("/admin/specialists");
     revalidatePath("/specialists");
@@ -129,3 +146,44 @@ export async function removeLockedSlot(id: string) {
     return { error: "Failed to remove locked slot" };
   }
 }
+
+
+async function setupFacultyUser(specialist: any) {
+  try {
+    const existingUser = await prisma.user.findUnique({ where: { email: specialist.email } });
+    
+    let userId;
+    if (existingUser) {
+      userId = existingUser.id;
+      await prisma.specialist.update({ where: { id: specialist.id }, data: { userId } });
+    } else {
+      const tempPassword = crypto.randomBytes(8).toString("hex");
+      const hashedPassword = await bcrypt.hash(tempPassword, 10);
+      
+      const newUser = await prisma.user.create({
+        data: {
+          name: specialist.name,
+          email: specialist.email,
+          password: hashedPassword,
+          role: "FACULTY",
+        }
+      });
+      userId = newUser.id;
+      
+      await prisma.specialist.update({ where: { id: specialist.id }, data: { userId } });
+      
+      const { emailTemplates } = await import("@/lib/email");
+      try {
+        // We assume an email template exists, if not we fall back gracefully
+        if (emailTemplates.facultyWelcome) {
+            await emailTemplates.facultyWelcome(specialist.email, specialist.name, tempPassword);
+        }
+      } catch (e) {
+        console.error("Failed to send faculty welcome email", e);
+      }
+    }
+  } catch (err) {
+    console.error("Faculty user setup error:", err);
+  }
+}
+

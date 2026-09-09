@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -70,8 +71,10 @@ export function AppointmentActions({ appointment, permissions }: { appointment: 
         <DropdownMenuContent align="end" className="w-56">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           
-          <DropdownMenuItem onClick={() => setActiveModal("details")}>
-            <Eye className="w-4 h-4 mr-2 text-slate-500" /> View Details
+          <DropdownMenuItem asChild>
+            <Link href={`/admin/appointments/${appointment.id}`} className="cursor-pointer">
+              <Eye className="w-4 h-4 mr-2 text-slate-500" /> View Details
+            </Link>
           </DropdownMenuItem>
 
           {permissions.canManage && (

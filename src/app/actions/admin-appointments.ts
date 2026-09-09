@@ -151,3 +151,114 @@ export async function rescheduleAppointment(appointmentId: string, newDate: stri
     return { error: "Failed to reschedule appointment." };
   }
 }
+
+export async function markBalanceReceived(appointmentId: string, amount: number, method: string, notes: string) {
+  const session = await getServerSession(authOptions);
+  if (!session || (session.user as any).role === "FACULTY") {
+    return { error: "Unauthorized" };
+  }
+
+  try {
+    const apt = await prisma.appointment.findUnique({ where: { id: appointmentId } });
+    if (!apt) return { error: "Appointment not found" };
+
+    const newBalancePaid = apt.balancePaid + amount;
+    const isFullyPaid = (apt.advancePaid + newBalancePaid) >= apt.totalAmount;
+
+    await prisma.transaction.create({
+      data: {
+        appointmentId,
+        amount,
+        type: "BALANCE",
+        method,
+        status: "SUCCESS",
+        notes
+      }
+    });
+
+    await prisma.appointment.update({
+      where: { id: appointmentId },
+      data: {
+        balancePaid: newBalancePaid,
+        paymentStatus: isFullyPaid ? "FULLY_PAID" : "PARTIALLY_PAID"
+      }
+    });
+
+    await logActivity("BALANCE_RECEIVED", appointmentId, `Amount: ${amount}, Method: ${method}`);
+
+    revalidatePath(`/admin/appointments/${appointmentId}`);
+    revalidatePath("/admin/appointments");
+    revalidatePath("/admin");
+    return { success: true };
+  } catch (error: any) {
+    return { error: "Failed to record payment" };
+  }
+}
+
+export async function reassignFaculty(appointmentId: string, newSpecialistId: string) {
+  const session = await getServerSession(authOptions);
+  if (!session || (session.user as any).role === "FACULTY") {
+    return { error: "Unauthorized" };
+  }
+
+  try {
+    const apt = await prisma.appointment.findUnique({ 
+      where: { id: appointmentId },
+      include: { customer: true, child: true }
+    });
+    if (!apt) return { error: "Appointment not found" };
+
+    const newSpec = await prisma.specialist.findUnique({ where: { id: newSpecialistId } });
+    if (!newSpec) return { error: "Specialist not found" };
+
+    // Prevent overlap
+    const existing = await prisma.appointment.findFirst({
+      where: {
+        specialistId: newSpecialistId,
+        date: apt.date,
+        startTime: apt.startTime,
+        status: { not: "CANCELLED" }
+      }
+    });
+
+    if (existing) {
+      return { error: "This specialist is already booked at that time." };
+    }
+
+    await prisma.appointment.update({
+      where: { id: appointmentId },
+      data: { specialistId: newSpecialistId }
+    });
+
+    await logActivity("FACULTY_REASSIGNED", appointmentId, `Assigned to ${newSpec.name}`);
+
+    // Notify new faculty if they have an email
+    if (newSpec.email) {
+      try {
+        const { emailTemplates } = await import("@/lib/email");
+        if (emailTemplates.assignmentNotification) {
+          await emailTemplates.assignmentNotification(
+            newSpec.email,
+            newSpec.name,
+            {
+              id: apt.id,
+              date: apt.date.toLocaleDateString(),
+              time: apt.startTime,
+              patient: apt.child.name,
+              service: "Consultation"
+            }
+          );
+        }
+      } catch (e) {
+         console.error("Failed to notify new faculty:", e);
+      }
+    }
+
+    revalidatePath(`/admin/appointments/${appointmentId}`);
+    revalidatePath("/admin/appointments");
+    return { success: true };
+  } catch (error: any) {
+    return { error: "Failed to reassign faculty" };
+  }
+}
+

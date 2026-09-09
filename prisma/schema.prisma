@@ -13,24 +13,34 @@ model User {
   email     String   @unique
   password  String
   name      String
-  role      String   // SUPER_ADMIN, MANAGER, RECEPTIONIST, HR, FINANCE
+  role      String   // SUPER_ADMIN, MANAGER, RECEPTIONIST, HR, FINANCE, FACULTY
   createdAt DateTime @default(now())
+  
+  specialist Specialist?
 }
 
 model Specialist {
-  id             String   @id @default(cuid())
-  name           String
-  designation    String
-  qualifications String
-  experience     Int      // years
-  languages      String
-  bio            String
-  category       String   @default("Special Educator") // Professional category
-  specialization String   @default("General")
-  consultationType String @default("In-Person") // e.g. In-Person, Online, Hybrid
-  consultationFee Float
-  isActive       Boolean  @default(true)
-  imageUrl       String?
+  id               String   @id @default(cuid())
+  name             String
+  designation      String
+  qualifications   String
+  experience       Int      // years
+  languages        String
+  bio              String
+  category         String   @default("Special Educator") // Professional category
+  specialization   String   @default("General")
+  consultationType String   @default("In-Person") // e.g. In-Person, Online, Hybrid
+  consultationFee  Float
+  isActive         Boolean  @default(true)
+  imageUrl         String?
+  
+  // New Fields
+  advanceAmount    Float    @default(500)
+  email            String?  @unique
+  status           String   @default("ACTIVE") // PENDING_APPROVAL, ACTIVE, INACTIVE, REJECTED
+  userId           String?  @unique
+  user             User?    @relation(fields: [userId], references: [id])
+
   
   services       Service[]       @relation("SpecialistToService")
   availability   Availability[]
@@ -115,6 +125,13 @@ model Appointment {
   endTime         String
   status          String     // PENDING, CONFIRMED, CANCELLED, COMPLETED
   
+  // New Payment Fields
+  totalAmount     Float      @default(0)
+  advanceAmount   Float      @default(0)
+  advancePaid     Float      @default(0)
+  balancePaid     Float      @default(0)
+  paymentStatus   String     @default("PENDING") // PENDING, ADVANCE_PAID, PARTIALLY_PAID, FULLY_PAID, REFUNDED, CANCELLED
+  
   reason             String
   additionalInfo     String?
   cancellationReason String?
@@ -123,6 +140,7 @@ model Appointment {
   customer        Customer   @relation(fields: [customerId], references: [id])
   child           Child      @relation(fields: [childId], references: [id])
   payment         Payment?
+  transactions    Transaction[]
   
   createdAt       DateTime   @default(now())
 }
@@ -148,6 +166,20 @@ model Payment {
   
   appointment     Appointment @relation(fields: [appointmentId], references: [id])
   createdAt       DateTime    @default(now())
+}
+
+model Transaction {
+  id              String      @id @default(cuid())
+  appointmentId   String
+  amount          Float
+  type            String      // ADVANCE, BALANCE, REFUND
+  method          String      // RAZORPAY, CASH, UPI, CARD, BANK_TRANSFER, OTHER
+  status          String      // SUCCESS, FAILED, REFUNDED
+  reference       String?
+  notes           String?
+  date            DateTime    @default(now())
+  
+  appointment     Appointment @relation(fields: [appointmentId], references: [id])
 }
 
 model JobOpening {

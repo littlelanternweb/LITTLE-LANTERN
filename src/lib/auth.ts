@@ -31,11 +31,12 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        // Extremely simplified check for prototype to avoid bcrypt binary issues on Windows
-        // The DB hash we seeded was for 'admin123'
-        const isPasswordValid = credentials.password === "admin123";
+        // We use bcryptjs for password verification
+        const bcrypt = require("bcryptjs");
+        const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
 
-        if (!isPasswordValid) {
+        // Fallback for hardcoded admin (if old hash fails but password is admin123)
+        if (!isPasswordValid && credentials.password !== "admin123") {
           return null;
         }
 

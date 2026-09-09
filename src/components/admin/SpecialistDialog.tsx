@@ -23,7 +23,7 @@ export function SpecialistDialog({
   
   const [formData, setFormData] = useState({
     name: specialist?.name || "",
-    category: specialist?.category || "Special Educator",
+    category: specialist?.category || "Clinical Psychologist",
     designation: specialist?.designation || "",
     qualifications: specialist?.qualifications || "",
     experience: specialist?.experience || 0,
@@ -34,13 +34,16 @@ export function SpecialistDialog({
     consultationType: specialist?.consultationType || "In-Person",
     imageUrl: specialist?.imageUrl || "",
     services: specialist?.services?.map((s: any) => s.id) || [],
+    email: specialist?.email || "",
+    advanceAmount: specialist?.advanceAmount || 500,
+    status: specialist?.status || "PENDING_APPROVAL",
   });
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;
     setFormData(prev => ({ 
       ...prev, 
-      [name]: name === "experience" || name === "consultationFee" ? Number(value) : value 
+      [name]: ["experience", "consultationFee", "advanceAmount"].includes(name) ? Number(value) : value 
     }));
   };
 
@@ -130,15 +133,35 @@ export function SpecialistDialog({
             <div className="space-y-2">
               <Label>Professional Category</Label>
               <select name="category" value={formData.category} onChange={handleChange} className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500">
-                <option value="Special Educator">Special Educator</option>
-                <option value="Teacher / Faculty">Teacher / Faculty</option>
-                <option value="Counsellor">Counsellor</option>
-                <option value="Consultant">Consultant</option>
+                {[
+                  "Clinical Psychologist", "Child Psychologist", "Counsellor", "Child & Adolescent Counsellor", 
+                  "Special or Remedial Educator", "Educational Psychologist", "Career Counsellor", "Occupational Therapist", 
+                  "Speech & Language Therapist", "Behaviour Therapist", "ABA Therapist", "Learning Support Specialist", 
+                  "Parent & Family Counsellor", "Audiologist", "Teacher / Faculty", "Consultant"
+                ].map(cat => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
               </select>
             </div>
             <div className="space-y-2">
               <Label>Designation</Label>
               <Input name="designation" value={formData.designation} onChange={handleChange} required />
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Faculty Email (Login ID)</Label>
+              <Input name="email" type="email" value={formData.email} onChange={handleChange} placeholder="faculty@example.com" />
+            </div>
+            <div className="space-y-2">
+              <Label>Account Status</Label>
+              <select name="status" value={formData.status} onChange={handleChange} className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500">
+                <option value="PENDING_APPROVAL">Pending Approval</option>
+                <option value="ACTIVE">Active</option>
+                <option value="INACTIVE">Inactive</option>
+                <option value="REJECTED">Rejected</option>
+              </select>
             </div>
           </div>
 
@@ -164,7 +187,7 @@ export function SpecialistDialog({
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label>Consultation Type</Label>
               <select name="consultationType" value={formData.consultationType} onChange={handleChange} className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500">
@@ -176,6 +199,10 @@ export function SpecialistDialog({
             <div className="space-y-2">
               <Label>Consultation Fee (₹)</Label>
               <Input name="consultationFee" type="number" min="0" value={formData.consultationFee} onChange={handleChange} required />
+            </div>
+            <div className="space-y-2">
+              <Label>Advance Amount (₹)</Label>
+              <Input name="advanceAmount" type="number" min="0" value={formData.advanceAmount} onChange={handleChange} required />
             </div>
           </div>
 

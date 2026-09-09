@@ -11,9 +11,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const session = await getServerSession(authOptions);
 
   if (!session) {
-    // If not logged in, but we are on /admin/login, that's fine.
-    // We'll handle this in a middleware or page component, but for simplicity:
     return <>{children}</>;
+  }
+
+  // Prevent faculty from accessing admin routes
+  if (session.user?.role === "FACULTY") {
+    redirect("/faculty/dashboard");
   }
 
   return (

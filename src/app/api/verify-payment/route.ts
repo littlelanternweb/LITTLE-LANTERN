@@ -20,14 +20,33 @@ export async function POST(req: Request) {
       }
     }
 
-    // 1. Update Appointment Status
+    // 1. Fetch initial appointment to get specialist details
+    const initialAppointment = await prisma.appointment.findUnique({
+      where: { id: appointmentId },
+      include: { specialist: true }
+    });
+    
+    if (!initialAppointment) {
+      return NextResponse.json({ error: "Appointment not found" }, { status: 404 });
+    }
+    
+    const advanceAmountPaid = Math.round(initialAppointment.specialist.advanceAmount ?? (initialAppointment.specialist.consultationFee * 0.25));
+
+    // 2. Update Appointment Status and Payment Fields
     const appointment = await prisma.appointment.update({
       where: { id: appointmentId },
-      data: { status: "CONFIRMED" },
+      data: { 
+        status: "CONFIRMED",
+        totalAmount: initialAppointment.specialist.consultationFee,
+        advanceAmount: advanceAmountPaid,
+        advancePaid: advanceAmountPaid,
+        balancePaid: 0,
+        paymentStatus: advanceAmountPaid >= initialAppointment.specialist.consultationFee ? "FULLY_PAID" : "ADVANCE_PAID"
+      },
       include: { specialist: true, customer: true }
     });
 
-    // 2. Create Payment Record
+    // 3. Create Payment Record (Legacy support)
     await prisma.payment.upsert({
       where: { appointmentId },
       update: {
@@ -38,8 +57,21 @@ export async function POST(req: Request) {
         appointmentId,
         razorpayOrderId: razorpay_order_id || `mock_order_${Date.now()}`,
         razorpayPaymentId: razorpay_payment_id,
-        amount: appointment.specialist.consultationFee,
+        amount: advanceAmountPaid,
         status: "SUCCESS"
+      }
+    });
+    
+    // 4. Create Transaction Record
+    await prisma.transaction.create({
+      data: {
+        appointmentId,
+        amount: advanceAmountPaid,
+        type: "ADVANCE",
+        method: "RAZORPAY",
+        status: "SUCCESS",
+        reference: razorpay_payment_id || razorpay_order_id || "mock_payment",
+        notes: "Online Advance Payment"
       }
     });
 
