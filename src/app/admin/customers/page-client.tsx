@@ -23,9 +23,9 @@ export function CustomersClient({ initialCustomers, specialists }: { initialCust
   const [aForm, setAForm] = useState({ specialistId: "", childId: "", date: "", time: "", reason: "" });
 
   const filteredCustomers = customers.filter(c => 
-    c.name.toLowerCase().includes(search.toLowerCase()) || 
-    c.email.toLowerCase().includes(search.toLowerCase()) || 
-    c.phone.includes(search)
+    (c.name || "").toLowerCase().includes(search.toLowerCase()) || 
+    (c.email || "").toLowerCase().includes(search.toLowerCase()) || 
+    (c.phone || "").includes(search)
   );
 
   const handleAddCustomer = async (e: React.FormEvent) => {

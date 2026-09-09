@@ -1,11 +1,12 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { Search } from "lucide-react";
 
 export function AppointmentSearch() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
   const query = searchParams.get("q") || "";
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -17,7 +18,7 @@ export function AppointmentSearch() {
       } else {
         params.delete("q");
       }
-      router.push(`?${params.toString()}`);
+      router.push(`${pathname}?${params.toString()}`);
     }
   };
 

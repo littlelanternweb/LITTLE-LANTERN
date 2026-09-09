@@ -11,7 +11,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { hasPermission, PERMISSIONS } from "@/lib/permissions";
 
-export default async function AdminAppointments({ searchParams }: { searchParams: { q?: string, status?: string, date?: string, filter?: string } }) {
+export default async function AdminAppointments(props: { searchParams: Promise<{ q?: string, status?: string, date?: string, filter?: string }> }) {
+  const searchParams = await props.searchParams;
   const session = await getServerSession(authOptions);
   const role = (session?.user as any)?.role;
   
@@ -140,7 +141,10 @@ export default async function AdminAppointments({ searchParams }: { searchParams
                       </span>
                     </td>
                     <td className="px-6 py-5 text-right">
-                      <div className="opacity-0 group-hover:opacity-100 transition-opacity flex justify-end">
+                      <div className="flex justify-end items-center gap-2">
+                        <Link href={`/admin/appointments/${apt.id}`} className="inline-flex items-center justify-center h-8 px-3 text-xs font-medium bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-primary transition-colors rounded-md shadow-sm">
+                          <Eye className="w-3.5 h-3.5 mr-1.5" /> View
+                        </Link>
                         <AppointmentActions appointment={apt} permissions={permissions} />
                       </div>
                     </td>

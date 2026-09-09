@@ -6,11 +6,12 @@ import { AppointmentDetailClient } from "./AppointmentDetailClient";
 
 export const dynamic = "force-dynamic";
 
-export default async function AppointmentDetailPage({ params }: { params: { id: string } }) {
+export default async function AppointmentDetailPage(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const session = await getServerSession(authOptions);
   if (!session) redirect("/admin/login");
   
-  const id = await params.id;
+  const id = params.id;
 
   const appointment = await prisma.appointment.findUnique({
     where: { id },

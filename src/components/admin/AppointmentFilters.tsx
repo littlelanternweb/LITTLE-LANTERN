@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Filter } from "lucide-react";
@@ -8,6 +8,7 @@ import { Filter } from "lucide-react";
 export function AppointmentFilters() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
   const currentStatus = searchParams.get("status") || "ALL";
   const currentDate = searchParams.get("date") || "";
 
@@ -18,7 +19,7 @@ export function AppointmentFilters() {
     } else {
       params.set("status", status);
     }
-    router.push(`?${params.toString()}`);
+    router.push(`${pathname}?${params.toString()}`);
   };
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,13 +30,13 @@ export function AppointmentFilters() {
     } else {
       params.delete("date");
     }
-    router.push(`?${params.toString()}`);
+    router.push(`${pathname}?${params.toString()}`);
   };
 
   const clearDate = () => {
     const params = new URLSearchParams(searchParams.toString());
     params.delete("date");
-    router.push(`?${params.toString()}`);
+    router.push(`${pathname}?${params.toString()}`);
   };
 
   return (

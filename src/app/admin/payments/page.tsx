@@ -7,7 +7,8 @@ import { Eye, CreditCard, ArrowLeft, IndianRupee } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
-export default async function AdminPaymentsPage({ searchParams }: { searchParams: { filter?: string, date?: string, view?: string } }) {
+export default async function AdminPaymentsPage(props: { searchParams: Promise<{ filter?: string, date?: string, view?: string }> }) {
+  const searchParams = await props.searchParams;
   const filter = searchParams?.filter;
   const dateFilter = searchParams?.date;
   const view = searchParams?.view || "appointments"; // 'appointments' or 'transactions'
