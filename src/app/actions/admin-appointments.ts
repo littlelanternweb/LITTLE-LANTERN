@@ -262,3 +262,76 @@ export async function reassignFaculty(appointmentId: string, newSpecialistId: st
   }
 }
 
+export async function editOfflinePayment(transactionId: string, updates: { amount: number, method: string, date: string, reference?: string, notes?: string }) {
+  const session = await getServerSession(authOptions);
+  if (!session || (session.user as any).role === "FACULTY") {
+    return { error: "Unauthorized" };
+  }
+
+  try {
+    const transaction = await prisma.transaction.findUnique({
+      where: { id: transactionId },
+      include: { appointment: true }
+    });
+
+    if (!transaction) return { error: "Transaction not found" };
+    if (transaction.type !== "BALANCE" && transaction.type !== "OTHER") {
+      return { error: "Only offline balance/other payments can be edited." };
+    }
+    
+    // Prevent negative or zero amounts
+    if (updates.amount <= 0) {
+      return { error: "Amount must be greater than zero." };
+    }
+
+    const apt = transaction.appointment;
+    const oldAmount = transaction.amount;
+    const newAmount = updates.amount;
+
+    // Recalculate Appointment balance
+    // balancePaid should be updated by the difference
+    const amountDifference = newAmount - oldAmount;
+    const newBalancePaid = apt.balancePaid + amountDifference;
+
+    // Validate that new balance doesn't exceed total amount
+    if ((apt.advancePaid + newBalancePaid) > apt.totalAmount) {
+      return { error: "Updated amount exceeds the total consultation fee." };
+    }
+
+    const isFullyPaid = (apt.advancePaid + newBalancePaid) >= apt.totalAmount;
+
+    // Update Transaction
+    await prisma.transaction.update({
+      where: { id: transactionId },
+      data: {
+        amount: newAmount,
+        method: updates.method,
+        date: new Date(updates.date),
+        reference: updates.reference || null,
+        notes: updates.notes || null,
+      }
+    });
+
+    // Update Appointment
+    await prisma.appointment.update({
+      where: { id: apt.id },
+      data: {
+        balancePaid: newBalancePaid,
+        paymentStatus: isFullyPaid ? "FULLY_PAID" : "PARTIALLY_PAID"
+      }
+    });
+
+    // Audit Log
+    const auditDetails = `Edited TX: ${transactionId}. Amount: ₹${oldAmount} -> ₹${newAmount}. Method: ${transaction.method} -> ${updates.method}.`;
+    await logActivity("OFFLINE_PAYMENT_EDITED", apt.id, auditDetails);
+
+    revalidatePath(`/admin/appointments/${apt.id}`);
+    revalidatePath("/admin/appointments");
+    revalidatePath("/admin/payments");
+    revalidatePath("/admin");
+    return { success: true };
+  } catch (error: any) {
+    console.error("Failed to edit offline payment:", error);
+    return { error: "Failed to edit offline payment." };
+  }
+}

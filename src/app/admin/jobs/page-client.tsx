@@ -1,14 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Download, FileText, ChevronDown } from "lucide-react";
+import { Download, FileText, ChevronDown, Loader2 } from "lucide-react";
 import { format } from "date-fns";
+import { updateJobApplicationStatus } from "@/app/actions/admin-applications";
+import { toast } from "sonner";
 
 export function JobsClient({ initialApplications }: { initialApplications: any[] }) {
   const [applications, setApplications] = useState(initialApplications);
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [categoryFilter, setCategoryFilter] = useState("ALL");
+  const [isPending, startTransition] = useTransition();
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
 
   const FACULTY_CATEGORIES = [
     "Clinical Psychologist", "Child Psychologist", "Counsellor", 
@@ -20,17 +24,31 @@ export function JobsClient({ initialApplications }: { initialApplications: any[]
   ];
 
   const updateStatus = async (id: string, newStatus: string) => {
-    // In a real app, you'd call an API route to update the status in the DB
-    setApplications(applications.map(app => app.id === id ? { ...app, status: newStatus } : app));
+    // Optimistic UI update could be done, but we'll await DB persistence
+    setUpdatingId(id);
+    startTransition(async () => {
+      const result = await updateJobApplicationStatus(id, newStatus);
+      if (result.error) {
+        toast.error(result.error);
+      } else {
+        toast.success("Application status updated successfully.");
+        // Update local state to reflect DB change without full page reload
+        setApplications(apps => apps.map(app => app.id === id ? { ...app, status: newStatus } : app));
+      }
+      setUpdatingId(null);
+    });
   };
 
   const statusColors: Record<string, string> = {
     NEW: "bg-blue-100 text-blue-700",
-    REVIEWING: "bg-amber-100 text-amber-700",
+    UNDER_REVIEW: "bg-amber-100 text-amber-700",
+    REVIEWING: "bg-amber-100 text-amber-700", // Legacy support
     SHORTLISTED: "bg-purple-100 text-purple-700",
     INTERVIEW: "bg-indigo-100 text-indigo-700",
-    SELECTED: "bg-emerald-100 text-emerald-700",
-    REJECTED: "bg-rose-100 text-rose-700",
+    ACCEPTED: "bg-emerald-100 text-emerald-700",
+    SELECTED: "bg-emerald-100 text-emerald-700", // Legacy support
+    DECLINED: "bg-rose-100 text-rose-700",
+    REJECTED: "bg-rose-100 text-rose-700", // Legacy support
   };
 
   const filteredApps = applications.filter(app => {
@@ -59,11 +77,11 @@ export function JobsClient({ initialApplications }: { initialApplications: any[]
           >
             <option value="ALL">All Statuses</option>
             <option value="NEW">New</option>
-            <option value="REVIEWING">Reviewing</option>
+            <option value="UNDER_REVIEW">Under Review</option>
             <option value="SHORTLISTED">Shortlisted</option>
             <option value="INTERVIEW">Interview</option>
-            <option value="SELECTED">Selected</option>
-            <option value="REJECTED">Rejected</option>
+            <option value="ACCEPTED">Accepted</option>
+            <option value="DECLINED">Declined</option>
           </select>
         </div>
       </CardHeader>
@@ -104,20 +122,22 @@ export function JobsClient({ initialApplications }: { initialApplications: any[]
                     <td className="px-6 py-4 text-stone-600">
                       {format(new Date(app.createdAt), "MMM d, yyyy")}
                     </td>
-                    <td className="px-6 py-4">
-                      <select 
-                        value={app.status}
-                        onChange={(e) => updateStatus(app.id, e.target.value)}
-                        className={`text-xs font-semibold uppercase tracking-wider rounded-full px-3 py-1.5 border-0 focus:ring-2 focus:ring-[#00A693] outline-none cursor-pointer appearance-none ${statusColors[app.status] || "bg-stone-100 text-stone-700"}`}
-                      >
-                        <option value="NEW">New</option>
-                        <option value="REVIEWING">Reviewing</option>
-                        <option value="SHORTLISTED">Shortlisted</option>
-                        <option value="INTERVIEW">Interview</option>
-                        <option value="SELECTED">Selected</option>
-                        <option value="REJECTED">Rejected</option>
-                      </select>
-                    </td>
+                      <td className="px-6 py-4 flex items-center gap-2">
+                        <select 
+                          value={app.status}
+                          onChange={(e) => updateStatus(app.id, e.target.value)}
+                          disabled={updatingId === app.id}
+                          className={`text-xs font-semibold uppercase tracking-wider rounded-full px-3 py-1.5 border-0 focus:ring-2 focus:ring-[#00A693] outline-none cursor-pointer appearance-none ${statusColors[app.status] || "bg-stone-100 text-stone-700"} ${updatingId === app.id ? "opacity-50 cursor-not-allowed" : ""}`}
+                        >
+                          <option value="NEW">New</option>
+                          <option value="UNDER_REVIEW">Under Review</option>
+                          <option value="SHORTLISTED">Shortlisted</option>
+                          <option value="INTERVIEW">Interview</option>
+                          <option value="ACCEPTED">Accepted</option>
+                          <option value="DECLINED">Declined</option>
+                        </select>
+                        {updatingId === app.id && <Loader2 className="w-4 h-4 text-[#00A693] animate-spin" />}
+                      </td>
                     <td className="px-6 py-4 text-right">
                       {app.resumeUrl ? (
                         <a 

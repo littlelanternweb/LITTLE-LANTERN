@@ -21,7 +21,50 @@ export function AppointmentDetailClient({ appointment, specialists, isAdmin }: a
   const [payOpen, setPayOpen] = useState(false);
   const [assignOpen, setAssignOpen] = useState(false);
 
+  // Edit Transaction states
+  const [editTxOpen, setEditTxOpen] = useState(false);
+  const [editTxId, setEditTxId] = useState("");
+  const [editAmount, setEditAmount] = useState<number | "">("");
+  const [editMethod, setEditMethod] = useState("CASH");
+  const [editDate, setEditDate] = useState("");
+  const [editNotes, setEditNotes] = useState("");
+  const [editRef, setEditRef] = useState("");
+
   const remainingBalance = appointment.totalAmount - (appointment.advancePaid + appointment.balancePaid);
+
+  const openEditModal = (t: any) => {
+    setEditTxId(t.id);
+    setEditAmount(t.amount);
+    setEditMethod(t.method);
+    setEditDate(new Date(t.date).toISOString().slice(0, 16));
+    setEditNotes(t.notes || "");
+    setEditRef(t.reference || "");
+    setEditTxOpen(true);
+  };
+
+  const handleEditTx = async () => {
+    if (editAmount === "" || Number(editAmount) <= 0) return toast.error("Invalid amount");
+    setLoading(true);
+    
+    // We import editOfflinePayment dynamically or from the top level
+    const { editOfflinePayment } = await import("@/app/actions/admin-appointments");
+    
+    const res = await editOfflinePayment(editTxId, {
+      amount: Number(editAmount),
+      method: editMethod,
+      date: new Date(editDate).toISOString(),
+      notes: editNotes,
+      reference: editRef,
+    });
+    setLoading(false);
+
+    if (res.error) {
+      toast.error(res.error);
+    } else {
+      toast.success("Transaction updated");
+      setEditTxOpen(false);
+    }
+  };
 
   const handlePayment = async () => {
     if (balanceAmount <= 0) return toast.error("Invalid amount");
@@ -170,9 +213,16 @@ export function AppointmentDetailClient({ appointment, specialists, isAdmin }: a
                           {t.notes && <p className="text-[10px] text-slate-400 mt-0.5">{t.notes}</p>}
                         </div>
                       </div>
-                      <div className="text-right">
-                        <p className="font-bold text-slate-900">₹{t.amount}</p>
-                        <p className="text-[10px] font-medium text-emerald-600 uppercase">{t.status}</p>
+                      <div className="flex flex-col items-end gap-1">
+                        <div className="text-right">
+                          <p className="font-bold text-slate-900">₹{t.amount}</p>
+                          <p className="text-[10px] font-medium text-emerald-600 uppercase">{t.status}</p>
+                        </div>
+                        {isAdmin && (t.type === "BALANCE" || t.type === "OTHER") && (
+                          <Button variant="ghost" size="sm" onClick={() => openEditModal(t)} className="h-6 px-2 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50">
+                            Edit
+                          </Button>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -241,6 +291,7 @@ export function AppointmentDetailClient({ appointment, specialists, isAdmin }: a
                           <option value="UPI">UPI</option>
                           <option value="CARD">Card POS</option>
                           <option value="BANK_TRANSFER">Bank Transfer</option>
+                          <option value="OTHER">Other</option>
                         </select>
                       </div>
                       <div className="space-y-2">
@@ -258,6 +309,60 @@ export function AppointmentDetailClient({ appointment, specialists, isAdmin }: a
           </Card>
         </div>
       </div>
+
+      {/* EDIT TRANSACTION MODAL */}
+      <Dialog open={editTxOpen} onOpenChange={setEditTxOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Offline Payment</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Amount</Label>
+                <Input 
+                  type="number" 
+                  value={editAmount} 
+                  onChange={e => setEditAmount(Number(e.target.value))}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Date & Time</Label>
+                <Input 
+                  type="datetime-local" 
+                  value={editDate} 
+                  onChange={e => setEditDate(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Payment Method</Label>
+              <select 
+                value={editMethod}
+                onChange={e => setEditMethod(e.target.value)}
+                className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm"
+              >
+                <option value="CASH">Cash</option>
+                <option value="UPI">UPI</option>
+                <option value="CARD">Card POS</option>
+                <option value="BANK_TRANSFER">Bank Transfer</option>
+                <option value="OTHER">Other</option>
+              </select>
+            </div>
+            <div className="space-y-2">
+              <Label>Reference Number</Label>
+              <Input value={editRef} onChange={e => setEditRef(e.target.value)} placeholder="Transaction ID, Cheque No, etc." />
+            </div>
+            <div className="space-y-2">
+              <Label>Notes</Label>
+              <Input value={editNotes} onChange={e => setEditNotes(e.target.value)} placeholder="Optional notes" />
+            </div>
+            <Button onClick={handleEditTx} disabled={loading} className="w-full bg-blue-600 hover:bg-blue-700">
+              Save Changes
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
