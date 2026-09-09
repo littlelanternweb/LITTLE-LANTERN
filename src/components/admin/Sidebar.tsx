@@ -71,7 +71,7 @@ export function AdminSidebar({ session }: { session: any }) {
             {session.user?.name?.charAt(0)}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="font-medium text-slate-900 text-sm truncate">{session.user?.name}</p>
+            <Link href="/admin/profile" className="font-medium text-slate-900 text-sm hover:text-primary transition-colors truncate block">{session.user?.name}</Link>
             <p className="text-[11px] uppercase tracking-wider text-primary font-semibold truncate">{role}</p>
           </div>
         </div>

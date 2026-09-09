@@ -12,6 +12,7 @@ export async function POST(request: Request) {
         email: body.email,
         phone: body.phone,
         position: body.position, // e.g., "Special Educator" or the specific JobOpening title
+        category: body.category || "Consultant",
         jobOpeningId: body.jobOpeningId || null,
         qualifications: body.qualifications,
         experience: body.experience,

@@ -11,7 +11,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { hasPermission, PERMISSIONS } from "@/lib/permissions";
 
-export default async function AdminAppointments({ searchParams }: { searchParams: { q?: string, status?: string, date?: string } }) {
+export default async function AdminAppointments({ searchParams }: { searchParams: { q?: string, status?: string, date?: string, filter?: string } }) {
   const session = await getServerSession(authOptions);
   const role = (session?.user as any)?.role;
   
@@ -24,10 +24,10 @@ export default async function AdminAppointments({ searchParams }: { searchParams
   const query = searchParams.q || "";
   const statusFilter = searchParams.status || "";
   const dateFilter = searchParams.date || "";
+  const generalFilter = searchParams.filter || "";
 
   let dateQuery = {};
   if (dateFilter) {
-    // Exact date match (convert to local midnight range since DB stores Date objects)
     const startDate = new Date(dateFilter);
     const endDate = new Date(dateFilter);
     endDate.setDate(endDate.getDate() + 1);
@@ -35,6 +35,14 @@ export default async function AdminAppointments({ searchParams }: { searchParams
       date: {
         gte: startDate,
         lt: endDate
+      }
+    };
+  } else if (generalFilter === "upcoming") {
+    const today = new Date();
+    today.setHours(23, 59, 59, 999);
+    dateQuery = {
+      date: {
+        gt: today
       }
     };
   }

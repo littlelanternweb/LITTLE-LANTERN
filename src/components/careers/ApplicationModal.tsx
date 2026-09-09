@@ -13,6 +13,7 @@ export function ApplicationModal({ isOpen, onClose, selectedJob }: { isOpen: boo
     name: "",
     email: "",
     phone: "",
+    category: "",
     qualifications: "",
     experience: "",
     currentOrg: "",
@@ -116,6 +117,20 @@ export function ApplicationModal({ isOpen, onClose, selectedJob }: { isOpen: boo
                       <div>
                         <label className="block text-sm font-medium text-[#292524] mb-1.5">Phone Number *</label>
                         <input required type="tel" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-[#E7E5E4] bg-[#FCFBF9] focus:outline-none focus:ring-2 focus:ring-[#00A693]/20 focus:border-[#00A693] transition-all" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-[#292524] mb-1.5">Professional Category *</label>
+                        <select required value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-[#E7E5E4] bg-[#FCFBF9] focus:outline-none focus:ring-2 focus:ring-[#00A693]/20 focus:border-[#00A693] transition-all appearance-none">
+                          <option value="" disabled>Select your professional category</option>
+                          {[
+                            "Clinical Psychologist", "Child Psychologist", "Counsellor", 
+                            "Child & Adolescent Counsellor", "Special or Remedial Educator", 
+                            "Educational Psychologist", "Career Counsellor", "Occupational Therapist", 
+                            "Speech & Language Therapist", "Behaviour Therapist", "ABA Therapist", 
+                            "Learning Support Specialist", "Parent & Family Counsellor", 
+                            "Audiologist", "Teacher / Faculty", "Consultant"
+                          ].map(c => <option key={c} value={c}>{c}</option>)}
+                        </select>
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-[#292524] mb-1.5">Highest Qualification *</label>

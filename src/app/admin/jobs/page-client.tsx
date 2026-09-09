@@ -7,6 +7,17 @@ import { format } from "date-fns";
 
 export function JobsClient({ initialApplications }: { initialApplications: any[] }) {
   const [applications, setApplications] = useState(initialApplications);
+  const [statusFilter, setStatusFilter] = useState("ALL");
+  const [categoryFilter, setCategoryFilter] = useState("ALL");
+
+  const FACULTY_CATEGORIES = [
+    "Clinical Psychologist", "Child Psychologist", "Counsellor", 
+    "Child & Adolescent Counsellor", "Special or Remedial Educator", 
+    "Educational Psychologist", "Career Counsellor", "Occupational Therapist", 
+    "Speech & Language Therapist", "Behaviour Therapist", "ABA Therapist", 
+    "Learning Support Specialist", "Parent & Family Counsellor", 
+    "Audiologist", "Teacher / Faculty", "Consultant"
+  ];
 
   const updateStatus = async (id: string, newStatus: string) => {
     // In a real app, you'd call an API route to update the status in the DB
@@ -22,13 +33,42 @@ export function JobsClient({ initialApplications }: { initialApplications: any[]
     REJECTED: "bg-rose-100 text-rose-700",
   };
 
+  const filteredApps = applications.filter(app => {
+    if (statusFilter !== "ALL" && app.status !== statusFilter) return false;
+    if (categoryFilter !== "ALL" && app.category !== categoryFilter) return false;
+    return true;
+  });
+
   return (
     <Card className="rounded-2xl border-stone-200/60 shadow-sm overflow-hidden">
-      <CardHeader className="bg-stone-50/50 border-b border-stone-100 py-4 px-6">
+      <CardHeader className="bg-stone-50/50 border-b border-stone-100 py-4 px-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <CardTitle className="text-lg font-medium text-stone-800">Recent Applications</CardTitle>
+        <div className="flex items-center gap-2">
+          <select 
+            value={categoryFilter} 
+            onChange={e => setCategoryFilter(e.target.value)}
+            className="px-3 py-1.5 border border-slate-200 rounded-lg text-sm bg-white"
+          >
+            <option value="ALL">All Categories</option>
+            {FACULTY_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+          </select>
+          <select 
+            value={statusFilter} 
+            onChange={e => setStatusFilter(e.target.value)}
+            className="px-3 py-1.5 border border-slate-200 rounded-lg text-sm bg-white"
+          >
+            <option value="ALL">All Statuses</option>
+            <option value="NEW">New</option>
+            <option value="REVIEWING">Reviewing</option>
+            <option value="SHORTLISTED">Shortlisted</option>
+            <option value="INTERVIEW">Interview</option>
+            <option value="SELECTED">Selected</option>
+            <option value="REJECTED">Rejected</option>
+          </select>
+        </div>
       </CardHeader>
       <CardContent className="p-0">
-        {applications.length === 0 ? (
+        {filteredApps.length === 0 ? (
           <div className="p-10 text-center text-stone-500">
             No applications received yet.
           </div>
@@ -46,7 +86,7 @@ export function JobsClient({ initialApplications }: { initialApplications: any[]
                 </tr>
               </thead>
               <tbody className="divide-y divide-stone-100 bg-white">
-                {applications.map((app) => (
+                {filteredApps.map((app) => (
                   <tr key={app.id} className="hover:bg-stone-50/50 transition-colors">
                     <td className="px-6 py-4">
                       <div className="font-medium text-stone-900">{app.name}</div>
@@ -55,6 +95,7 @@ export function JobsClient({ initialApplications }: { initialApplications: any[]
                     </td>
                     <td className="px-6 py-4">
                       <div className="text-stone-900 font-medium">{app.jobOpening?.title || app.position}</div>
+                      <div className="text-emerald-600 font-semibold text-[10px] uppercase mt-1">{app.category}</div>
                       <div className="text-stone-500 text-xs mt-0.5">{app.qualifications}</div>
                     </td>
                     <td className="px-6 py-4 text-stone-600">

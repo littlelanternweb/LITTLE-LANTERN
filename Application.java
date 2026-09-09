@@ -1,222 +1,320 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 public class app {
+
+    static ArrayList<String> books = new ArrayList<>();
+
     public static void main(String args[]) {
 
-        JFrame frame = new JFrame("Library Management System");
+        loginWindow();
+    }
 
-        JPanel mainPanel = new JPanel(new BorderLayout());
+    // LOGIN WINDOW
+    public static void loginWindow() {
 
-        JPanel centerPanel = new JPanel(
-                new FlowLayout(FlowLayout.CENTER, 0, 20)
+        JFrame frame = new JFrame("Login");
+
+        JPanel panel = new JPanel(
+                new GridLayout(3, 2, 10, 10)
         );
 
-        JPanel formPanel = new JPanel(
-                new GridLayout(8, 2, 10, 10)
+        JLabel usernameLabel = new JLabel("Username");
+        JTextField usernameField = new JTextField();
+
+        JLabel passwordLabel = new JLabel("Password");
+        JPasswordField passwordField = new JPasswordField();
+
+        JButton loginButton = new JButton("Login");
+        JButton exitButton = new JButton("Exit");
+
+        panel.add(usernameLabel);
+        panel.add(usernameField);
+
+        panel.add(passwordLabel);
+        panel.add(passwordField);
+
+        panel.add(loginButton);
+        panel.add(exitButton);
+
+        frame.add(panel);
+
+        frame.setSize(400, 250);
+        frame.setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+
+        // LOGIN LISTENER
+        loginButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+
+                String username =
+                        usernameField.getText();
+
+                String password =
+                        new String(
+                                passwordField.getPassword()
+                        );
+
+                if (username.equals("admin")
+                        && password.equals("123")) {
+
+                    JOptionPane.showMessageDialog(
+                            frame,
+                            "Login Successful!"
+                    );
+
+                    frame.dispose();
+
+                    dashboard();
+
+                } else {
+
+                    JOptionPane.showMessageDialog(
+                            frame,
+                            "Username or Password is wrong!",
+                            "Login Error",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                }
+            }
+        });
+
+        // EXIT LISTENER
+        exitButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+
+                System.exit(0);
+            }
+        });
+    }
+
+
+    // DASHBOARD
+    public static void dashboard() {
+
+        JFrame frame = new JFrame(
+                "Library Management System"
         );
+
+        JPanel mainPanel =
+                new JPanel(new BorderLayout());
 
         JLabel welcomeLabel = new JLabel(
                 "Welcome to Library Management System",
                 SwingConstants.CENTER
         );
 
-        // Username
-        JLabel usernameLabel = new JLabel("Username");
-        JTextField usernameField = new JTextField();
-
-        // Password
-        JLabel passwordLabel = new JLabel("Password");
-        JPasswordField passwordField = new JPasswordField();
-
-        // Name
-        JLabel nameLabel = new JLabel("Name");
-        JTextField nameField = new JTextField();
-
-        // Mail
-        JLabel mailLabel = new JLabel("Mail");
-        JTextField mailField = new JTextField();
-
-        // Phone
-        JLabel phoneLabel = new JLabel("Ph Number");
-        JTextField phoneField = new JTextField();
-
-        // Gender
-        JLabel genderLabel = new JLabel("Gender");
-
-        JRadioButton maleButton = new JRadioButton("Male");
-        JRadioButton femaleButton = new JRadioButton("Female");
-        JRadioButton otherButton = new JRadioButton("Other");
-
-        ButtonGroup genderGroup = new ButtonGroup();
-        genderGroup.add(maleButton);
-        genderGroup.add(femaleButton);
-        genderGroup.add(otherButton);
-
-        JPanel genderPanel = new JPanel(
-                new FlowLayout(FlowLayout.LEFT)
+        // BUTTON PANEL
+        JPanel buttonPanel = new JPanel(
+                new GridLayout(3, 2, 20, 20)
         );
 
-        genderPanel.add(maleButton);
-        genderPanel.add(femaleButton);
-        genderPanel.add(otherButton);
+        JButton addBookButton =
+                new JButton("Add Book");
 
-        // Course
-        JLabel courseLabel = new JLabel("Course");
+        JButton viewBookButton =
+                new JButton("View Books");
 
-        JRadioButton btechButton = new JRadioButton("B.Tech");
-        JRadioButton bcaButton = new JRadioButton("BCA");
-        JRadioButton bscButton = new JRadioButton("B.Sc");
-        JRadioButton mcaButton = new JRadioButton("MCA");
+        JButton searchBookButton =
+                new JButton("Search Book");
 
-        ButtonGroup courseGroup = new ButtonGroup();
-        courseGroup.add(btechButton);
-        courseGroup.add(bcaButton);
-        courseGroup.add(bscButton);
-        courseGroup.add(mcaButton);
+        JButton logoutButton =
+                new JButton("Logout");
 
-        JPanel coursePanel = new JPanel(
-                new FlowLayout(FlowLayout.LEFT)
+        JButton exitButton =
+                new JButton("Exit");
+
+        buttonPanel.add(addBookButton);
+        buttonPanel.add(viewBookButton);
+
+        buttonPanel.add(searchBookButton);
+        buttonPanel.add(logoutButton);
+
+        buttonPanel.add(new JLabel(""));
+        buttonPanel.add(exitButton);
+
+        buttonPanel.setPreferredSize(
+                new Dimension(450, 350)
         );
 
-        coursePanel.add(btechButton);
-        coursePanel.add(bcaButton);
-        coursePanel.add(bscButton);
-        coursePanel.add(mcaButton);
+        mainPanel.add(
+                welcomeLabel,
+                BorderLayout.NORTH
+        );
 
-        // Buttons
-        JButton loginButton = new JButton("Login");
-        JButton clearButton = new JButton("Clear");
-
-        // Add components
-        formPanel.add(usernameLabel);
-        formPanel.add(usernameField);
-
-        formPanel.add(passwordLabel);
-        formPanel.add(passwordField);
-
-        formPanel.add(nameLabel);
-        formPanel.add(nameField);
-
-        formPanel.add(mailLabel);
-        formPanel.add(mailField);
-
-        formPanel.add(phoneLabel);
-        formPanel.add(phoneField);
-
-        formPanel.add(genderLabel);
-        formPanel.add(genderPanel);
-
-        formPanel.add(courseLabel);
-        formPanel.add(coursePanel);
-
-        formPanel.add(loginButton);
-        formPanel.add(clearButton);
-
-        centerPanel.add(formPanel);
-
-        mainPanel.add(welcomeLabel, BorderLayout.NORTH);
-        mainPanel.add(centerPanel, BorderLayout.CENTER);
+        mainPanel.add(
+                buttonPanel,
+                BorderLayout.CENTER
+        );
 
         frame.add(mainPanel);
 
-        // LOGIN BUTTON
-        loginButton.addActionListener(new ActionListener() {
+        // ADD BOOK
+        addBookButton.addActionListener(
+                new ActionListener() {
+
             public void actionPerformed(ActionEvent e) {
 
-                String username = usernameField.getText();
-                String password =
-                        new String(passwordField.getPassword());
+                String book =
+                        JOptionPane.showInputDialog(
+                                frame,
+                                "Enter Book Name:"
+                        );
 
-                String gender = "";
+                if (book != null &&
+                        !book.trim().isEmpty()) {
 
-                if (maleButton.isSelected())
-                    gender = "Male";
-                else if (femaleButton.isSelected())
-                    gender = "Female";
-                else if (otherButton.isSelected())
-                    gender = "Other";
-
-                String course = "";
-
-                if (btechButton.isSelected())
-                    course = "B.Tech";
-                else if (bcaButton.isSelected())
-                    course = "BCA";
-                else if (bscButton.isSelected())
-                    course = "B.Sc";
-                else if (mcaButton.isSelected())
-                    course = "MCA";
-
-                if (username.equals("admin")
-                        && password.equals("1234")) {
+                    books.add(book);
 
                     JOptionPane.showMessageDialog(
                             frame,
-                            "Login Successful!\n"
-                            + "Name: " + nameField.getText()
-                            + "\nMail: " + mailField.getText()
-                            + "\nPhone: " + phoneField.getText()
-                            + "\nGender: " + gender
-                            + "\nCourse: " + course
-                    );
-                }
-
-                else if (!username.equals("admin")
-                        && !password.equals("1234")) {
-
-                    JOptionPane.showMessageDialog(
-                            frame,
-                            "Username and Password are wrong!",
-                            "Login Error",
-                            JOptionPane.ERROR_MESSAGE
-                    );
-                }
-
-                else if (!username.equals("admin")) {
-
-                    JOptionPane.showMessageDialog(
-                            frame,
-                            "Username is wrong!",
-                            "Login Error",
-                            JOptionPane.ERROR_MESSAGE
-                    );
-                }
-
-                else {
-
-                    JOptionPane.showMessageDialog(
-                            frame,
-                            "Password is wrong!",
-                            "Login Error",
-                            JOptionPane.ERROR_MESSAGE
+                            "Book Added Successfully!"
                     );
                 }
             }
         });
 
-        // CLEAR BUTTON
-        clearButton.addActionListener(new ActionListener() {
+
+        // VIEW BOOKS
+        viewBookButton.addActionListener(
+                new ActionListener() {
+
             public void actionPerformed(ActionEvent e) {
 
-                usernameField.setText("");
-                passwordField.setText("");
-                nameField.setText("");
-                mailField.setText("");
-                phoneField.setText("");
+                if (books.isEmpty()) {
 
-                genderGroup.clearSelection();
-                courseGroup.clearSelection();
+                    JOptionPane.showMessageDialog(
+                            frame,
+                            "No books available."
+                    );
 
-                usernameField.requestFocus();
+                } else {
+
+                    String bookList = "";
+
+                    for (int i = 0;
+                            i < books.size(); i++) {
+
+                        bookList +=
+                                (i + 1)
+                                + ". "
+                                + books.get(i)
+                                + "\n";
+                    }
+
+                    JOptionPane.showMessageDialog(
+                            frame,
+                            bookList,
+                            "Available Books",
+                            JOptionPane.INFORMATION_MESSAGE
+                    );
+                }
             }
         });
 
-        // Frame settings
-        frame.setSize(650, 500);
+
+        // SEARCH BOOK
+        searchBookButton.addActionListener(
+                new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+
+                String search =
+                        JOptionPane.showInputDialog(
+                                frame,
+                                "Enter Book Name to Search:"
+                        );
+
+                if (search == null)
+                    return;
+
+                boolean found = false;
+
+                for (String book : books) {
+
+                    if (book.equalsIgnoreCase(search)) {
+
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (found) {
+
+                    JOptionPane.showMessageDialog(
+                            frame,
+                            "Book Found!"
+                    );
+
+                } else {
+
+                    JOptionPane.showMessageDialog(
+                            frame,
+                            "Book Not Found!"
+                    );
+                }
+            }
+        });
+
+
+        // LOGOUT
+        logoutButton.addActionListener(
+                new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+
+                int choice =
+                        JOptionPane.showConfirmDialog(
+                                frame,
+                                "Do you want to logout?",
+                                "Logout",
+                                JOptionPane.YES_NO_OPTION
+                        );
+
+                if (choice ==
+                        JOptionPane.YES_OPTION) {
+
+                    frame.dispose();
+
+                    loginWindow();
+                }
+            }
+        });
+
+
+        // EXIT
+        exitButton.addActionListener(
+                new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+
+                int choice =
+                        JOptionPane.showConfirmDialog(
+                                frame,
+                                "Do you want to exit?",
+                                "Exit",
+                                JOptionPane.YES_NO_OPTION
+                        );
+
+                if (choice ==
+                        JOptionPane.YES_OPTION) {
+
+                    System.exit(0);
+                }
+            }
+        });
+
+
+        frame.setSize(600, 550);
         frame.setLocationRelativeTo(null);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(
+                JFrame.EXIT_ON_CLOSE
+        );
         frame.setVisible(true);
     }
 }

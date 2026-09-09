@@ -206,6 +206,7 @@ model JobApplication {
   email          String
   phone          String
   position       String
+  category       String   @default("Consultant")
   jobOpeningId   String?
   jobOpening     JobOpening? @relation(fields: [jobOpeningId], references: [id])
   qualifications String

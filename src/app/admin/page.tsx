@@ -82,72 +82,85 @@ export default async function AdminDashboard() {
 
       {/* METRICS ROW */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="border-slate-100 shadow-sm relative overflow-hidden group">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-slate-600 uppercase tracking-wider">Today's Appts</CardTitle>
-            <Clock className="w-5 h-5 text-primary" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-slate-900">{todayAppointments.length}</div>
-            <p className="text-xs text-slate-500 mt-1 font-medium">Scheduled for today</p>
-          </CardContent>
-        </Card>
+        <Link href={`/admin/appointments?date=${format(today, "yyyy-MM-dd")}`} className="block">
+          <Card className="border-slate-100 shadow-sm relative overflow-hidden group hover:shadow-md transition-shadow h-full cursor-pointer">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium text-slate-600 uppercase tracking-wider">Today's Appts</CardTitle>
+              <Clock className="w-5 h-5 text-primary" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-slate-900">{todayAppointments.length}</div>
+              <p className="text-xs text-slate-500 mt-1 font-medium flex items-center gap-1 group-hover:text-primary transition-colors">
+                View all today <ChevronRight className="w-3 h-3" />
+              </p>
+            </CardContent>
+          </Card>
+        </Link>
 
-        <Card className="border-slate-100 shadow-sm relative overflow-hidden group">
-          <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-slate-600 uppercase tracking-wider">Pending Pay</CardTitle>
-            <CreditCard className="w-5 h-5 text-amber-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-slate-900">₹{pendingPaymentsValue.toLocaleString()}</div>
-            <Link href="/admin/payments?filter=pending" className="text-xs text-amber-600 hover:text-amber-700 mt-1 font-medium flex items-center gap-1">
-              {pendingPaymentsCount} appts pending <ChevronRight className="w-3 h-3" />
-            </Link>
-          </CardContent>
-        </Card>
+        <Link href="/admin/payments?filter=pending" className="block">
+          <Card className="border-slate-100 shadow-sm relative overflow-hidden group hover:shadow-md transition-shadow h-full cursor-pointer">
+            <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium text-slate-600 uppercase tracking-wider">Pending Pay</CardTitle>
+              <CreditCard className="w-5 h-5 text-amber-500" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-slate-900">₹{pendingPaymentsValue.toLocaleString()}</div>
+              <p className="text-xs text-amber-600 mt-1 font-medium flex items-center gap-1">
+                {pendingPaymentsCount} appts pending <ChevronRight className="w-3 h-3" />
+              </p>
+            </CardContent>
+          </Card>
+        </Link>
 
-        <Card className="border-slate-100 shadow-sm relative overflow-hidden group">
-          <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-slate-600 uppercase tracking-wider">Today's Revenue</CardTitle>
-            <IndianRupee className="w-5 h-5 text-emerald-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-slate-900">₹{todayTotalRevenue.toLocaleString()}</div>
-            <p className="text-[11px] text-slate-500 mt-1 font-medium flex gap-2">
-              <span className="text-emerald-600">Adv: ₹{todayAdvanceCollection}</span> 
-              <span className="text-blue-600">Bal: ₹{todayBalanceCollection}</span>
-            </p>
-          </CardContent>
-        </Card>
+        <Link href={`/admin/payments?view=transactions&date=${format(today, "yyyy-MM-dd")}`} className="block">
+          <Card className="border-slate-100 shadow-sm relative overflow-hidden group hover:shadow-md transition-shadow h-full cursor-pointer">
+            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium text-slate-600 uppercase tracking-wider">Today's Revenue</CardTitle>
+              <IndianRupee className="w-5 h-5 text-emerald-600" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-slate-900">₹{todayTotalRevenue.toLocaleString()}</div>
+              <p className="text-[11px] text-slate-500 mt-1 font-medium flex gap-2">
+                <span className="text-emerald-600">Adv: ₹{todayAdvanceCollection}</span> 
+                <span className="text-blue-600">Bal: ₹{todayBalanceCollection}</span>
+              </p>
+            </CardContent>
+          </Card>
+        </Link>
 
-        <Card className="border-slate-100 shadow-sm relative overflow-hidden group">
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-slate-600 uppercase tracking-wider">Active Faculty</CardTitle>
-            <Users className="w-5 h-5 text-blue-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-slate-900">{activeSpecialists}</div>
-            <Link href="/admin/specialists" className="text-xs text-blue-600 hover:text-blue-700 mt-1 font-medium flex items-center gap-1">
-              {pendingApprovals} pending approvals <ChevronRight className="w-3 h-3" />
-            </Link>
-          </CardContent>
-        </Card>
+        <Link href="/admin/specialists" className="block">
+          <Card className="border-slate-100 shadow-sm relative overflow-hidden group hover:shadow-md transition-shadow h-full cursor-pointer">
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium text-slate-600 uppercase tracking-wider">Active Faculty</CardTitle>
+              <Users className="w-5 h-5 text-blue-600" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-slate-900">{activeSpecialists}</div>
+              <p className="text-xs text-blue-600 hover:text-blue-700 mt-1 font-medium flex items-center gap-1">
+                {pendingApprovals} pending approvals <ChevronRight className="w-3 h-3" />
+              </p>
+            </CardContent>
+          </Card>
+        </Link>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* TODAY'S APPOINTMENTS */}
-        <Card className="border-slate-100 shadow-sm">
-          <CardHeader className="bg-slate-50/50 border-b border-slate-100 pb-4">
+        <Card className="border-slate-100 shadow-sm relative group/today overflow-hidden">
+          <Link href={`/admin/appointments?date=${format(today, "yyyy-MM-dd")}`} className="absolute inset-0 z-0" aria-label="View today's appointments" />
+          <CardHeader className="bg-slate-50/50 border-b border-slate-100 pb-4 relative z-10">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-lg font-semibold text-slate-900">Today's Appointments</CardTitle>
+              <CardTitle className="text-lg font-semibold text-slate-900 group-hover/today:text-primary transition-colors flex items-center gap-2">
+                Today's Appointments <ChevronRight className="w-4 h-4 opacity-0 group-hover/today:opacity-100 transition-opacity" />
+              </CardTitle>
               <span className="bg-primary/10 text-primary text-xs font-bold px-2.5 py-1 rounded-md">{format(today, "dd MMM yyyy")}</span>
             </div>
           </CardHeader>
-          <CardContent className="p-0">
+          <CardContent className="p-0 relative z-10">
             {todayAppointments.length === 0 ? (
               <div className="p-8 text-center text-slate-500 text-sm">No appointments scheduled for today.</div>
             ) : (
@@ -188,11 +201,13 @@ export default async function AdminDashboard() {
         </Card>
 
         {/* UPCOMING APPOINTMENTS */}
-        <Card className="border-slate-100 shadow-sm">
-          <CardHeader className="bg-slate-50/50 border-b border-slate-100 pb-4">
+        <Card className="border-slate-100 shadow-sm relative group overflow-hidden">
+          <Link href="/admin/appointments?filter=upcoming" className="absolute inset-0 z-0" aria-label="View upcoming appointments" />
+          <CardHeader className="bg-slate-50/50 border-b border-slate-100 pb-4 relative z-10 flex flex-row items-center justify-between">
             <CardTitle className="text-lg font-semibold text-slate-900">Upcoming Appointments</CardTitle>
+            <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-primary transition-colors" />
           </CardHeader>
-          <CardContent className="p-0">
+          <CardContent className="p-0 relative z-10">
             {upcomingAppointments.length === 0 ? (
               <div className="p-8 text-center text-slate-500 text-sm">No upcoming appointments.</div>
             ) : (
