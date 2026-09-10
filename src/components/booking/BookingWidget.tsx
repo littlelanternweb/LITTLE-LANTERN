@@ -82,15 +82,34 @@ export function BookingWidget({ specialistId, fee }: { specialistId: string, fee
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
 
-      // 3. Initialize Razorpay Checkout
+      // 3. Initialize Razorpay Checkout (or Mock Bypass)
+      if (data.mock) {
+        // Test Mode / Local Bypass
+        await fetch("/api/verify-payment", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            appointmentId: data.appointmentId,
+            razorpay_payment_id: `mock_pay_${Date.now()}`,
+            razorpay_order_id: data.orderId,
+            razorpay_signature: "mock_signature"
+          })
+        });
+        toast.success("Test Booking confirmed successfully!");
+        setStep(4);
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Real Razorpay Flow
       const options = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_TYp8jX5XxhQIuV", // Fallback to provided key
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID, 
         amount: data.amount,
         currency: data.currency,
         name: "Little Lantern",
         description: "Consultation Booking",
         image: "/logo.jpg",
-        order_id: data.mock ? undefined : data.orderId, // only pass order_id if it's real
+        order_id: data.orderId,
         handler: async function (response: any) {
           try {
             // 4. Verify payment on backend
