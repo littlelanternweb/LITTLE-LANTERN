@@ -63,6 +63,7 @@ export function AppointmentDetailClient({ appointment, specialists, isAdmin }: a
     } else {
       toast.success("Transaction updated");
       setEditTxOpen(false);
+      setTimeout(() => window.location.reload(), 500);
     }
   };
 
@@ -79,6 +80,7 @@ export function AppointmentDetailClient({ appointment, specialists, isAdmin }: a
     } else {
       toast.success("Payment recorded");
       setPayOpen(false);
+      setTimeout(() => window.location.reload(), 500);
     }
   };
 
@@ -94,6 +96,7 @@ export function AppointmentDetailClient({ appointment, specialists, isAdmin }: a
     } else {
       toast.success("Faculty reassigned");
       setAssignOpen(false);
+      setTimeout(() => window.location.reload(), 500);
     }
   };
 
