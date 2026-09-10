@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { markBalanceReceived, reassignFaculty } from "@/app/actions/admin-appointments";
+import { markBalanceReceived, reassignFaculty, editOfflinePayment } from "@/app/actions/admin-appointments";
 import { toast } from "sonner";
 import { IndianRupee, ArrowLeft, RefreshCw, CheckCircle, CreditCard, UserPlus } from "lucide-react";
 import Link from "next/link";
@@ -45,9 +45,6 @@ export function AppointmentDetailClient({ appointment, specialists, isAdmin }: a
   const handleEditTx = async () => {
     if (editAmount === "" || Number(editAmount) <= 0) return toast.error("Invalid amount");
     setLoading(true);
-    
-    // We import editOfflinePayment dynamically or from the top level
-    const { editOfflinePayment } = await import("@/app/actions/admin-appointments");
     
     const res = await editOfflinePayment(editTxId, {
       amount: Number(editAmount),
