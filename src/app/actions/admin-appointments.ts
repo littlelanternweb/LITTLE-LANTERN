@@ -275,9 +275,6 @@ export async function editOfflinePayment(transactionId: string, updates: { amoun
     });
 
     if (!transaction) return { error: "Transaction not found" };
-    if (transaction.type !== "BALANCE" && transaction.type !== "OTHER") {
-      return { error: "Only offline balance/other payments can be edited." };
-    }
     
     // Prevent negative or zero amounts
     if (updates.amount <= 0) {
@@ -287,18 +284,23 @@ export async function editOfflinePayment(transactionId: string, updates: { amoun
     const apt = transaction.appointment;
     const oldAmount = transaction.amount;
     const newAmount = updates.amount;
-
-    // Recalculate Appointment balance
-    // balancePaid should be updated by the difference
     const amountDifference = newAmount - oldAmount;
-    const newBalancePaid = apt.balancePaid + amountDifference;
+
+    let newAdvancePaid = apt.advancePaid;
+    let newBalancePaid = apt.balancePaid;
+
+    if (transaction.type === "ADVANCE") {
+      newAdvancePaid += amountDifference;
+    } else {
+      newBalancePaid += amountDifference;
+    }
 
     // Validate that new balance doesn't exceed total amount
-    if ((apt.advancePaid + newBalancePaid) > apt.totalAmount) {
+    if ((newAdvancePaid + newBalancePaid) > apt.totalAmount) {
       return { error: "Updated amount exceeds the total consultation fee." };
     }
 
-    const isFullyPaid = (apt.advancePaid + newBalancePaid) >= apt.totalAmount;
+    const isFullyPaid = (newAdvancePaid + newBalancePaid) >= apt.totalAmount;
 
     // Update Transaction
     await prisma.transaction.update({
@@ -316,6 +318,7 @@ export async function editOfflinePayment(transactionId: string, updates: { amoun
     await prisma.appointment.update({
       where: { id: apt.id },
       data: {
+        advancePaid: newAdvancePaid,
         balancePaid: newBalancePaid,
         paymentStatus: isFullyPaid ? "FULLY_PAID" : "PARTIALLY_PAID"
       }

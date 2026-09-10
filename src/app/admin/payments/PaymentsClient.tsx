@@ -245,20 +245,16 @@ export function PaymentsClient({ initialAppointments, initialTransactions, initi
                         </td>
                         <td className="px-6 py-4 text-right">
                           <div className="flex flex-col items-end gap-2">
-                            {(t.type === "BALANCE" || t.type === "OTHER") ? (
-                              <Button variant="ghost" size="sm" onClick={() => {
-                                setEditTx(t);
-                                setEditAmount(t.amount);
-                                setEditMethod(t.method);
-                                setEditDate(new Date(t.date).toISOString().slice(0,16));
-                                setEditNotes(t.notes || "");
-                                setEditRef(t.reference || "");
-                              }} className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 border border-blue-100">
-                                <Edit className="w-4 h-4 mr-1.5" /> Edit
-                              </Button>
-                            ) : (
-                              <span className="text-xs text-slate-400 italic">Online Advance</span>
-                            )}
+                            <Button variant="ghost" size="sm" onClick={() => {
+                              setEditTx(t);
+                              setEditAmount(t.amount);
+                              setEditMethod(t.method);
+                              setEditDate(new Date(t.date).toISOString().slice(0, 16));
+                              setEditNotes(t.notes || "");
+                              setEditRef(t.reference || "");
+                            }} className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 border border-blue-100">
+                              <Edit className="w-4 h-4 mr-1.5" /> Edit
+                            </Button>
                             <Button asChild size="sm" variant="ghost" className="h-8 text-slate-500">
                               <Link href={`/admin/appointments/${t.appointmentId}`}><Eye className="w-3 h-3 mr-1.5" /> View</Link>
                             </Button>

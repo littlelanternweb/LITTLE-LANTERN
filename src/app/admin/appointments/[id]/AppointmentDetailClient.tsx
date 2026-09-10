@@ -218,7 +218,7 @@ export function AppointmentDetailClient({ appointment, specialists, isAdmin }: a
                           <p className="font-bold text-slate-900">₹{t.amount}</p>
                           <p className="text-[10px] font-medium text-emerald-600 uppercase">{t.status}</p>
                         </div>
-                        {isAdmin && (t.type === "BALANCE" || t.type === "OTHER") && (
+                        {isAdmin && (
                           <Button variant="ghost" size="sm" onClick={() => openEditModal(t)} className="h-6 px-2 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50">
                             Edit
                           </Button>
