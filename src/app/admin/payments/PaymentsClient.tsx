@@ -4,13 +4,14 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Eye, CreditCard, Search, ArrowLeft, IndianRupee, Edit } from "lucide-react";
+import { Eye, CreditCard, Search, ArrowLeft, IndianRupee, Edit, FileText, Download } from "lucide-react";
 import { format } from "date-fns";
 import Link from "next/link";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { markBalanceReceived, editOfflinePayment } from "@/app/actions/admin-appointments";
+import { generateInvoice } from "@/app/actions/admin-invoices";
 
 export function PaymentsClient({ initialAppointments, initialTransactions, initialFilter }: any) {
   const [view, setView] = useState(initialFilter === "pending" ? "appointments" : "transactions");
@@ -21,6 +22,15 @@ export function PaymentsClient({ initialAppointments, initialTransactions, initi
   const [methodFilter, setMethodFilter] = useState("ALL");
 
   const [loading, setLoading] = useState(false);
+  const [invoiceLoadingId, setInvoiceLoadingId] = useState<string | null>(null);
+
+  const handleDownloadInvoice = async (aptId: string) => {
+    setInvoiceLoadingId(aptId);
+    const res = await generateInvoice(aptId);
+    if (res.error) toast.error(res.error);
+    else window.open(`/invoice/${res.token}`, "_blank");
+    setInvoiceLoadingId(null);
+  };
 
   // Modals state
   const [payApt, setPayApt] = useState<any>(null);
@@ -182,6 +192,9 @@ export function PaymentsClient({ initialAppointments, initialTransactions, initi
                         </td>
                         <td className="px-6 py-4 text-right">
                           <div className="flex flex-col items-end gap-2">
+                            <Button size="sm" variant="outline" className="h-8" onClick={() => handleDownloadInvoice(apt.id)} disabled={invoiceLoadingId === apt.id}>
+                              {invoiceLoadingId === apt.id ? <IndianRupee className="w-3 h-3 mr-1.5 animate-pulse" /> : <FileText className="w-3 h-3 mr-1.5" />} Invoice
+                            </Button>
                             <Button asChild size="sm" variant="outline" className="h-8">
                               <Link href={`/admin/appointments/${apt.id}`}><Eye className="w-3 h-3 mr-1.5" /> View</Link>
                             </Button>
@@ -254,6 +267,9 @@ export function PaymentsClient({ initialAppointments, initialTransactions, initi
                               setEditRef(t.reference || "");
                             }} className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 border border-blue-100">
                               <Edit className="w-4 h-4 mr-1.5" /> Edit
+                            </Button>
+                            <Button size="sm" variant="ghost" onClick={() => handleDownloadInvoice(t.appointmentId)} disabled={invoiceLoadingId === t.appointmentId} className="h-8 text-slate-500">
+                              {invoiceLoadingId === t.appointmentId ? <IndianRupee className="w-3 h-3 mr-1.5 animate-pulse" /> : <FileText className="w-3 h-3 mr-1.5" />} Invoice
                             </Button>
                             <Button asChild size="sm" variant="ghost" className="h-8 text-slate-500">
                               <Link href={`/admin/appointments/${t.appointmentId}`}><Eye className="w-3 h-3 mr-1.5" /> View</Link>

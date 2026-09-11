@@ -29,8 +29,7 @@ export async function POST(req: Request) {
     if (!initialAppointment) {
       return NextResponse.json({ error: "Appointment not found" }, { status: 404 });
     }
-    
-    const advanceAmountPaid = Math.round(initialAppointment.specialist.advanceAmount ?? (initialAppointment.specialist.consultationFee * 0.25));
+    const advanceAmountPaid = Math.round(initialAppointment.specialist.consultationFee * 0.25);
 
     // 2. Update Appointment Status and Payment Fields
     const appointment = await prisma.appointment.update({

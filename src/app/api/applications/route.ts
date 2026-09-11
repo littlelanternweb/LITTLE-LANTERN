@@ -19,6 +19,7 @@ export async function POST(request: Request) {
         currentOrg: body.currentOrg || null,
         specialisation: body.specialisation || null,
         resumeUrl: body.resumeUrl,
+        photoUrl: body.photoUrl || null,
         message: body.message || null,
         status: "NEW", // Default status
       },

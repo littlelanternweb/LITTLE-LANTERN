@@ -1,5 +1,6 @@
 export const ROLES = {
   SUPER_ADMIN: "SUPER_ADMIN",
+  ADMIN: "ADMIN",
   MANAGER: "MANAGER",
   RECEPTIONIST: "RECEPTIONIST",
   HR: "HR",
@@ -28,6 +29,7 @@ export const PERMISSIONS = {
 
 const ROLE_PERMISSIONS: Record<string, string[]> = {
   [ROLES.SUPER_ADMIN]: Object.values(PERMISSIONS), // Has all permissions
+  [ROLES.ADMIN]: Object.values(PERMISSIONS), // Has all permissions
   
   [ROLES.MANAGER]: [
     PERMISSIONS.DASHBOARD_VIEW,

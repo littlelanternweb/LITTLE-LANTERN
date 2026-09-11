@@ -167,16 +167,41 @@ export const emailTemplates = {
 
   // 4. Test Email
   testEmail: async (to: string) => {
-    const subject = `Test Email — Little Lantern`;
+    const subject = `Little Lantern Email Test`;
     const content = `
-      <h2 class="title">Test Configuration</h2>
-      <p>If you are seeing this email, your Little Lantern email automation is configured correctly and successfully sending through your SMTP provider.</p>
-      <div class="box">
-        <div class="box-row"><div class="box-label">Status</div><div class="box-value">Success</div></div>
-        <div class="box-row"><div class="box-label">Time</div><div class="box-value">${new Date().toLocaleString()}</div></div>
-      </div>
+      <h2 class="title">Connection Successful</h2>
+      <p>This is a test email from Little Lantern's system.</p>
+      <p>If you are receiving this, your SMTP configuration is perfectly set up and ready for production.</p>
     `;
-    return sendEmail(to, subject, premiumWrapper(content), "TEST_EMAIL");
+    return sendEmail(to, subject, premiumWrapper(content), "SYSTEM_TEST");
+  },
+
+  // 5. Invoice Delivery
+  invoiceDelivery: async (
+    to: string,
+    customerName: string,
+    invoiceNumber: string,
+    token: string,
+    financials: { total: number, paid: number, balance: number }
+  ) => {
+    const subject = `Little Lantern — Invoice ${invoiceNumber}`;
+    const content = `
+      <h2 class="title">Invoice Available</h2>
+      <p>Dear ${customerName},</p>
+      <p>Thank you for choosing Little Lantern. Your invoice is ready for download.</p>
+      
+      <div class="box">
+        <div class="box-row"><div class="box-label">Invoice No</div><div class="box-value">${invoiceNumber}</div></div>
+        <div class="box-row"><div class="box-label">Total Fee</div><div class="box-value">₹${financials.total}</div></div>
+        <div class="box-row"><div class="box-label">Total Paid</div><div class="box-value">₹${financials.paid}</div></div>
+        <div class="box-row"><div class="box-label">Balance Due</div><div class="box-value">₹${financials.balance}</div></div>
+      </div>
+
+      <a href="${baseUrl}/invoice/${token}" class="btn">View & Download PDF</a>
+      
+      <p style="margin-top: 32px; font-size: 14px; color: #64748B;">For your security, this link is private. Please do not share it.</p>
+    `;
+    return sendEmail(to, subject, premiumWrapper(content), "INVOICE_DELIVERY");
   },
 
   // 5. Reminder Email

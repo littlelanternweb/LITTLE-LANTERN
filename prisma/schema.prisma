@@ -87,6 +87,7 @@ model Customer {
   
   children     Child[]
   appointments Appointment[]
+  invoices     Invoice[]
   createdAt    DateTime @default(now())
 }
 
@@ -140,6 +141,7 @@ model Appointment {
   customer        Customer   @relation(fields: [customerId], references: [id])
   child           Child      @relation(fields: [childId], references: [id])
   payment         Payment?
+  invoice         Invoice?
   transactions    Transaction[]
   
   createdAt       DateTime   @default(now())
@@ -214,8 +216,15 @@ model JobApplication {
   currentOrg     String?
   specialisation String?
   resumeUrl      String
+  photoUrl       String?
   message        String?
-  status         String   // NEW, REVIEWING, SHORTLISTED, SELECTED, REJECTED
+  status         String   // NEW, REVIEWING, SHORTLISTED, SELECTED, REJECTED, ACCEPTED, DECLINED
+  
+  // Faculty Conversion Tracking
+  convertedAt           DateTime?
+  convertedSpecialistId String?
+  convertedUserId       String?
+  
   createdAt      DateTime @default(now())
 }
 
@@ -236,4 +245,18 @@ model EmailLog {
   error     String?
   
   createdAt DateTime @default(now())
+}
+
+model Invoice {
+  id            String   @id @default(cuid())
+  invoiceNumber String   @unique // LL-INV-2026-0001
+  appointmentId String   @unique
+  customerId    String
+  date          DateTime @default(now())
+  pdfUrl        String?
+  token         String   @unique // For secure access
+  
+  appointment   Appointment @relation(fields: [appointmentId], references: [id])
+  customer      Customer    @relation(fields: [customerId], references: [id])
+  createdAt     DateTime    @default(now())
 }

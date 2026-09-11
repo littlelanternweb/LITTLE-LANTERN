@@ -9,6 +9,8 @@ export function ApplicationModal({ isOpen, onClose, selectedJob }: { isOpen: boo
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -21,18 +23,46 @@ export function ApplicationModal({ isOpen, onClose, selectedJob }: { isOpen: boo
     message: "",
   });
 
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert("File too large. Maximum size is 5MB.");
+        return;
+      }
+      setPhotoFile(file);
+      setPhotoPreview(URL.createObjectURL(file));
+    }
+  };
+
+  const removePhoto = () => {
+    setPhotoFile(null);
+    if (photoPreview) URL.revokeObjectURL(photoPreview);
+    setPhotoPreview(null);
+  };
+
   const submitApplication = async (e: React.FormEvent) => {
     e.preventDefault();
 
     setIsSubmitting(true);
 
     try {
-      // Send directly without resume upload
+      let uploadedPhotoUrl = null;
+
+      if (photoFile) {
+        uploadedPhotoUrl = await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.readAsDataURL(photoFile);
+        });
+      }
+
       const payload = {
         ...formData,
         position: selectedJob?.title || "General Application",
         jobOpeningId: selectedJob?.id || null,
         resumeUrl: "Not Provided", // dummy string since DB schema requires it
+        photoUrl: uploadedPhotoUrl,
       };
 
       const submitRes = await fetch("/api/applications", {
@@ -50,7 +80,8 @@ export function ApplicationModal({ isOpen, onClose, selectedJob }: { isOpen: boo
         onClose();
         setIsSuccess(false);
         setStep(1);
-        setFormData({ name: "", email: "", phone: "", qualifications: "", experience: "", currentOrg: "", specialisation: "", message: "" });
+        setFormData({ name: "", email: "", phone: "", category: "", qualifications: "", experience: "", currentOrg: "", specialisation: "", message: "" });
+        removePhoto();
       }, 3000);
 
     } catch (error) {
@@ -102,21 +133,48 @@ export function ApplicationModal({ isOpen, onClose, selectedJob }: { isOpen: boo
               ) : (
                 <form id="applicationForm" onSubmit={submitApplication}>
                   
-                  {step === 1 && (
-                    <div className="space-y-6">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                        <div>
-                          <label className="block text-sm font-medium text-[#292524] mb-1.5">Full Name *</label>
-                          <input required type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-[#E7E5E4] bg-[#FCFBF9] focus:outline-none focus:ring-2 focus:ring-[#00A693]/20 focus:border-[#00A693] transition-all" />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-[#292524] mb-1.5">Email Address *</label>
-                          <input required type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-[#E7E5E4] bg-[#FCFBF9] focus:outline-none focus:ring-2 focus:ring-[#00A693]/20 focus:border-[#00A693] transition-all" />
-                        </div>
+                  <div className={step === 1 ? "space-y-6 block" : "hidden"}>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-sm font-medium text-[#292524] mb-1.5">Full Name *</label>
+                        <input required type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-[#E7E5E4] bg-[#FCFBF9] focus:outline-none focus:ring-2 focus:ring-[#00A693]/20 focus:border-[#00A693] transition-all" />
                       </div>
+                      <div>
+                        <label className="block text-sm font-medium text-[#292524] mb-1.5">Email Address *</label>
+                        <input required type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-[#E7E5E4] bg-[#FCFBF9] focus:outline-none focus:ring-2 focus:ring-[#00A693]/20 focus:border-[#00A693] transition-all" />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                       <div>
                         <label className="block text-sm font-medium text-[#292524] mb-1.5">Phone Number *</label>
                         <input required type="tel" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-[#E7E5E4] bg-[#FCFBF9] focus:outline-none focus:ring-2 focus:ring-[#00A693]/20 focus:border-[#00A693] transition-all" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-[#292524] mb-1.5">Professional Photo</label>
+                        {!photoPreview ? (
+                          <div className="mt-1 flex justify-center rounded-xl border border-dashed border-gray-300 px-6 py-8">
+                            <div className="text-center">
+                              <div className="mt-4 flex text-sm leading-6 text-gray-600 justify-center">
+                                <label
+                                  htmlFor="photo-upload"
+                                  className="relative cursor-pointer rounded-md bg-white font-semibold text-[#00A693] focus-within:outline-none focus-within:ring-2 focus-within:ring-[#00A693] hover:text-[#008f7d]"
+                                >
+                                  <span>Upload a file</span>
+                                  <input id="photo-upload" name="photo-upload" type="file" className="sr-only" accept="image/jpeg, image/png, image/webp" onChange={handlePhotoChange} />
+                                </label>
+                                <p className="pl-1">or drag and drop</p>
+                              </div>
+                              <p className="text-xs leading-5 text-gray-500">PNG, JPG, WebP up to 5MB</p>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="relative inline-block mt-2">
+                            <img src={photoPreview} alt="Preview" className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md" />
+                            <button type="button" onClick={removePhoto} className="absolute -top-2 -right-2 bg-rose-500 text-white rounded-full p-1 shadow-sm hover:bg-rose-600">
+                              <X className="w-3 h-3" />
+                            </button>
+                          </div>
+                        )}
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-[#292524] mb-1.5">Professional Category *</label>
@@ -137,10 +195,9 @@ export function ApplicationModal({ isOpen, onClose, selectedJob }: { isOpen: boo
                         <input required type="text" value={formData.qualifications} onChange={e => setFormData({...formData, qualifications: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-[#E7E5E4] bg-[#FCFBF9] focus:outline-none focus:ring-2 focus:ring-[#00A693]/20 focus:border-[#00A693] transition-all" />
                       </div>
                     </div>
-                  )}
+                  </div>
 
-                  {step === 2 && (
-                    <div className="space-y-6">
+                  <div className={step === 2 ? "space-y-6 block" : "hidden"}>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div>
                           <label className="block text-sm font-medium text-[#292524] mb-1.5">Years of Experience *</label>
@@ -157,11 +214,8 @@ export function ApplicationModal({ isOpen, onClose, selectedJob }: { isOpen: boo
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-[#292524] mb-1.5">Cover Letter / Message</label>
-                        <textarea rows={3} value={formData.message} onChange={e => setFormData({...formData, message: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-[#E7E5E4] bg-[#FCFBF9] focus:outline-none focus:ring-2 focus:ring-[#00A693]/20 focus:border-[#00A693] transition-all resize-none" />
-                      </div>
                     </div>
-                  )}
-
+                  </div>
                 </form>
               )}
             </div>
@@ -181,7 +235,23 @@ export function ApplicationModal({ isOpen, onClose, selectedJob }: { isOpen: boo
                     </Button>
                   )}
                   {step === 1 ? (
-                    <Button type="button" onClick={() => setStep(2)} className="bg-[#00A693] hover:bg-[#047857] text-white rounded-xl px-8 h-11 shadow-sm">
+                    <Button type="button" onClick={() => {
+                      const form = document.getElementById("applicationForm") as HTMLFormElement;
+                      if (!form) return;
+                      // Temporarily disable step 2 required fields for validation of step 1
+                      const isStep1Valid = Array.from(form.elements).filter(el => {
+                        const input = el as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+                        // check only fields currently visible (which are step 1 fields)
+                        if (input.closest('.hidden')) return false;
+                        return !input.checkValidity();
+                      }).length === 0;
+
+                      if (isStep1Valid) {
+                        setStep(2);
+                      } else {
+                        form.reportValidity();
+                      }
+                    }} className="bg-[#00A693] hover:bg-[#047857] text-white rounded-xl px-8 h-11 shadow-sm">
                       Next Step
                     </Button>
                   ) : (

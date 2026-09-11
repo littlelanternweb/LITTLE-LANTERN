@@ -8,8 +8,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { markBalanceReceived, reassignFaculty, editOfflinePayment } from "@/app/actions/admin-appointments";
+import { generateInvoice, sendInvoiceEmail } from "@/app/actions/admin-invoices";
 import { toast } from "sonner";
-import { IndianRupee, ArrowLeft, RefreshCw, CheckCircle, CreditCard, UserPlus } from "lucide-react";
+import { IndianRupee, ArrowLeft, RefreshCw, CheckCircle, CreditCard, UserPlus, FileText, Download, Send, MessageCircle } from "lucide-react";
 import Link from "next/link";
 
 export function AppointmentDetailClient({ appointment, specialists, isAdmin }: any) {
@@ -18,6 +19,65 @@ export function AppointmentDetailClient({ appointment, specialists, isAdmin }: a
   const [paymentNotes, setPaymentNotes] = useState("");
   const [reassignSpecId, setReassignSpecId] = useState(appointment.specialistId);
   const [loading, setLoading] = useState(false);
+  const [invoiceLoading, setInvoiceLoading] = useState(false);
+
+  const handleGenerateInvoice = async () => {
+    setInvoiceLoading(true);
+    const res = await generateInvoice(appointment.id);
+    if (res.error) toast.error(res.error);
+    else window.open(`/invoice/${res.token}`, "_blank");
+    setInvoiceLoading(false);
+  };
+
+  const handleSendEmail = async () => {
+    setInvoiceLoading(true);
+    // Ensure invoice exists first
+    const invRes = await generateInvoice(appointment.id);
+    if (invRes.error) {
+      toast.error(invRes.error);
+      setInvoiceLoading(false);
+      return;
+    }
+    const res = await sendInvoiceEmail(appointment.id);
+    if (res.error) toast.error(res.error);
+    else toast.success("Invoice sent successfully to customer email.");
+    setInvoiceLoading(false);
+  };
+
+  const handleWhatsApp = async () => {
+    setInvoiceLoading(true);
+    const invRes = await generateInvoice(appointment.id);
+    if (invRes.error) {
+      toast.error(invRes.error);
+      setInvoiceLoading(false);
+      return;
+    }
+    
+    const invoiceUrl = `${window.location.origin}/invoice/${invRes.token}`;
+    const amount = appointment.totalAmount;
+    const paid = appointment.advancePaid + appointment.balancePaid;
+    const bal = amount - paid;
+    
+    const message = `Hello ${appointment.customer.name},
+
+Thank you for choosing Little Lantern.
+
+Your invoice for appointment ${appointment.id} is ready.
+
+Total: ₹${amount}
+Paid: ₹${paid}
+Balance: ₹${bal}
+
+Please find your secure invoice here:
+${invoiceUrl}
+
+Little Lantern — Child Consultation Centre
++91 99617 57373`;
+
+    const waLink = `https://wa.me/${appointment.customer.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`;
+    window.open(waLink, "_blank");
+    setInvoiceLoading(false);
+  };
   const [payOpen, setPayOpen] = useState(false);
   const [assignOpen, setAssignOpen] = useState(false);
 
@@ -307,6 +367,42 @@ export function AppointmentDetailClient({ appointment, specialists, isAdmin }: a
               )}
             </CardContent>
           </Card>
+
+          {/* INVOICE CARD */}
+          <Card>
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <FileText className="w-5 h-5 text-slate-500" /> Invoicing
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <Button 
+                variant="outline" 
+                className="w-full justify-start text-slate-700 font-medium h-11" 
+                onClick={handleGenerateInvoice}
+                disabled={invoiceLoading}
+              >
+                <Download className="w-4 h-4 mr-3 text-slate-400" /> View & Download Invoice
+              </Button>
+              <Button 
+                variant="outline" 
+                className="w-full justify-start text-slate-700 font-medium h-11" 
+                onClick={handleSendEmail}
+                disabled={invoiceLoading}
+              >
+                <Send className="w-4 h-4 mr-3 text-slate-400" /> Send via Email
+              </Button>
+              <Button 
+                variant="outline" 
+                className="w-full justify-start text-[#128C7E] border-[#128C7E]/20 hover:bg-[#128C7E]/5 font-medium h-11" 
+                onClick={handleWhatsApp}
+                disabled={invoiceLoading}
+              >
+                <MessageCircle className="w-4 h-4 mr-3" /> Send via WhatsApp
+              </Button>
+            </CardContent>
+          </Card>
+
         </div>
       </div>
 

@@ -2,9 +2,11 @@
 
 import { useState, useTransition } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Download, FileText, ChevronDown, Loader2 } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Download, FileText, ChevronDown, Loader2, Eye, UserPlus } from "lucide-react";
 import { format } from "date-fns";
-import { updateJobApplicationStatus } from "@/app/actions/admin-applications";
+import { updateJobApplicationStatus, convertApplicationToFaculty } from "@/app/actions/admin-applications";
 import { toast } from "sonner";
 
 export function JobsClient({ initialApplications }: { initialApplications: any[] }) {
@@ -13,6 +15,27 @@ export function JobsClient({ initialApplications }: { initialApplications: any[]
   const [categoryFilter, setCategoryFilter] = useState("ALL");
   const [isPending, startTransition] = useTransition();
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [selectedApp, setSelectedApp] = useState<any | null>(null);
+  const [isConverting, setIsConverting] = useState(false);
+
+  const handleConvert = async (app: any) => {
+    if (!confirm(`Convert ${app.name} to Faculty/Specialist?`)) return;
+    setIsConverting(true);
+    try {
+      const res = await convertApplicationToFaculty(app.id);
+      if (res.error) {
+        toast.error(res.error);
+      } else {
+        toast.success("Successfully converted to Faculty!");
+        setApplications(apps => apps.map(a => a.id === app.id ? { ...a, convertedAt: new Date() } : a));
+        setSelectedApp(null);
+      }
+    } catch (e) {
+      toast.error("Failed to convert.");
+    } finally {
+      setIsConverting(false);
+    }
+  };
 
   const FACULTY_CATEGORIES = [
     "Clinical Psychologist", "Child Psychologist", "Counsellor", 
@@ -139,18 +162,23 @@ export function JobsClient({ initialApplications }: { initialApplications: any[]
                         {updatingId === app.id && <Loader2 className="w-4 h-4 text-[#00A693] animate-spin" />}
                       </td>
                     <td className="px-6 py-4 text-right">
-                      {app.resumeUrl ? (
-                        <a 
-                          href={app.resumeUrl} 
-                          target="_blank" 
-                          rel="noreferrer"
-                          className="inline-flex items-center gap-1.5 text-sm font-medium text-[#047857] hover:text-[#065F46] hover:bg-[#F0FDF4] px-3 py-1.5 rounded-lg transition-colors"
-                        >
-                          <FileText className="w-4 h-4" /> View
-                        </a>
-                      ) : (
-                        <span className="text-stone-400 text-xs">No Resume</span>
-                      )}
+                      <div className="flex flex-col items-end gap-2">
+                        {app.resumeUrl ? (
+                          <a 
+                            href={app.resumeUrl} 
+                            target="_blank" 
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-1.5 text-sm font-medium text-[#047857] hover:text-[#065F46] hover:bg-[#F0FDF4] px-3 py-1.5 rounded-lg transition-colors"
+                          >
+                            <FileText className="w-4 h-4" /> Resume
+                          </a>
+                        ) : (
+                          <span className="text-stone-400 text-xs">No Resume</span>
+                        )}
+                        <Button variant="outline" size="sm" onClick={() => setSelectedApp(app)} className="h-7 text-xs">
+                          <Eye className="w-3 h-3 mr-1" /> View Details
+                        </Button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -159,6 +187,74 @@ export function JobsClient({ initialApplications }: { initialApplications: any[]
           </div>
         )}
       </CardContent>
+
+      <Dialog open={!!selectedApp} onOpenChange={(open) => !open && setSelectedApp(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Application Details</DialogTitle>
+          </DialogHeader>
+          {selectedApp && (
+            <div className="space-y-6 mt-4">
+              <div className="flex items-start gap-6">
+                {selectedApp.photoUrl ? (
+                  <img src={selectedApp.photoUrl} alt="Applicant" className="w-24 h-24 rounded-full object-cover border" />
+                ) : (
+                  <div className="w-24 h-24 rounded-full bg-slate-100 border flex items-center justify-center text-slate-400">No Photo</div>
+                )}
+                <div>
+                  <h3 className="text-xl font-semibold text-slate-900">{selectedApp.name}</h3>
+                  <p className="text-slate-500">{selectedApp.email} • {selectedApp.phone}</p>
+                  <div className="mt-2 text-sm">
+                    <span className="font-medium text-slate-700">Category:</span> <span className="text-emerald-600 font-semibold uppercase">{selectedApp.category}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 text-sm bg-slate-50 p-4 rounded-xl border">
+                <div><span className="text-slate-500 font-medium block">Position Applied</span> {selectedApp.position}</div>
+                <div><span className="text-slate-500 font-medium block">Experience</span> {selectedApp.experience}</div>
+                <div><span className="text-slate-500 font-medium block">Qualifications</span> {selectedApp.qualifications}</div>
+                <div><span className="text-slate-500 font-medium block">Current Org</span> {selectedApp.currentOrg || "-"}</div>
+              </div>
+
+              {selectedApp.message && (
+                <div className="text-sm bg-slate-50 p-4 rounded-xl border">
+                  <span className="text-slate-500 font-medium block mb-1">Message</span>
+                  <p className="text-slate-700 whitespace-pre-wrap">{selectedApp.message}</p>
+                </div>
+              )}
+
+              <div className="flex items-center justify-between pt-4 border-t">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium text-slate-700">Status:</span>
+                  <span className={`text-xs font-bold uppercase px-2 py-1 rounded-md ${statusColors[selectedApp.status] || "bg-slate-100 text-slate-700"}`}>
+                    {selectedApp.status}
+                  </span>
+                </div>
+                
+                {selectedApp.convertedAt ? (
+                  <span className="text-sm text-emerald-600 font-medium bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-100">
+                    Already converted to Faculty
+                  </span>
+                ) : (
+                  <Button 
+                    disabled={selectedApp.status !== "ACCEPTED" || isConverting} 
+                    onClick={() => handleConvert(selectedApp)}
+                    className="bg-primary text-white hover:bg-primary/90"
+                  >
+                    {isConverting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <UserPlus className="w-4 h-4 mr-2" />}
+                    Convert to Faculty
+                  </Button>
+                )}
+              </div>
+              
+              {selectedApp.status !== "ACCEPTED" && !selectedApp.convertedAt && (
+                <p className="text-xs text-rose-500 text-right mt-1">Application must be ACCEPTED to convert.</p>
+              )}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 }

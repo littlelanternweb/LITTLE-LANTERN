@@ -84,8 +84,8 @@ export async function POST(req: Request) {
       }
     });
 
-    // Calculate advance amount based on specialist's configured advance amount
-    const advanceAmount = Math.round(specialist.advanceAmount ?? (specialist.consultationFee * 0.25));
+    // Calculate advance amount (25% of consultation fee)
+    const advanceAmount = Math.round(specialist.consultationFee * 0.25);
 
     // 6. Create Razorpay order (if keys exist)
     if (razorpay) {

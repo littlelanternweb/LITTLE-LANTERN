@@ -22,8 +22,10 @@ export async function POST(request: Request) {
     const originalName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, ""); // Sanitize filename
     const filename = `${uniqueSuffix}-${originalName}`;
     
+    const type = (formData.get("type") as string) === "photo" ? "photos" : "resumes";
+    
     // Ensure the uploads directory exists
-    const uploadDir = join(process.cwd(), "public/uploads/resumes");
+    const uploadDir = join(process.cwd(), `public/uploads/${type}`);
     if (!existsSync(uploadDir)) {
       await mkdir(uploadDir, { recursive: true });
     }
@@ -36,7 +38,7 @@ export async function POST(request: Request) {
     // Return the URL that can be stored in the DB
     return NextResponse.json({
       success: true,
-      url: `/uploads/resumes/${filename}`,
+      url: `/uploads/${type}/${filename}`,
     });
   } catch (error) {
     console.error("Upload error:", error);
