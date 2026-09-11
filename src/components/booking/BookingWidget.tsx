@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { getAvailableSlots } from "@/app/actions/booking";
 import { Loader2, HelpCircle } from "lucide-react";
 
-export function BookingWidget({ specialistId, fee }: { specialistId: string, fee: number }) {
+export function BookingWidget({ specialistId, fee, advanceAmount }: { specialistId: string, fee: number, advanceAmount?: number | null }) {
   const [isSuccess, setIsSuccess] = useState(false);
   const [date, setDate] = useState<Date | undefined>(undefined);
   const [slots, setSlots] = useState<{startTime: string, endTime: string}[]>([]);
@@ -156,7 +156,7 @@ export function BookingWidget({ specialistId, fee }: { specialistId: string, fee
   };
 
   const isFormValid = parentName && email && phone && relationship && childName && childAge && childGender && reason;
-  const advanceAmount = Math.round(fee * 0.25);
+  const finalAdvance = advanceAmount || Math.round(fee * 0.25);
 
   if (isSuccess) {
     return (
@@ -167,13 +167,16 @@ export function BookingWidget({ specialistId, fee }: { specialistId: string, fee
         <h3 className="text-2xl font-bold text-slate-900">Booking Confirmed!</h3>
         <p className="text-slate-600 text-lg">Your consultation is scheduled for <strong>{date && format(date, "MMMM d, yyyy")}</strong> at <strong>{selectedSlot}</strong>.</p>
         
-        <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 inline-block my-4 text-left">
-          <p className="text-sm text-slate-700 flex items-center justify-between gap-6 mb-1">
-            <span>Advance Paid:</span> <strong>₹{advanceAmount}</strong>
-          </p>
-          <p className="text-sm text-slate-700 flex items-center justify-between gap-6">
-            <span>Balance due at clinic:</span> <strong>₹{fee - advanceAmount}</strong>
-          </p>
+        <div className="bg-slate-50 p-4 rounded-xl text-sm text-slate-600 flex flex-col gap-2 max-w-sm mx-auto">
+          <div className="flex justify-between">
+            <span>Total Fee:</span> <strong>₹{fee}</strong>
+          </div>
+          <div className="flex justify-between text-emerald-700">
+            <span>Advance Paid:</span> <strong>₹{finalAdvance}</strong>
+          </div>
+          <div className="flex justify-between border-t border-slate-200 pt-2 mt-1">
+            <span>Balance due at clinic:</span> <strong>₹{fee - finalAdvance}</strong>
+          </div>
         </div>
         
         <p className="text-sm text-slate-500 mt-4">We've sent a confirmation email to {email}.</p>
@@ -324,8 +327,8 @@ export function BookingWidget({ specialistId, fee }: { specialistId: string, fee
            {/* STICKY CTA */}
            <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 sticky bottom-4 shadow-[0_4px_20px_rgb(0,0,0,0.05)] z-10">
               <div className="text-sm text-slate-700 text-center sm:text-left w-full sm:w-auto">
-                <p>Advance: <strong className="text-slate-900 text-lg">₹{advanceAmount}</strong></p>
-                <p className="text-xs text-slate-500">Balance at clinic: ₹{fee - advanceAmount}</p>
+                <p>Advance: <strong className="text-slate-900 text-lg">₹{finalAdvance}</strong></p>
+                <p className="text-xs text-slate-500">Balance at clinic: ₹{fee - finalAdvance}</p>
               </div>
               <Button 
                 onClick={handleCheckout}
@@ -333,7 +336,7 @@ export function BookingWidget({ specialistId, fee }: { specialistId: string, fee
                 className="w-full sm:w-auto px-6 bg-[#00A693] hover:bg-[#047857] text-white font-medium h-12 rounded-lg transition-colors"
               >
                 {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
-                {isSubmitting ? "Processing..." : `Pay ₹${advanceAmount} & Book`}
+                {isSubmitting ? "Processing..." : `Pay ₹${finalAdvance} & Book`}
               </Button>
            </div>
 

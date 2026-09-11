@@ -26,6 +26,27 @@ export async function updateJobApplicationStatus(id: string, newStatus: string) 
       data: { status: newStatus },
     });
 
+    // Send Status Emails
+    try {
+      const { emailTemplates } = await import("@/lib/email");
+      if (newStatus === "ACCEPTED") {
+        await emailTemplates.applicationApproved(
+          updatedApplication.email,
+          updatedApplication.name,
+          updatedApplication.category,
+          updatedApplication.id
+        );
+      } else if (newStatus === "DECLINED" || newStatus === "REJECTED") {
+        await emailTemplates.applicationDeclined(
+          updatedApplication.email,
+          updatedApplication.name,
+          updatedApplication.id
+        );
+      }
+    } catch (emailError) {
+      console.error("Failed to send application status email:", emailError);
+    }
+
     // Revalidate the applications page to reflect the new status
     revalidatePath("/admin/jobs");
 
@@ -102,6 +123,26 @@ export async function convertApplicationToFaculty(id: string) {
         convertedSpecialistId: specialist.id
       }
     });
+
+    try {
+      const { emailTemplates } = await import("@/lib/email");
+      // 1. Send Faculty Conversion Email (to confirm the conversion was successful)
+      await emailTemplates.facultyConverted(
+        specialist.email!,
+        specialist.name,
+        specialist.category,
+        specialist.id
+      );
+      
+      // 2. Send Faculty Welcome Email (with login details)
+      await emailTemplates.facultyWelcome(
+        specialist.email!,
+        specialist.name,
+        randomPassword
+      );
+    } catch (e) {
+      console.error("Failed to send faculty emails:", e);
+    }
 
     revalidatePath("/admin/jobs");
     revalidatePath("/admin/specialists");

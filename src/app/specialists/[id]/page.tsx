@@ -120,7 +120,7 @@ export default async function SpecialistProfilePage(props: { params: { id: strin
             </div>
           </div>
           <div className="p-8">
-            <BookingWidget specialistId={specialist.id} fee={specialist.consultationFee} />
+            <BookingWidget specialistId={specialist.id} fee={specialist.consultationFee} advanceAmount={specialist.advanceAmount} />
           </div>
         </div>
 

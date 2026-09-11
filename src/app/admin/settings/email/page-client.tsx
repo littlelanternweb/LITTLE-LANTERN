@@ -56,7 +56,14 @@ export function EmailSettingsClient({ initialSettings, logs }: { initialSettings
 
   const Toggles = [
     { key: "email_booking_confirmation", label: "Booking Confirmations", desc: "Sent to customers upon successful payment or admin booking." },
+    { key: "email_payment_confirmation", label: "Payment Receipts", desc: "Sent to customers upon receiving partial or full payments." },
+    { key: "email_payment_reminder", label: "Payment Reminders", desc: "Sent to customers with a pending balance 3 days and 1 day before their appointment." },
     { key: "email_application_confirmation", label: "Job Application Receipt", desc: "Sent to candidates when they apply for a career opening." },
+    { key: "email_application_approval", label: "Application Approved", desc: "Sent to candidates when their application is approved." },
+    { key: "email_application_declined", label: "Application Declined", desc: "Sent to candidates when their application is declined." },
+    { key: "email_faculty_conversion", label: "Faculty Conversion Notice", desc: "Sent to applicants when converted into faculty." },
+    { key: "email_faculty_welcome", label: "Faculty Welcome & Activation", desc: "Sent to faculty with login details upon creation." },
+    { key: "email_faculty_assignment", label: "Faculty Appointment Assignment", desc: "Sent to faculty when a new appointment is assigned to them." },
     { key: "email_admin_notification", label: "Admin Notifications", desc: "Sent to admin email for new bookings and applications." },
     { key: "email_cancellation", label: "Cancellation Notice", desc: "Sent to customers when an appointment is cancelled." },
     { key: "email_reschedule", label: "Reschedule Notice", desc: "Sent to customers when an appointment is rescheduled." },

@@ -23,6 +23,17 @@ const sendEmail = async (
   type: string, 
   relatedId?: string
 ) => {
+  // Idempotency check: if an email of this exact type and relatedId was already successfully sent, skip it.
+  if (relatedId) {
+    const existing = await prisma.emailLog.findFirst({
+      where: { type, relatedId, status: "SUCCESS" }
+    });
+    if (existing) {
+      console.log(`[EMAIL IDEMPOTENCY] Skipped ${type} for ${to}. Already sent.`);
+      return { success: true, duplicate: true };
+    }
+  }
+
   let status = "FAILED";
   let errorMsg = null;
 
@@ -120,7 +131,7 @@ export const emailTemplates = {
     time: string,
     bookingId?: string
   ) => {
-    if (!(await isEmailEnabled("email_booking_confirmation"))) return;
+    if (!(await isEmailEnabled("email_booking_confirmation"))) return { success: true, disabled: true };
 
     const subject = `Your Little Lantern booking details`;
     const content = `
@@ -139,8 +150,8 @@ export const emailTemplates = {
   },
 
   // 2. New Job Application Confirmation (To Applicant)
-  applicationReceived: async (to: string, applicantName: string, position: string) => {
-    if (!(await isEmailEnabled("email_application_confirmation"))) return;
+  applicationReceived: async (to: string, applicantName: string, position: string, applicationId: string) => {
+    if (!(await isEmailEnabled("email_application_confirmation"))) return { success: true, disabled: true };
 
     const subject = `We received your application — Little Lantern`;
     const content = `
@@ -148,14 +159,17 @@ export const emailTemplates = {
       <p>Dear ${applicantName},</p>
       <p>We have successfully received your application for the <strong>${position}</strong> position.</p>
       <p>Our team will carefully review your profile. If your qualifications match our current needs, we will reach out to discuss the next steps.</p>
+      <div class="box">
+        <div class="box-row"><div class="box-label">Reference ID</div><div class="box-value">${applicationId}</div></div>
+      </div>
       <p>Thank you for your interest in joining Little Lantern.</p>
     `;
-    return sendEmail(to, subject, premiumWrapper(content), "APPLICATION_CONFIRMATION");
+    return sendEmail(to, subject, premiumWrapper(content), "APPLICATION_CONFIRMATION", applicationId);
   },
 
   // 3. Admin Notification (To Admin)
   adminNotification: async (subject: string, message: string) => {
-    if (!(await isEmailEnabled("email_admin_notification"))) return;
+    if (!(await isEmailEnabled("email_admin_notification"))) return { success: true, disabled: true };
 
     const adminEmail = process.env.ADMIN_EMAIL || "littlelanternweb@gmail.com";
     const content = `
@@ -201,13 +215,13 @@ export const emailTemplates = {
       
       <p style="margin-top: 32px; font-size: 14px; color: #64748B;">For your security, this link is private. Please do not share it.</p>
     `;
-    return sendEmail(to, subject, premiumWrapper(content), "INVOICE_DELIVERY");
+    return sendEmail(to, subject, premiumWrapper(content), "INVOICE_DELIVERY", invoiceNumber);
   },
 
-  // 5. Reminder Email
+  // 6. Reminder Email
   reminderEmail: async (to: string, customerName: string, childName: string, specialistName: string, date: string, time: string, is24h: boolean, relatedId: string) => {
     const type = is24h ? "REMINDER_24H" : "REMINDER_2H";
-    if (!(await isEmailEnabled(`email_${is24h ? '24h' : '2h'}_reminder`))) return;
+    if (!(await isEmailEnabled(`email_${is24h ? '24h' : '2h'}_reminder`))) return { success: true, disabled: true };
 
     const subject = `Your Little Lantern appointment reminder`;
     const content = `
@@ -224,9 +238,9 @@ export const emailTemplates = {
     return sendEmail(to, subject, premiumWrapper(content), type, relatedId);
   },
 
-  // 6. Appointment Cancelled
+  // 7. Appointment Cancelled
   appointmentCancelled: async (to: string, customerName: string, specialistName: string, date: string, time: string, relatedId: string) => {
-    if (!(await isEmailEnabled("email_cancellation"))) return;
+    if (!(await isEmailEnabled("email_cancellation"))) return { success: true, disabled: true };
 
     const subject = `Your appointment has been cancelled`;
     const content = `
@@ -243,9 +257,9 @@ export const emailTemplates = {
     return sendEmail(to, subject, premiumWrapper(content), "CANCELLATION", relatedId);
   },
 
-  // 7. Appointment Rescheduled
+  // 8. Appointment Rescheduled
   appointmentRescheduled: async (to: string, customerName: string, specialistName: string, oldDate: string, oldTime: string, newDate: string, newTime: string, relatedId: string) => {
-    if (!(await isEmailEnabled("email_reschedule"))) return;
+    if (!(await isEmailEnabled("email_reschedule"))) return { success: true, disabled: true };
 
     const subject = `Your appointment has been rescheduled`;
     const content = `
@@ -262,27 +276,29 @@ export const emailTemplates = {
     return sendEmail(to, subject, premiumWrapper(content), "RESCHEDULE", relatedId);
   },
 
-  // 8. Faculty Welcome
+  // 9. Faculty Welcome
   facultyWelcome: async (to: string, name: string, tempPassword: string) => {
-    const subject = `Welcome to Little Lantern Faculty`;
+    if (!(await isEmailEnabled("email_faculty_welcome"))) return { success: true, disabled: true };
+    const subject = `Set Up Your Little Lantern Faculty Account`;
     const content = `
       <h2 class="title">Welcome to Little Lantern!</h2>
       <p>Dear ${name},</p>
-      <p>Your faculty account has been created successfully. You can now log in to the Little Lantern portal to view your assigned appointments.</p>
+      <p>Your application has been approved and your faculty account has been created successfully. You can now log in to the Little Lantern portal to view your assigned appointments.</p>
       <div class="box">
         <div class="box-row"><div class="box-label">Login Email</div><div class="box-value">${to}</div></div>
         <div class="box-row"><div class="box-label">Temporary Password</div><div class="box-value">${tempPassword}</div></div>
       </div>
-      <p>Please log in and update your password immediately.</p>
+      <p>For your security, please log in and update your password immediately.</p>
       <div style="text-align: center; margin-top: 32px;">
-        <a href="${VERCEL_URL}/admin/login" style="background-color: #00A693; color: white; padding: 12px 24px; text-decoration: none; border-radius: 99px; font-weight: 600; display: inline-block;">Log In to Faculty Dashboard</a>
+        <a href="${baseUrl}/admin/login" class="btn">Log In to Faculty Dashboard</a>
       </div>
     `;
     return sendEmail(to, subject, premiumWrapper(content), "FACULTY_WELCOME");
   },
 
-  // 9. Assignment Notification
+  // 10. Assignment Notification
   assignmentNotification: async (to: string, name: string, apptDetails: any) => {
+    if (!(await isEmailEnabled("email_faculty_assignment"))) return { success: true, disabled: true };
     const subject = `New Appointment Assigned — Little Lantern`;
     const content = `
       <h2 class="title">New Appointment Assigned</h2>
@@ -297,5 +313,144 @@ export const emailTemplates = {
       <p>Please log in to your Little Lantern faculty dashboard to view complete details.</p>
     `;
     return sendEmail(to, subject, premiumWrapper(content), "ASSIGNMENT_NOTIFICATION", apptDetails.id);
+  },
+
+  // 11. Payment Confirmed (Partial or Full)
+  paymentConfirmed: async (
+    to: string,
+    customerName: string,
+    childName: string,
+    specialistName: string,
+    date: string,
+    time: string,
+    invoiceNumber: string,
+    appointmentId: string,
+    amountReceived: number,
+    totalFee: number,
+    totalPaid: number,
+    balance: number,
+    paymentStatus: string,
+    isPartial: boolean,
+    invoiceToken?: string,
+    transactionId?: string
+  ) => {
+    const type = isPartial ? "PAYMENT_PARTIAL" : "PAYMENT_COMPLETED";
+    // For idempotency: full payment is once per appt. Partial is once per txn.
+    const relatedId = isPartial && transactionId ? transactionId : appointmentId + "_FULL_PAY";
+    
+    if (!(await isEmailEnabled("email_payment_confirmation"))) return { success: true, disabled: true };
+
+    const subject = isPartial 
+      ? `Payment Received — Balance Remaining`
+      : `Payment Confirmed — Your Invoice is Ready`;
+
+    const content = `
+      <h2 class="title">${isPartial ? 'Payment Received' : 'Payment Confirmed'}</h2>
+      <p>Hello ${customerName},</p>
+      <p>${isPartial ? 'Your partial payment has been successfully received.' : 'Your full payment has been successfully received and your invoice is ready.'}</p>
+      
+      <div class="box">
+        ${invoiceNumber ? `<div class="box-row"><div class="box-label">Invoice</div><div class="box-value">${invoiceNumber}</div></div>` : ''}
+        <div class="box-row"><div class="box-label">Child</div><div class="box-value">${childName}</div></div>
+        <div class="box-row"><div class="box-label">Specialist</div><div class="box-value">${specialistName}</div></div>
+        <div class="box-row"><div class="box-label">Appointment</div><div class="box-value">${date} at ${time}</div></div>
+      </div>
+
+      <div class="box" style="margin-top: 16px;">
+        <div class="box-row"><div class="box-label">Payment Received</div><div class="box-value" style="color: #00A693;">₹${amountReceived}</div></div>
+        <div class="box-row"><div class="box-label">Total Fee</div><div class="box-value">₹${totalFee}</div></div>
+        <div class="box-row"><div class="box-label">Total Paid</div><div class="box-value">₹${totalPaid}</div></div>
+        <div class="box-row"><div class="box-label">Balance Due</div><div class="box-value" style="${balance > 0 ? 'color: #B45309;' : ''}">₹${balance}</div></div>
+        <div class="box-row"><div class="box-label">Status</div><div class="box-value">${paymentStatus}</div></div>
+      </div>
+
+      ${invoiceToken ? `
+      <div style="text-align: center; margin-top: 32px;">
+        <a href="${baseUrl}/invoice/${invoiceToken}" class="btn">View Invoice</a>
+      </div>
+      ` : ''}
+    `;
+
+    return sendEmail(to, subject, premiumWrapper(content), type, relatedId);
+  },
+
+  // 12. Due Payment Reminder
+  paymentDueReminder: async (
+    to: string,
+    customerName: string,
+    childName: string,
+    specialistName: string,
+    date: string,
+    time: string,
+    totalFee: number,
+    totalPaid: number,
+    balance: number,
+    appointmentId: string,
+    reminderPhase: number // 1 (3 days), 2 (1 day), 3 (0 days)
+  ) => {
+    const type = "PAYMENT_DUE_REMINDER";
+    const relatedId = `${appointmentId}_DUE_REMINDER_${reminderPhase}`;
+
+    if (!(await isEmailEnabled("email_payment_reminder"))) return { success: true, disabled: true };
+
+    const subject = `Payment Reminder — Little Lantern`;
+    const content = `
+      <h2 class="title">Payment Reminder</h2>
+      <p>Hello ${customerName},</p>
+      <p>This is a friendly reminder regarding the upcoming consultation for ${childName}.</p>
+      
+      <div class="box">
+        <div class="box-row"><div class="box-label">Specialist</div><div class="box-value">${specialistName}</div></div>
+        <div class="box-row"><div class="box-label">Date</div><div class="box-value">${date}</div></div>
+        <div class="box-row"><div class="box-label">Time</div><div class="box-value">${time}</div></div>
+      </div>
+
+      <div class="box" style="margin-top: 16px;">
+        <div class="box-row"><div class="box-label">Total Fee</div><div class="box-value">₹${totalFee}</div></div>
+        <div class="box-row"><div class="box-label">Amount Paid</div><div class="box-value">₹${totalPaid}</div></div>
+        <div class="box-row"><div class="box-label" style="color: #B45309;">Balance Due</div><div class="box-value" style="color: #B45309;">₹${balance}</div></div>
+      </div>
+
+      <p>Please complete the pending payment as required to ensure your appointment goes smoothly.</p>
+    `;
+
+    return sendEmail(to, subject, premiumWrapper(content), type, relatedId);
+  },
+
+  // 13. Application Approved
+  applicationApproved: async (to: string, applicantName: string, category: string, applicationId: string) => {
+    if (!(await isEmailEnabled("email_application_approval"))) return { success: true, disabled: true };
+
+    const subject = `Application Approved — Little Lantern`;
+    const content = `
+      <h2 class="title">Application Approved</h2>
+      <p>Hello ${applicantName},</p>
+      <p>We are pleased to inform you that your application to join Little Lantern has been approved.</p>
+      
+      <div class="box">
+        <div class="box-row"><div class="box-label">Category</div><div class="box-value">${category}</div></div>
+        <div class="box-row"><div class="box-label">Reference ID</div><div class="box-value">${applicationId}</div></div>
+      </div>
+      
+      <p>Our team will now proceed with the faculty onboarding process. You will receive further information regarding your faculty account and portal access shortly.</p>
+    `;
+
+    return sendEmail(to, subject, premiumWrapper(content), "JOB_APPLICATION_ACCEPTED", applicationId);
+  },
+
+  // 14. Application Declined
+  applicationDeclined: async (to: string, applicantName: string, applicationId: string) => {
+    if (!(await isEmailEnabled("email_application_declined"))) return { success: true, disabled: true };
+
+    const subject = `Application Update — Little Lantern`;
+    const content = `
+      <h2 class="title">Application Update</h2>
+      <p>Hello ${applicantName},</p>
+      <p>Thank you for taking the time to apply to Little Lantern.</p>
+      <p>After reviewing your application, we will not be proceeding with your application at this stage.</p>
+      <p>We appreciate your interest and wish you success in your professional journey.</p>
+    `;
+
+    return sendEmail(to, subject, premiumWrapper(content), "JOB_APPLICATION_DECLINED", applicationId);
   }
 };

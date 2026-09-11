@@ -165,7 +165,7 @@ export async function markBalanceReceived(appointmentId: string, amount: number,
     const newBalancePaid = apt.balancePaid + amount;
     const isFullyPaid = (apt.advancePaid + newBalancePaid) >= apt.totalAmount;
 
-    await prisma.transaction.create({
+    const transaction = await prisma.transaction.create({
       data: {
         appointmentId,
         amount,
@@ -176,15 +176,42 @@ export async function markBalanceReceived(appointmentId: string, amount: number,
       }
     });
 
-    await prisma.appointment.update({
+    const updatedApt = await prisma.appointment.update({
       where: { id: appointmentId },
       data: {
         balancePaid: newBalancePaid,
         paymentStatus: isFullyPaid ? "FULLY_PAID" : "PARTIALLY_PAID"
-      }
+      },
+      include: { customer: true, child: true, specialist: true }
     });
 
     await logActivity("BALANCE_RECEIVED", appointmentId, `Amount: ${amount}, Method: ${method}`);
+
+    // Send Payment Confirmation Email
+    try {
+      const { emailTemplates } = await import("@/lib/email");
+      const dateStr = updatedApt.date.toLocaleDateString();
+      await emailTemplates.paymentConfirmed(
+        updatedApt.customer.email,
+        updatedApt.customer.name,
+        updatedApt.child.name,
+        updatedApt.specialist.name,
+        dateStr,
+        updatedApt.startTime,
+        "", // Invoice number not required here
+        updatedApt.id,
+        amount,
+        updatedApt.totalAmount,
+        updatedApt.advancePaid + updatedApt.balancePaid,
+        updatedApt.totalAmount - (updatedApt.advancePaid + updatedApt.balancePaid),
+        updatedApt.paymentStatus,
+        !isFullyPaid,
+        undefined,
+        transaction.id
+      );
+    } catch (e) {
+      console.error("Failed to send offline payment email:", e);
+    }
 
     revalidatePath(`/admin/appointments/${appointmentId}`);
     revalidatePath("/admin/appointments");

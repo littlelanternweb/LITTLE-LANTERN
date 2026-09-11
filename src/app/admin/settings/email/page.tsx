@@ -25,6 +25,13 @@ export default async function AdminEmailSettingsPage() {
     email_reschedule: true,
     email_24h_reminder: true,
     email_2h_reminder: false,
+    email_payment_confirmation: true,
+    email_payment_reminder: true,
+    email_application_approval: true,
+    email_application_declined: true,
+    email_faculty_conversion: true,
+    email_faculty_welcome: true,
+    email_faculty_assignment: true,
   };
 
   const finalSettings = { ...defaults, ...settingsObj };

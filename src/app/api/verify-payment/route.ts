@@ -23,13 +23,13 @@ export async function POST(req: Request) {
     // 1. Fetch initial appointment to get specialist details
     const initialAppointment = await prisma.appointment.findUnique({
       where: { id: appointmentId },
-      include: { specialist: true }
+      include: { specialist: true, child: true }
     });
     
     if (!initialAppointment) {
       return NextResponse.json({ error: "Appointment not found" }, { status: 404 });
     }
-    const advanceAmountPaid = Math.round(initialAppointment.specialist.consultationFee * 0.25);
+    const advanceAmountPaid = initialAppointment.specialist.advanceAmount || Math.round(initialAppointment.specialist.consultationFee * 0.25);
 
     // 2. Update Appointment Status and Payment Fields
     const appointment = await prisma.appointment.update({
@@ -42,7 +42,7 @@ export async function POST(req: Request) {
         balancePaid: 0,
         paymentStatus: advanceAmountPaid >= initialAppointment.specialist.consultationFee ? "FULLY_PAID" : "ADVANCE_PAID"
       },
-      include: { specialist: true, customer: true }
+      include: { specialist: true, customer: true, child: true }
     });
 
     // 3. Create Payment Record (Legacy support)
@@ -62,7 +62,7 @@ export async function POST(req: Request) {
     });
     
     // 4. Create Transaction Record
-    await prisma.transaction.create({
+    const transaction = await prisma.transaction.create({
       data: {
         appointmentId,
         amount: advanceAmountPaid,
@@ -74,16 +74,40 @@ export async function POST(req: Request) {
       }
     });
 
-    // 3. Send Confirmation Email
+    // 5. Send Confirmation Emails
     try {
       const { emailTemplates } = await import("@/lib/email");
       const dateStr = appointment.date.toLocaleDateString();
+      
+      // Appointment Confirmation Email
       await emailTemplates.bookingConfirmation(
         appointment.customer.email,
         appointment.customer.name,
         appointment.specialist.name,
         dateStr,
-        appointment.startTime
+        appointment.startTime,
+        appointment.id
+      );
+      
+      // Payment Confirmation Email
+      const isPartial = appointment.paymentStatus !== "FULLY_PAID";
+      await emailTemplates.paymentConfirmed(
+        appointment.customer.email,
+        appointment.customer.name,
+        appointment.child.name,
+        appointment.specialist.name,
+        dateStr,
+        appointment.startTime,
+        "", // Invoice number not required here
+        appointment.id,
+        advanceAmountPaid,
+        appointment.totalAmount,
+        advanceAmountPaid,
+        appointment.totalAmount - advanceAmountPaid,
+        appointment.paymentStatus,
+        isPartial,
+        undefined,
+        transaction.id
       );
       
       // Also notify Admin

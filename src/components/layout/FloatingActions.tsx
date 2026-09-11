@@ -30,7 +30,7 @@ export function FloatingActions() {
     return () => clearTimeout(t);
   }, []);
 
-  if (pathname?.startsWith("/admin")) return null;
+  if (pathname?.startsWith("/admin") || pathname?.startsWith("/faculty") || pathname?.startsWith("/invoice")) return null;
 
   const WHATSAPP_NUMBER = "919961757373";
   const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=Hello%20Little%20Lantern%2C%20I%20would%20like%20to%20know%20more%20about%20your%20consultation%20services.`;
