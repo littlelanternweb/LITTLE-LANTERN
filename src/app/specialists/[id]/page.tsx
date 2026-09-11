@@ -110,7 +110,14 @@ export default async function SpecialistProfilePage(props: { params: { id: strin
               <h2 className="text-2xl font-semibold text-slate-900">Book a Consultation</h2>
               <p className="text-slate-500 text-sm mt-1">with {specialist.name}</p>
             </div>
-            <span className="text-primary bg-primary/10 px-4 py-2 rounded-xl text-base font-semibold">₹{specialist.consultationFee}</span>
+            <div className="flex items-center gap-3">
+              {specialist.advanceAmount > 0 && (
+                <span className="text-[#047857] bg-[#D1FAE5] px-4 py-2 rounded-xl text-sm font-medium">
+                  Advance: ₹{specialist.advanceAmount}
+                </span>
+              )}
+              <span className="text-primary bg-primary/10 px-4 py-2 rounded-xl text-base font-semibold">Total Fee: ₹{specialist.consultationFee}</span>
+            </div>
           </div>
           <div className="p-8">
             <BookingWidget specialistId={specialist.id} fee={specialist.consultationFee} />

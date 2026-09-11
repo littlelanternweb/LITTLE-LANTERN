@@ -35,7 +35,12 @@ export async function changePassword(currentPassword: string, newPassword: strin
 
     await prisma.user.update({
       where: { email: session.user.email },
-      data: { password: hashedPassword }
+      data: { 
+        password: hashedPassword,
+        passwordChangedAt: new Date(),
+        passwordChangedBy: "USER",
+        resetRequired: false,
+      }
     });
 
     return { success: true };

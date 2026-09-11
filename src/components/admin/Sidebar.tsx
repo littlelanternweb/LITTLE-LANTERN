@@ -20,6 +20,7 @@ export function AdminSidebar({ session }: { session: any }) {
     { name: "Job Openings", href: "/admin/openings", icon: Briefcase, permission: PERMISSIONS.APPLICATIONS_VIEW },
     { name: "Applications", href: "/admin/jobs", icon: Users, permission: PERMISSIONS.APPLICATIONS_VIEW },
     { name: "Reports", href: "/admin/reports", icon: BarChart, permission: PERMISSIONS.REPORTS_VIEW },
+    { name: "Users", href: "/admin/users", icon: Users, permission: PERMISSIONS.ADMIN_USERS_MANAGE },
     { name: "Email Settings", href: "/admin/settings/email", icon: Mail, permission: PERMISSIONS.SETTINGS_MANAGE },
   ];
 

@@ -2,7 +2,7 @@ import { getSpecialists } from "@/app/actions/specialists";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { MapPin, Clock, Languages, Award, ChevronRight, Search } from "lucide-react";
+import { MapPin, Clock, Languages, Award, ChevronRight, Search, ArrowRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { FadeIn, FadeInItem } from "@/components/ui/fade-in";
 
@@ -107,14 +107,22 @@ export default async function SpecialistsPage(props: { searchParams: { q?: strin
                     </div>
                     
                     {/* Footer CTA */}
-                    <div className="p-5 pt-0 mt-auto flex items-center justify-between border-t border-slate-50 mt-4 pt-4">
-                      <div className="text-[13px]">
-                        <span className="font-semibold text-slate-900">₹{s.consultationFee}</span>
-                        <span className="text-slate-400 font-medium"> / hr</span>
+                    <div className="p-5 pt-0 mt-auto border-t border-slate-50 mt-4 pt-4 space-y-3">
+                      <div className="flex items-center justify-between text-[13px]">
+                        <div>
+                          <span className="font-semibold text-slate-900">₹{s.consultationFee}</span>
+                          <span className="text-slate-400 font-medium"> / hr</span>
+                        </div>
+                        {s.advanceAmount > 0 && (
+                          <div className="text-[11px] font-medium text-[#047857] bg-[#D1FAE5] px-2 py-0.5 rounded">
+                            Advance: ₹{s.advanceAmount}
+                          </div>
+                        )}
                       </div>
-                      <span className="text-primary text-[13px] font-semibold flex items-center group-hover:translate-x-1 transition-transform">
-                        Book <ChevronRight className="w-3.5 h-3.5 ml-0.5" />
-                      </span>
+                      <div className="flex items-center justify-between text-[13px] font-medium text-primary">
+                        <span>Book Appt.</span>
+                        <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+                      </div>
                     </div>
                   </div>
                 </Link>

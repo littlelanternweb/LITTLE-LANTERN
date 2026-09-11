@@ -16,6 +16,10 @@ model User {
   role      String   // SUPER_ADMIN, MANAGER, RECEPTIONIST, HR, FINANCE, FACULTY
   createdAt DateTime @default(now())
   
+  passwordChangedAt DateTime?
+  passwordChangedBy String?  // USER, SUPER_ADMIN, SYSTEM
+  resetRequired     Boolean  @default(false)
+
   specialist Specialist?
 }
 
@@ -89,6 +93,19 @@ model Customer {
   appointments Appointment[]
   invoices     Invoice[]
   createdAt    DateTime @default(now())
+  notes        CustomerNote[]
+}
+
+model CustomerNote {
+  id         String   @id @default(cuid())
+  customerId String
+  authorId   String?  // ID of the admin who created it
+  authorName String?  // Name of the admin
+  note       String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
 }
 
 model Child {

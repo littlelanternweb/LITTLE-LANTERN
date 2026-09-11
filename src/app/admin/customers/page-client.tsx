@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Search, Eye, Mail, Phone, Plus, Calendar } from "lucide-react";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export function CustomersClient({ initialCustomers, specialists }: { initialCustomers: any[], specialists: any[] }) {
   const router = useRouter();
@@ -138,9 +139,11 @@ export function CustomersClient({ initialCustomers, specialists }: { initialCust
                       <Button onClick={() => openBookModal(customer)} variant="outline" size="sm" className="mr-2 border-[#00A693] text-[#047857] hover:bg-[#F0FDF4]">
                         <Calendar className="w-4 h-4 mr-1.5" /> Book
                       </Button>
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-slate-900">
-                        <Eye className="w-4 h-4" />
-                      </Button>
+                      <Link href={`/admin/customers/${customer.id}`}>
+                        <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-slate-900">
+                          <Eye className="w-4 h-4" />
+                        </Button>
+                      </Link>
                     </td>
                   </tr>
                 ))
