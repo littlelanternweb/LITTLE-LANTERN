@@ -9,7 +9,8 @@ export const metadata = {
   title: "Customer Details | Little Lantern Admin",
 };
 
-export default async function CustomerDetailPage({ params }: { params: { id: string } }) {
+export default async function CustomerDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const session = await getServerSession(authOptions);
 
   if (!session || !hasPermission(session.user?.role, PERMISSIONS.CUSTOMERS_VIEW)) {
@@ -17,7 +18,7 @@ export default async function CustomerDetailPage({ params }: { params: { id: str
   }
 
   const customer = await prisma.customer.findUnique({
-    where: { id: params.id },
+    where: { id },
     include: {
       children: true,
       notes: {
