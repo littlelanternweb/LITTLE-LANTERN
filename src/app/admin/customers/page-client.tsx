@@ -139,11 +139,11 @@ export function CustomersClient({ initialCustomers, specialists }: { initialCust
                       <Button onClick={() => openBookModal(customer)} variant="outline" size="sm" className="mr-2 border-[#00A693] text-[#047857] hover:bg-[#F0FDF4]">
                         <Calendar className="w-4 h-4 mr-1.5" /> Book
                       </Button>
-                      <Link href={`/admin/customers/${customer.id}`}>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-slate-900">
+                      <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-slate-900">
+                        <Link href={`/admin/customers/${customer.id}`}>
                           <Eye className="w-4 h-4" />
-                        </Button>
-                      </Link>
+                        </Link>
+                      </Button>
                     </td>
                   </tr>
                 ))
