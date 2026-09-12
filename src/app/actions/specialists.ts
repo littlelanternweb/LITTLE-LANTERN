@@ -24,7 +24,7 @@ export async function getSpecialists(searchParams?: { service?: string; q?: stri
     include: {
       services: true,
     },
-    orderBy: { name: 'asc' }
+    orderBy: [{ displayOrder: 'asc' }, { name: 'asc' }]
   });
 }
 

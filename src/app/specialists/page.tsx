@@ -7,6 +7,13 @@ import { Input } from "@/components/ui/input";
 import { FadeIn, FadeInItem } from "@/components/ui/fade-in";
 
 import { CategoryFilter } from "@/components/specialists/CategoryFilter";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Our Specialists | Best Child Psychologists & Special Educators in Kerala",
+  description: "Meet our multidisciplinary team of child psychologists, special educators, speech therapists, and counsellors at Little Lantern, Wandoor, Kerala.",
+  keywords: ["Child Psychologists Kerala", "Special Educators Wandoor", "Speech Therapists Kerala", "Child Counselling Wandoor"],
+};
 
 export const revalidate = 60; // ISR
 
@@ -86,11 +93,11 @@ export default async function SpecialistsPage(props: { searchParams: { q?: strin
                     </div>
                     
                     {/* Content */}
-                    <div className="p-5 flex flex-col flex-grow">
+                    <div className="p-4 flex flex-col flex-grow">
                       <h3 className="text-base font-bold text-slate-900 group-hover:text-primary transition-colors truncate">{s.name}</h3>
                       <p className="text-primary text-[13px] font-medium mt-0.5 truncate">{s.designation}</p>
                       
-                      <div className="mt-4 space-y-2.5 text-[12px] text-slate-600 flex-grow">
+                      <div className="mt-3 space-y-2 text-[12px] text-slate-600 flex-grow">
                         <div className="flex items-start gap-2">
                           <Award className="w-3.5 h-3.5 text-slate-300 shrink-0 mt-0.5" />
                           <span className="leading-relaxed line-clamp-2">{s.qualifications}</span>
@@ -107,7 +114,7 @@ export default async function SpecialistsPage(props: { searchParams: { q?: strin
                     </div>
                     
                     {/* Footer CTA */}
-                    <div className="p-5 pt-0 mt-auto border-t border-slate-50 mt-4 pt-4 space-y-3">
+                    <div className="p-4 pt-0 mt-auto border-t border-slate-50 space-y-3">
                       <div className="flex items-center justify-between text-[13px]">
                         <div>
                           <span className="font-semibold text-slate-900">₹{s.consultationFee}</span>

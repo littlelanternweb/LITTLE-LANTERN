@@ -50,7 +50,10 @@ export function Navbar() {
             <div className="relative overflow-hidden rounded-[0.4rem] h-10 w-10 sm:h-11 sm:w-11 shadow-sm border border-slate-100 group-hover:shadow-md transition-all bg-white">
               <img src="/logo.jpg" alt="Little Lantern Logo" className="w-full h-full object-cover" />
             </div>
-            <span className="font-display font-semibold text-xl sm:text-[22px] tracking-tight text-slate-900 hidden sm:inline-block">Little Lantern</span>
+            <div className="hidden sm:flex flex-col justify-center">
+              <span className="font-display font-semibold text-xl sm:text-[22px] tracking-tight text-slate-900 leading-tight">Little Lantern</span>
+              <span className="text-[10px] sm:text-[11px] text-slate-500 font-medium tracking-wide mt-0.5">Guiding Minds, Transforming Lives.</span>
+            </div>
           </Link>
         </div>
         <div className="flex lg:hidden">
@@ -113,7 +116,10 @@ export function Navbar() {
                   <div className="relative h-12 w-12 rounded-lg overflow-hidden shadow-sm border border-slate-100 bg-white">
                     <img src="/logo.jpg" alt="Little Lantern Logo" className="w-full h-full object-cover" />
                   </div>
-                  <span className="font-display font-semibold text-2xl text-slate-900">Little Lantern</span>
+                  <div className="flex flex-col justify-center">
+                    <span className="font-display font-semibold text-xl text-slate-900 leading-tight">Little Lantern</span>
+                    <span className="text-[10px] text-slate-500 font-medium tracking-wide mt-0.5">Guiding Minds, Transforming Lives.</span>
+                  </div>
                 </Link>
                 <button
                   type="button"

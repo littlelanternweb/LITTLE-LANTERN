@@ -242,14 +242,21 @@ export function HomeClient({ specialists }: { specialists: any[] }) {
                   <h3 className="text-sm font-bold text-slate-900 mb-0.5 truncate">{spec.name}</h3>
                   <div className="text-[12px] text-slate-500 truncate mb-4">{spec.designation}</div>
                   
-                  <div className="mt-auto flex items-center justify-between pt-3 border-t border-slate-100">
-                    <div className="text-[12px] text-slate-600 font-medium">₹{spec.consultationFee} / hr</div>
-                    <Link 
-                      href={`/specialists/${spec.id}`} 
-                      className="text-[12px] font-bold text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
-                    >
-                      Book <ArrowRight className="w-3 h-3" />
-                    </Link>
+                  <div className="mt-auto flex flex-col pt-3 border-t border-slate-100 gap-2">
+                    <div className="flex items-center justify-between">
+                      <div className="text-[12px] text-slate-600 font-medium">₹{spec.consultationFee} / hr</div>
+                      <Link 
+                        href={`/specialists/${spec.id}`} 
+                        className="text-[12px] font-bold text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
+                      >
+                        Book <ArrowRight className="w-3 h-3" />
+                      </Link>
+                    </div>
+                    {spec.advanceAmount > 0 && (
+                      <div className="text-[10px] font-medium text-[#047857] bg-[#D1FAE5] px-2 py-0.5 rounded self-start">
+                        Advance: ₹{spec.advanceAmount}
+                      </div>
+                    )}
                   </div>
                 </div>
               </motion.div>

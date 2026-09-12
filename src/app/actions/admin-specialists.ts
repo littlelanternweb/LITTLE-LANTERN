@@ -69,6 +69,37 @@ export async function updateSpecialist(id: string, data: any) {
   }
 }
 
+export async function updateSpecialistOrder(id: string, newOrder: number) {
+  try {
+    const target = await prisma.specialist.findUnique({ where: { id } });
+    if (!target) return { error: "Not found" };
+
+    const allSpecialists = await prisma.specialist.findMany({
+      orderBy: { displayOrder: "asc" },
+    });
+
+    let others = allSpecialists.filter(s => s.id !== id);
+    const targetIndex = Math.max(0, Math.min(newOrder - 1, others.length));
+    others.splice(targetIndex, 0, target);
+
+    await prisma.$transaction(
+      others.map((s, idx) =>
+        prisma.specialist.update({
+          where: { id: s.id },
+          data: { displayOrder: idx + 1 },
+        })
+      )
+    );
+
+    revalidatePath("/admin/specialists");
+    revalidatePath("/specialists");
+    revalidatePath("/");
+    return { success: true };
+  } catch (error: any) {
+    return { error: error.message || "Failed to update order" };
+  }
+}
+
 export async function deleteSpecialist(id: string) {
   try {
     const apps = await prisma.appointment.findMany({ where: { specialistId: id }, select: { id: true } });

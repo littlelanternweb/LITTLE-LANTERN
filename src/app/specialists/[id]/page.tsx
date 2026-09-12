@@ -4,8 +4,25 @@ import { BookingWidget } from "@/components/booking/BookingWidget";
 import { Award, Clock, Languages, MapPin, GraduationCap } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Metadata } from "next";
 
 export const revalidate = 60;
+
+export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
+  const specialist = await getSpecialistById(params.id);
+  if (!specialist) return { title: "Specialist Not Found | Little Lantern" };
+
+  return {
+    title: `${specialist.name} - ${specialist.designation} | Little Lantern, Kerala`,
+    description: `Book a consultation with ${specialist.name}, ${specialist.designation} at Little Lantern Child Consultation Centre in Wandoor, Kerala. Expertise: ${specialist.specialization}.`,
+    keywords: [specialist.name, specialist.designation, specialist.category, "Wandoor", "Kerala", "Little Lantern"],
+    openGraph: {
+      title: `${specialist.name} - ${specialist.designation} | Little Lantern`,
+      description: `Book a consultation with ${specialist.name} in Wandoor, Kerala.`,
+      images: specialist.imageUrl ? [{ url: specialist.imageUrl }] : [],
+    }
+  };
+}
 
 export default async function SpecialistProfilePage(props: { params: { id: string } }) {
   const params = await props.params;
@@ -15,8 +32,34 @@ export default async function SpecialistProfilePage(props: { params: { id: strin
     notFound();
   }
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Physician",
+    "name": specialist.name,
+    "jobTitle": specialist.designation,
+    "medicalSpecialty": specialist.category,
+    "description": specialist.bio,
+    "image": specialist.imageUrl || "https://www.mylantern.in/logo.jpg",
+    "url": `https://www.mylantern.in/specialists/${specialist.id}`,
+    "worksFor": {
+      "@type": "MedicalClinic",
+      "name": "Little Lantern Child Consultation Centre",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Wandoor",
+        "addressRegion": "Kerala",
+        "postalCode": "679328",
+        "addressCountry": "IN"
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#FCFBF9] pt-32 pb-32">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         
         {/* Breadcrumb */}

@@ -8,11 +8,12 @@ import { Edit, Trash2, Power, PowerOff } from "lucide-react";
 import { toggleSpecialistStatus } from "@/app/actions/admin-specialists";
 import { revalidatePath } from "next/cache";
 import { DeleteSpecialistButton } from "@/components/admin/DeleteSpecialistButton";
+import { SpecialistOrderSelect } from "@/components/admin/SpecialistOrderSelect";
 
 export default async function AdminSpecialists() {
   const specialists = await prisma.specialist.findMany({
     include: { services: true, availability: true, lockedSlots: true },
-    orderBy: { name: 'asc' }
+    orderBy: [{ displayOrder: 'asc' }, { name: 'asc' }]
   });
   
   const services = await prisma.service.findMany({ orderBy: { name: 'asc' } });
@@ -69,6 +70,9 @@ export default async function AdminSpecialists() {
                       </span>
                     ))}
                   </div>
+                </div>
+                <div className="mt-4">
+                  <SpecialistOrderSelect id={specialist.id} currentOrder={specialist.displayOrder} totalCount={specialists.length} />
                 </div>
               </div>
 
