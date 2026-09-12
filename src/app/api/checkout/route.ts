@@ -19,7 +19,7 @@ export async function POST(req: Request) {
 
     // 1. Double-check availability & duplicate booking
     const existingAppointment = await prisma.appointment.findFirst({
-      where: { specialistId, date: new Date(date), startTime, status: { not: "CANCELLED" } }
+      where: { specialistId, date: new Date(date), startTime, status: { in: ["CONFIRMED", "COMPLETED"] } }
     });
 
     if (existingAppointment) {
@@ -31,7 +31,13 @@ export async function POST(req: Request) {
     });
 
     if (existingHold) {
-      return NextResponse.json({ error: "Slot is currently being held by someone else" }, { status: 400 });
+      // Allow retry if this exact user already holds a PENDING appointment for this slot
+      const myPending = await prisma.appointment.findFirst({
+        where: { specialistId, date: new Date(date), startTime, status: "PENDING", customer: { email } }
+      });
+      if (!myPending) {
+        return NextResponse.json({ error: "Slot is currently being held by someone else" }, { status: 400 });
+      }
     }
 
     // 2. Get specialist fee
@@ -58,9 +64,15 @@ export async function POST(req: Request) {
       }
     });
 
-    // 5. Create Slot Hold (10 minutes)
-    const hold = await prisma.slotHold.create({
-      data: {
+    // 5. Create or Update Slot Hold (10 minutes)
+    const hold = await prisma.slotHold.upsert({
+      where: {
+        specialistId_date_startTime: { specialistId, date: new Date(date), startTime }
+      },
+      update: {
+        expiresAt: addMinutes(new Date(), 10)
+      },
+      create: {
         specialistId,
         date: new Date(date),
         startTime,
@@ -68,21 +80,27 @@ export async function POST(req: Request) {
       }
     });
 
-    // We can also create a pending appointment immediately, linked to the hold, 
-    // but typically we'll do it on success verification. Let's create it as PENDING.
-    const appointment = await prisma.appointment.create({
-      data: {
-        specialistId,
-        customerId: customer.id,
-        childId: child.id,
-        date: new Date(date),
-        startTime,
-        endTime: addMinutes(new Date(`1970-01-01T${startTime}:00`), 60).toTimeString().substring(0,5),
-        status: "PENDING",
-        reason,
-        additionalInfo,
-      }
+    // We can also create a pending appointment immediately, linked to the hold.
+    // If it already exists for this user, we reuse it.
+    let appointment = await prisma.appointment.findFirst({
+      where: { specialistId, date: new Date(date), startTime, status: "PENDING", customerId: customer.id }
     });
+
+    if (!appointment) {
+      appointment = await prisma.appointment.create({
+        data: {
+          specialistId,
+          customerId: customer.id,
+          childId: child.id,
+          date: new Date(date),
+          startTime,
+          endTime: addMinutes(new Date(`1970-01-01T${startTime}:00`), 60).toTimeString().substring(0,5),
+          status: "PENDING",
+          reason,
+          additionalInfo,
+        }
+      });
+    }
 
     // Use the actual advance amount set by admin for the specialist
     const advanceAmount = specialist.advanceAmount || Math.round(specialist.consultationFee * 0.25);
@@ -90,7 +108,7 @@ export async function POST(req: Request) {
     // 6. Create Razorpay order (if keys exist)
     if (razorpay) {
       const order = await razorpay.orders.create({
-        amount: advanceAmount * 100, // in paise
+        amount: Math.round(advanceAmount * 100), // strictly integer paise
         currency: "INR",
         receipt: appointment.id
       });
@@ -105,7 +123,7 @@ export async function POST(req: Request) {
       // Mock flow if no keys (for local development)
       return NextResponse.json({
         orderId: `mock_order_${Date.now()}`,
-        amount: advanceAmount * 100,
+        amount: Math.round(advanceAmount * 100),
         currency: "INR",
         appointmentId: appointment.id,
         mock: true
