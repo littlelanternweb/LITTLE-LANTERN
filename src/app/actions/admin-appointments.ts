@@ -374,6 +374,8 @@ export async function deleteAppointment(id: string) {
 
     await prisma.$transaction([
       prisma.payment.deleteMany({ where: { appointmentId: id } }),
+      prisma.transaction.deleteMany({ where: { appointmentId: id } }),
+      prisma.invoice.deleteMany({ where: { appointmentId: id } }),
       prisma.appointment.delete({ where: { id } })
     ]);
     revalidatePath("/admin/appointments");

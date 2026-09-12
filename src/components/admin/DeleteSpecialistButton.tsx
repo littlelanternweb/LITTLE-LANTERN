@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 import { useState } from "react";
 import { deleteSpecialist } from "@/app/actions/admin-specialists";
+import { toast } from "sonner";
 
 export function DeleteSpecialistButton({ id }: { id: string }) {
   const [loading, setLoading] = useState(false);
@@ -11,7 +12,12 @@ export function DeleteSpecialistButton({ id }: { id: string }) {
   const handleDelete = async () => {
     if (!confirm("Are you sure you want to delete this specialist? This will permanently delete their profile, appointments, and schedules.")) return;
     setLoading(true);
-    await deleteSpecialist(id);
+    const result = await deleteSpecialist(id);
+    if (result && result.error) {
+      toast.error(result.error);
+    } else {
+      toast.success("Specialist deleted successfully.");
+    }
     setLoading(false);
   };
 

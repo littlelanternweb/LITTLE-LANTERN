@@ -15,10 +15,16 @@ export async function DELETE(
 
     const { id } = params;
 
+    // Get all appointments for this customer to delete their associated records
+    const apps = await prisma.appointment.findMany({ where: { customerId: id }, select: { id: true } });
+    const appIds = apps.map(a => a.id);
+
     await prisma.$transaction([
+      prisma.payment.deleteMany({ where: { appointmentId: { in: appIds } } }),
+      prisma.transaction.deleteMany({ where: { appointmentId: { in: appIds } } }),
+      prisma.invoice.deleteMany({ where: { appointmentId: { in: appIds } } }),
       prisma.child.deleteMany({ where: { customerId: id } }),
       prisma.appointment.deleteMany({ where: { customerId: id } }),
-      prisma.invoice.deleteMany({ where: { customerId: id } }),
       prisma.customerNote.deleteMany({ where: { customerId: id } }),
       prisma.customer.delete({ where: { id } }),
     ]);

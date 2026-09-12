@@ -76,6 +76,8 @@ export async function deleteSpecialist(id: string) {
     
     await prisma.$transaction([
       prisma.payment.deleteMany({ where: { appointmentId: { in: appIds } } }),
+      prisma.transaction.deleteMany({ where: { appointmentId: { in: appIds } } }),
+      prisma.invoice.deleteMany({ where: { appointmentId: { in: appIds } } }),
       prisma.appointment.deleteMany({ where: { specialistId: id } }),
       prisma.availability.deleteMany({ where: { specialistId: id } }),
       prisma.lockedSlot.deleteMany({ where: { specialistId: id } }),
@@ -86,6 +88,7 @@ export async function deleteSpecialist(id: string) {
     revalidatePath("/specialists");
     return { success: true };
   } catch (error: any) {
+    console.error("[SPECIALIST_DELETE]", error);
     return { error: error.message || "Failed to delete specialist" };
   }
 }
