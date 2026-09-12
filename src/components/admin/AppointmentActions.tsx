@@ -7,9 +7,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { MoreHorizontal, Eye, XCircle, CalendarClock, Activity, Loader2 } from "lucide-react";
+import { MoreHorizontal, Eye, XCircle, CalendarClock, Activity, Loader2, Trash2 } from "lucide-react";
 import { format } from "date-fns";
-import { cancelAppointment, changeAppointmentStatus, rescheduleAppointment } from "@/app/actions/admin-appointments";
+import { cancelAppointment, changeAppointmentStatus, rescheduleAppointment, deleteAppointment } from "@/app/actions/admin-appointments";
 import { toast } from "sonner";
 
 export function AppointmentActions({ appointment, permissions }: { appointment: any, permissions: any }) {
@@ -59,6 +59,17 @@ export function AppointmentActions({ appointment, permissions }: { appointment: 
     }
   };
 
+  const handleDelete = async () => {
+    if (!confirm("Are you sure you want to permanently delete this appointment?")) return;
+    setLoading(true);
+    const res = await deleteAppointment(appointment.id);
+    setLoading(false);
+    if (res.error) toast.error(res.error);
+    else {
+      toast.success("Appointment deleted successfully.");
+    }
+  };
+
   return (
     <>
       <DropdownMenu>
@@ -94,6 +105,12 @@ export function AppointmentActions({ appointment, permissions }: { appointment: 
           {permissions.canCancel && appointment.status !== 'CANCELLED' && (
             <DropdownMenuItem onClick={() => setActiveModal("cancel")}>
               <XCircle className="w-4 h-4 mr-2 text-red-500" /> Cancel Appointment
+            </DropdownMenuItem>
+          )}
+
+          {permissions.canManage && (
+            <DropdownMenuItem onClick={handleDelete} className="text-red-600 focus:text-red-700 focus:bg-red-50">
+              {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Trash2 className="w-4 h-4 mr-2" />} Delete
             </DropdownMenuItem>
           )}
         </DropdownMenuContent>

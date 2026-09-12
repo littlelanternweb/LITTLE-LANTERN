@@ -71,10 +71,17 @@ export async function updateSpecialist(id: string, data: any) {
 
 export async function deleteSpecialist(id: string) {
   try {
-    // Instead of actual delete, we can also deactivate. But here is the delete:
-    await prisma.specialist.delete({
-      where: { id }
-    });
+    const apps = await prisma.appointment.findMany({ where: { specialistId: id }, select: { id: true } });
+    const appIds = apps.map(a => a.id);
+    
+    await prisma.$transaction([
+      prisma.payment.deleteMany({ where: { appointmentId: { in: appIds } } }),
+      prisma.appointment.deleteMany({ where: { specialistId: id } }),
+      prisma.availability.deleteMany({ where: { specialistId: id } }),
+      prisma.lockedSlot.deleteMany({ where: { specialistId: id } }),
+      prisma.slotHold.deleteMany({ where: { specialistId: id } }),
+      prisma.specialist.delete({ where: { id } })
+    ]);
     revalidatePath("/admin/specialists");
     revalidatePath("/specialists");
     return { success: true };

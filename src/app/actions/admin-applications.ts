@@ -157,3 +157,23 @@ export async function convertApplicationToFaculty(id: string) {
     return { error: "Failed to convert application." };
   }
 }
+
+export async function deleteJobApplication(id: string) {
+  try {
+    const session = await getServerSession(authOptions);
+    const role = (session?.user as any)?.role;
+
+    if (role !== "SUPER_ADMIN") {
+      return { error: "Unauthorized access." };
+    }
+
+    await prisma.jobApplication.delete({
+      where: { id }
+    });
+
+    revalidatePath("/admin/jobs");
+    return { success: true };
+  } catch (error: any) {
+    return { error: "Failed to delete application." };
+  }
+}

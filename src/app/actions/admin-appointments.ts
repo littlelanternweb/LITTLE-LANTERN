@@ -365,3 +365,20 @@ export async function editOfflinePayment(transactionId: string, updates: { amoun
     return { error: "Failed to edit offline payment." };
   }
 }
+
+export async function deleteAppointment(id: string) {
+  try {
+    const session = await getServerSession(authOptions);
+    const role = (session?.user as any)?.role;
+    if (role !== "SUPER_ADMIN") return { error: "Unauthorized access." };
+
+    await prisma.$transaction([
+      prisma.payment.deleteMany({ where: { appointmentId: id } }),
+      prisma.appointment.delete({ where: { id } })
+    ]);
+    revalidatePath("/admin/appointments");
+    return { success: true };
+  } catch (error: any) {
+    return { error: "Failed to delete appointment." };
+  }
+}

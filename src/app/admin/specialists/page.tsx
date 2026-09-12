@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Edit, Trash2, Power, PowerOff } from "lucide-react";
 import { toggleSpecialistStatus } from "@/app/actions/admin-specialists";
 import { revalidatePath } from "next/cache";
+import { DeleteSpecialistButton } from "@/components/admin/DeleteSpecialistButton";
 
 export default async function AdminSpecialists() {
   const specialists = await prisma.specialist.findMany({
@@ -92,6 +93,8 @@ export default async function AdminSpecialists() {
                     )}
                   </Button>
                 </form>
+
+                <DeleteSpecialistButton id={specialist.id} />
               </div>
 
             </CardContent>

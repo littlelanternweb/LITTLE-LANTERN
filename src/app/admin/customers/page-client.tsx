@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Search, Eye, Mail, Phone, Plus, Calendar } from "lucide-react";
+import { Search, Eye, Mail, Phone, Plus, Calendar, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -22,6 +22,17 @@ export function CustomersClient({ initialCustomers, specialists }: { initialCust
 
   // Book Appointment Form State
   const [aForm, setAForm] = useState({ specialistId: "", childId: "", date: "", time: "", reason: "" });
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this customer? This will also delete all their children and appointments.")) return;
+    try {
+      const res = await fetch(`/api/admin/customers/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error();
+      setCustomers(customers.filter(c => c.id !== id));
+    } catch {
+      alert("Failed to delete customer");
+    }
+  };
 
   const filteredCustomers = customers.filter(c => 
     (c.name || "").toLowerCase().includes(search.toLowerCase()) || 
@@ -143,6 +154,9 @@ export function CustomersClient({ initialCustomers, specialists }: { initialCust
                         <Link href={`/admin/customers/${customer.id}`}>
                           <Eye className="w-4 h-4" />
                         </Link>
+                      </Button>
+                      <Button onClick={() => handleDelete(customer.id)} variant="ghost" size="icon" className="h-8 w-8 text-red-400 hover:text-red-600">
+                        <Trash2 className="w-4 h-4" />
                       </Button>
                     </td>
                   </tr>

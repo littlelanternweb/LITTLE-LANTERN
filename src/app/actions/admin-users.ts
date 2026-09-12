@@ -74,3 +74,27 @@ export async function resetUserPassword(userId: string, newPasswordStr: string) 
   revalidatePath("/admin/users");
   return { success: true };
 }
+
+export async function deleteUser(id: string) {
+  const session = await getServerSession(authOptions);
+  if (!session || session.user?.role !== ROLES.SUPER_ADMIN) {
+    throw new Error("Unauthorized: Only Super Admin can delete users.");
+  }
+  if (session.user.id === id) {
+    throw new Error("Cannot delete yourself.");
+  }
+  
+  await prisma.$transaction(async (tx) => {
+    // Disconnect any associated specialist so we don't hit foreign key constraint
+    await tx.specialist.updateMany({
+      where: { userId: id },
+      data: { userId: null }
+    });
+    
+    // Now delete the user
+    await tx.user.delete({ where: { id } });
+  });
+
+  revalidatePath("/admin/users");
+  return { success: true };
+}

@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ROLES } from "@/lib/permissions";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
-import { ShieldCheck, ShieldAlert, KeyRound, CheckCircle2, Lock } from "lucide-react";
-import { resetUserPassword } from "@/app/actions/admin-users";
+import { ShieldCheck, ShieldAlert, KeyRound, CheckCircle2, Lock, Trash2 } from "lucide-react";
+import { resetUserPassword, deleteUser } from "@/app/actions/admin-users";
 import { toast } from "sonner";
 
 export function UsersClient({ initialUsers, currentUserRole }: { initialUsers: any[], currentUserRole: string }) {
@@ -57,6 +57,20 @@ export function UsersClient({ initialUsers, currentUserRole }: { initialUsers: a
       toast.error(error.message || "Failed to reset password");
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this user? This is a permanent action.")) return;
+    try {
+      const res = await deleteUser(id);
+      if (res.error) toast.error(res.error);
+      else {
+        toast.success("User deleted successfully.");
+        setUsers(users.filter(u => u.id !== id));
+      }
+    } catch (e: any) {
+      toast.error(e.message || "Failed to delete user.");
     }
   };
 
@@ -117,14 +131,25 @@ export function UsersClient({ initialUsers, currentUserRole }: { initialUsers: a
                   </div>
                   
                   {currentUserRole === ROLES.SUPER_ADMIN && (
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => openResetModal(user)}
-                      className="w-full md:w-auto mt-2 text-slate-700"
-                    >
-                      <KeyRound className="w-4 h-4 mr-2" /> Change Password
-                    </Button>
+                    <div className="flex items-center gap-2 mt-2 w-full md:w-auto">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => openResetModal(user)}
+                        className="text-slate-700 flex-1 md:flex-none"
+                      >
+                        <KeyRound className="w-4 h-4 mr-2" /> Change Password
+                      </Button>
+                      <Button 
+                        variant="ghost" 
+                        size="icon"
+                        onClick={() => handleDelete(user.id)}
+                        className="text-red-400 hover:text-red-600 hover:bg-red-50 flex-shrink-0"
+                        title="Delete User"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
                   )}
                 </div>
               </div>

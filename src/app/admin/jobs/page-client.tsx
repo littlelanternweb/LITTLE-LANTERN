@@ -4,9 +4,9 @@ import { useState, useTransition } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Download, FileText, ChevronDown, Loader2, Eye, UserPlus } from "lucide-react";
+import { Download, FileText, ChevronDown, Loader2, Eye, UserPlus, Trash2 } from "lucide-react";
 import { format } from "date-fns";
-import { updateJobApplicationStatus, convertApplicationToFaculty } from "@/app/actions/admin-applications";
+import { updateJobApplicationStatus, convertApplicationToFaculty, deleteJobApplication } from "@/app/actions/admin-applications";
 import { toast } from "sonner";
 
 export function JobsClient({ initialApplications }: { initialApplications: any[] }) {
@@ -34,6 +34,21 @@ export function JobsClient({ initialApplications }: { initialApplications: any[]
       toast.error("Failed to convert.");
     } finally {
       setIsConverting(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this application?")) return;
+    try {
+      const res = await deleteJobApplication(id);
+      if (res.error) {
+        toast.error(res.error);
+      } else {
+        toast.success("Application deleted.");
+        setApplications(apps => apps.filter(a => a.id !== id));
+      }
+    } catch {
+      toast.error("Failed to delete application.");
     }
   };
 
@@ -175,9 +190,14 @@ export function JobsClient({ initialApplications }: { initialApplications: any[]
                         ) : (
                           <span className="text-stone-400 text-xs">No Resume</span>
                         )}
-                        <Button variant="outline" size="sm" onClick={() => setSelectedApp(app)} className="h-7 text-xs">
-                          <Eye className="w-3 h-3 mr-1" /> View Details
-                        </Button>
+                        <div className="flex gap-2">
+                          <Button variant="outline" size="sm" onClick={() => setSelectedApp(app)} className="h-7 text-xs flex-1">
+                            <Eye className="w-3 h-3 mr-1" /> View
+                          </Button>
+                          <Button variant="ghost" size="icon" onClick={() => handleDelete(app.id)} className="h-7 w-7 text-red-400 hover:text-red-600">
+                            <Trash2 className="w-3 h-3" />
+                          </Button>
+                        </div>
                       </div>
                     </td>
                   </tr>
