@@ -13,6 +13,7 @@ export function JobsClient({ initialApplications }: { initialApplications: any[]
   const [applications, setApplications] = useState(initialApplications);
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [categoryFilter, setCategoryFilter] = useState("ALL");
+  const [positionFilter, setPositionFilter] = useState("ALL");
   const [isPending, startTransition] = useTransition();
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [selectedApp, setSelectedApp] = useState<any | null>(null);
@@ -58,8 +59,10 @@ export function JobsClient({ initialApplications }: { initialApplications: any[]
     "Educational Psychologist", "Career Counsellor", "Occupational Therapist", 
     "Speech & Language Therapist", "Behaviour Therapist", "ABA Therapist", 
     "Learning Support Specialist", "Parent & Family Counsellor", 
-    "Audiologist", "Teacher / Faculty", "Consultant"
+    "Audiologist", "Teacher / Faculty", "Consultant", "Teacher"
   ];
+
+  const POSITIONS = ["Psychologist", "Special Educator", "Teacher"];
 
   const updateStatus = async (id: string, newStatus: string) => {
     // Optimistic UI update could be done, but we'll await DB persistence
@@ -92,6 +95,7 @@ export function JobsClient({ initialApplications }: { initialApplications: any[]
   const filteredApps = applications.filter(app => {
     if (statusFilter !== "ALL" && app.status !== statusFilter) return false;
     if (categoryFilter !== "ALL" && app.category !== categoryFilter) return false;
+    if (positionFilter !== "ALL" && app.position !== positionFilter) return false;
     return true;
   });
 
@@ -99,7 +103,15 @@ export function JobsClient({ initialApplications }: { initialApplications: any[]
     <Card className="rounded-2xl border-stone-200/60 shadow-sm overflow-hidden">
       <CardHeader className="bg-stone-50/50 border-b border-stone-100 py-4 px-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <CardTitle className="text-lg font-medium text-stone-800">Recent Applications</CardTitle>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <select 
+            value={positionFilter} 
+            onChange={e => setPositionFilter(e.target.value)}
+            className="px-3 py-1.5 border border-slate-200 rounded-lg text-sm bg-white"
+          >
+            <option value="ALL">All Positions</option>
+            {POSITIONS.map(p => <option key={p} value={p}>{p}</option>)}
+          </select>
           <select 
             value={categoryFilter} 
             onChange={e => setCategoryFilter(e.target.value)}
@@ -126,7 +138,7 @@ export function JobsClient({ initialApplications }: { initialApplications: any[]
       <CardContent className="p-0">
         {filteredApps.length === 0 ? (
           <div className="p-10 text-center text-stone-500">
-            No applications received yet.
+            No applications found.
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -138,7 +150,7 @@ export function JobsClient({ initialApplications }: { initialApplications: any[]
                   <th className="px-6 py-4">Experience</th>
                   <th className="px-6 py-4">Applied On</th>
                   <th className="px-6 py-4">Status</th>
-                  <th className="px-6 py-4 text-right">Resume</th>
+                  <th className="px-6 py-4 text-right">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-stone-100 bg-white">
@@ -152,7 +164,7 @@ export function JobsClient({ initialApplications }: { initialApplications: any[]
                     <td className="px-6 py-4">
                       <div className="text-stone-900 font-medium">{app.jobOpening?.title || app.position}</div>
                       <div className="text-emerald-600 font-semibold text-[10px] uppercase mt-1">{app.category}</div>
-                      <div className="text-stone-500 text-xs mt-0.5">{app.qualifications}</div>
+                      <div className="text-stone-500 text-xs mt-0.5 truncate max-w-[150px]">{app.qualifications}</div>
                     </td>
                     <td className="px-6 py-4 text-stone-600">
                       {app.experience}
@@ -178,17 +190,17 @@ export function JobsClient({ initialApplications }: { initialApplications: any[]
                       </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex flex-col items-end gap-2">
-                        {app.resumeUrl ? (
+                        {app.resumeUrl && app.resumeUrl !== "Not Provided" ? (
                           <a 
                             href={app.resumeUrl} 
                             target="_blank" 
                             rel="noreferrer"
                             className="inline-flex items-center gap-1.5 text-sm font-medium text-[#047857] hover:text-[#065F46] hover:bg-[#F0FDF4] px-3 py-1.5 rounded-lg transition-colors"
                           >
-                            <FileText className="w-4 h-4" /> Resume
+                            <FileText className="w-4 h-4" /> {app.position === "Teacher" ? "Certificate" : "Resume"}
                           </a>
                         ) : (
-                          <span className="text-stone-400 text-xs">No Resume</span>
+                          <span className="text-stone-400 text-xs">No File</span>
                         )}
                         <div className="flex gap-2">
                           <Button variant="outline" size="sm" onClick={() => setSelectedApp(app)} className="h-7 text-xs flex-1">
@@ -209,7 +221,7 @@ export function JobsClient({ initialApplications }: { initialApplications: any[]
       </CardContent>
 
       <Dialog open={!!selectedApp} onOpenChange={(open) => !open && setSelectedApp(null)}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Application Details</DialogTitle>
           </DialogHeader>
@@ -219,27 +231,75 @@ export function JobsClient({ initialApplications }: { initialApplications: any[]
                 {selectedApp.photoUrl ? (
                   <img src={selectedApp.photoUrl} alt="Applicant" className="w-24 h-24 rounded-full object-cover border" />
                 ) : (
-                  <div className="w-24 h-24 rounded-full bg-slate-100 border flex items-center justify-center text-slate-400">No Photo</div>
+                  <div className="w-24 h-24 rounded-full bg-slate-100 border flex items-center justify-center text-slate-400 text-xs text-center">No Photo</div>
                 )}
                 <div>
                   <h3 className="text-xl font-semibold text-slate-900">{selectedApp.name}</h3>
                   <p className="text-slate-500">{selectedApp.email} • {selectedApp.phone}</p>
-                  <div className="mt-2 text-sm">
-                    <span className="font-medium text-slate-700">Category:</span> <span className="text-emerald-600 font-semibold uppercase">{selectedApp.category}</span>
+                  <div className="mt-2 text-sm flex gap-2">
+                    <span className="text-emerald-600 font-semibold uppercase bg-emerald-50 px-2 py-0.5 rounded">{selectedApp.position}</span>
+                    <span className="text-slate-600 font-semibold uppercase bg-slate-100 px-2 py-0.5 rounded">{selectedApp.category}</span>
                   </div>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4 text-sm bg-slate-50 p-4 rounded-xl border">
-                <div><span className="text-slate-500 font-medium block">Position Applied</span> {selectedApp.position}</div>
                 <div><span className="text-slate-500 font-medium block">Experience</span> {selectedApp.experience}</div>
                 <div><span className="text-slate-500 font-medium block">Qualifications</span> {selectedApp.qualifications}</div>
-                <div><span className="text-slate-500 font-medium block">Current Org</span> {selectedApp.currentOrg || "-"}</div>
+                {selectedApp.position !== "Teacher" && (
+                  <>
+                    <div><span className="text-slate-500 font-medium block">Current Org</span> {selectedApp.currentOrg || "-"}</div>
+                    <div><span className="text-slate-500 font-medium block">Specialisation</span> {selectedApp.specialisation || "-"}</div>
+                  </>
+                )}
               </div>
+
+              {selectedApp.position === "Teacher" && selectedApp.metadata && (
+                <div className="text-sm bg-indigo-50/50 p-4 rounded-xl border border-indigo-100 space-y-4">
+                  <h4 className="font-semibold text-indigo-900 pb-2 border-b border-indigo-100">Teacher Profile</h4>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <span className="text-indigo-600/70 font-medium block">Teaching Mode</span> 
+                      <span className="text-slate-800 font-medium">{selectedApp.metadata.teachingMode || "-"}</span>
+                    </div>
+                    <div>
+                      <span className="text-indigo-600/70 font-medium block">Subjects</span> 
+                      <span className="text-slate-800 font-medium">{selectedApp.metadata.subjects || "-"}</span>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <span className="text-indigo-600/70 font-medium block mb-1">Syllabus</span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {selectedApp.metadata.syllabus?.length > 0 ? selectedApp.metadata.syllabus.map((s: string) => (
+                        <span key={s} className="bg-white border border-indigo-100 px-2 py-0.5 rounded-md text-xs text-slate-700">{s}</span>
+                      )) : <span className="text-slate-500">-</span>}
+                    </div>
+                  </div>
+
+                  <div>
+                    <span className="text-indigo-600/70 font-medium block mb-1">Classes / Standards</span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {selectedApp.metadata.classes?.length > 0 ? selectedApp.metadata.classes.map((c: string) => (
+                        <span key={c} className="bg-white border border-indigo-100 px-2 py-0.5 rounded-md text-xs text-slate-700">{c}</span>
+                      )) : <span className="text-slate-500">-</span>}
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <span className="text-indigo-600/70 font-medium block mb-1">Languages</span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {selectedApp.metadata.languages?.length > 0 ? selectedApp.metadata.languages.map((l: string) => (
+                        <span key={l} className="bg-white border border-indigo-100 px-2 py-0.5 rounded-md text-xs text-slate-700">{l}</span>
+                      )) : <span className="text-slate-500">-</span>}
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {selectedApp.message && (
                 <div className="text-sm bg-slate-50 p-4 rounded-xl border">
-                  <span className="text-slate-500 font-medium block mb-1">Message</span>
+                  <span className="text-slate-500 font-medium block mb-1">Message / About You</span>
                   <p className="text-slate-700 whitespace-pre-wrap">{selectedApp.message}</p>
                 </div>
               )}

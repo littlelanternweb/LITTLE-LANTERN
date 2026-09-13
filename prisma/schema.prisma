@@ -237,6 +237,7 @@ model JobApplication {
   photoUrl       String?
   message        String?
   status         String   // NEW, REVIEWING, SHORTLISTED, SELECTED, REJECTED, ACCEPTED, DECLINED
+  metadata       Json?
   
   // Faculty Conversion Tracking
   convertedAt           DateTime?

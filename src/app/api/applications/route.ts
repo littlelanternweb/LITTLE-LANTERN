@@ -22,6 +22,7 @@ export async function POST(request: Request) {
         photoUrl: body.photoUrl || null,
         message: body.message || null,
         status: "NEW", // Default status
+        metadata: body.metadata || null,
       },
     });
 

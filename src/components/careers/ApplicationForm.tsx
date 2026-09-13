@@ -18,6 +18,30 @@ const CATEGORY_MAP: Record<string, string[]> = {
   ]
 };
 
+const SYLLABUS_OPTIONS = ["CBSE", "ICSE", "State Boards", "NIOS", "International Boards"];
+const CLASSES_OPTIONS = [
+  "Middle School (Class 6-8)",
+  "Secondary (Class 9-10)",
+  "Higher Secondary - Science (11-12)",
+  "Higher Secondary - Commerce",
+  "Higher Secondary - Humanities/Arts",
+  "Engineering (B.Tech/Diploma)",
+  "Medical & Allied Health",
+  "Commerce & Management",
+  "Computer & IT Courses",
+  "Languages",
+  "Professional Certifications",
+  "Creative Arts",
+  "Skill Development",
+  "Competitive Exams"
+];
+
+const LANGUAGE_OPTIONS = [
+  "Assamese", "Bengali", "Bodo", "Dogri", "English", "Gujarati", "Hindi", "Kannada", 
+  "Kashmiri", "Konkani", "Maithili", "Malayalam", "Manipuri", "Marathi", "Nepali", 
+  "Odia", "Punjabi", "Sanskrit", "Santali", "Sindhi", "Tamil", "Telugu", "Urdu", "Other"
+];
+
 export function ApplicationForm({ mainCategory }: { mainCategory: string }) {
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -35,16 +59,28 @@ export function ApplicationForm({ mainCategory }: { mainCategory: string }) {
     specialisation: "",
     message: "",
   });
+  
+  // Teacher metadata state
+  const [teacherData, setTeacherData] = useState({
+    teachingMode: "",
+    syllabus: [] as string[],
+    classes: [] as string[],
+    subjects: "",
+    languages: [] as string[],
+  });
+
+  const isTeacher = mainCategory === "Teacher";
 
   useEffect(() => {
     setFormData(prev => ({ ...prev, category: "" }));
+    setStep(1);
   }, [mainCategory]);
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        alert("File too large. Maximum size is 5MB.");
+      if (file.size > 10 * 1024 * 1024) {
+        alert("File too large. Maximum size is 10MB.");
         return;
       }
       setPhotoFile(file);
@@ -56,6 +92,17 @@ export function ApplicationForm({ mainCategory }: { mainCategory: string }) {
     setPhotoFile(null);
     if (photoPreview) URL.revokeObjectURL(photoPreview);
     setPhotoPreview(null);
+  };
+
+  const toggleArrayItem = (field: keyof typeof teacherData, item: string) => {
+    setTeacherData(prev => {
+      const arr = prev[field] as string[];
+      if (arr.includes(item)) {
+        return { ...prev, [field]: arr.filter(i => i !== item) };
+      } else {
+        return { ...prev, [field]: [...arr, item] };
+      }
+    });
   };
 
   const submitApplication = async (e: React.FormEvent) => {
@@ -71,12 +118,15 @@ export function ApplicationForm({ mainCategory }: { mainCategory: string }) {
         });
       }
 
+      const metadata = isTeacher ? teacherData : null;
+
       const payload = {
         ...formData,
         position: mainCategory,
         jobOpeningId: null,
-        resumeUrl: "Not Provided",
-        photoUrl: uploadedPhotoUrl,
+        resumeUrl: isTeacher ? (uploadedPhotoUrl || "Not Provided") : "Not Provided",
+        photoUrl: !isTeacher ? uploadedPhotoUrl : null,
+        metadata: metadata,
       };
 
       const submitRes = await fetch("/api/applications", {
@@ -92,6 +142,7 @@ export function ApplicationForm({ mainCategory }: { mainCategory: string }) {
         setIsSuccess(false);
         setStep(1);
         setFormData({ name: "", email: "", phone: "", category: "", qualifications: "", experience: "", currentOrg: "", specialisation: "", message: "" });
+        setTeacherData({ teachingMode: "", syllabus: [], classes: [], subjects: "", languages: [] });
         removePhoto();
       }, 3000);
     } catch (error) {
@@ -127,6 +178,7 @@ export function ApplicationForm({ mainCategory }: { mainCategory: string }) {
 
       <div className="p-8">
         <form id="applicationForm" onSubmit={submitApplication}>
+          {/* STEP 1 */}
           <div className={step === 1 ? "space-y-6 block" : "hidden"}>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
@@ -138,11 +190,46 @@ export function ApplicationForm({ mainCategory }: { mainCategory: string }) {
                 <input required type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" />
               </div>
             </div>
+            
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-slate-900 mb-1.5">Phone Number *</label>
-                <input required type="tel" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" />
+                <label className="block text-sm font-medium text-slate-900 mb-1.5">WhatsApp Number *</label>
+                <input required type="tel" placeholder="+91 90000 00000" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" />
               </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-900 mb-1.5">Highest Qualification *</label>
+                <input required type="text" placeholder="e.g. M.Sc. Mathematics" value={formData.qualifications} onChange={e => setFormData({...formData, qualifications: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-slate-900 mb-1.5">Years of Experience *</label>
+                <input required type="text" value={formData.experience} onChange={e => setFormData({...formData, experience: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" />
+              </div>
+              {isTeacher ? (
+                <div>
+                  <label className="block text-sm font-medium text-slate-900 mb-1.5">Teaching Mode *</label>
+                  <select required value={teacherData.teachingMode} onChange={e => setTeacherData({...teacherData, teachingMode: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all appearance-none">
+                    <option value="" disabled>Select...</option>
+                    <option value="Online">Online</option>
+                    <option value="Offline">Offline</option>
+                    <option value="Hybrid">Hybrid</option>
+                  </select>
+                </div>
+              ) : (
+                <div>
+                  <label className="block text-sm font-medium text-slate-900 mb-1.5">Professional Category *</label>
+                  <select required value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all appearance-none">
+                    <option value="" disabled>Select your professional category</option>
+                    {options.map(c => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </div>
+              )}
+            </div>
+            
+            {/* Conditional Non-Teacher Photo */}
+            {!isTeacher && (
               <div>
                 <label className="block text-sm font-medium text-slate-900 mb-1.5">Professional Photo</label>
                 {!photoPreview ? (
@@ -167,39 +254,94 @@ export function ApplicationForm({ mainCategory }: { mainCategory: string }) {
                   </div>
                 )}
               </div>
-              <div className="col-span-1 sm:col-span-2">
-                <label className="block text-sm font-medium text-slate-900 mb-1.5">Professional Category *</label>
-                <select required value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all appearance-none">
-                  <option value="" disabled>Select your professional category</option>
-                  {options.map(c => <option key={c} value={c}>{c}</option>)}
-                </select>
-              </div>
-              <div className="col-span-1 sm:col-span-2">
-                <label className="block text-sm font-medium text-slate-900 mb-1.5">Highest Qualification *</label>
-                <input required type="text" value={formData.qualifications} onChange={e => setFormData({...formData, qualifications: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" />
-              </div>
-            </div>
+            )}
           </div>
 
+          {/* STEP 2 */}
           <div className={step === 2 ? "space-y-6 block" : "hidden"}>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-slate-900 mb-1.5">Years of Experience *</label>
-                <input required type="text" value={formData.experience} onChange={e => setFormData({...formData, experience: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" />
+            
+            {isTeacher ? (
+              <div className="space-y-8">
+                <div>
+                  <label className="block text-sm font-medium text-slate-900 mb-3">Syllabus (optional, select all that apply)</label>
+                  <div className="flex flex-wrap gap-4">
+                    {SYLLABUS_OPTIONS.map(opt => (
+                      <label key={opt} className="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" checked={teacherData.syllabus.includes(opt)} onChange={() => toggleArrayItem("syllabus", opt)} className="rounded border-slate-300 text-primary focus:ring-primary/20" />
+                        <span className="text-sm text-slate-700">{opt}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-900 mb-3">Classes / Standards (select all that apply)</label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {CLASSES_OPTIONS.map(opt => (
+                      <label key={opt} className="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" checked={teacherData.classes.includes(opt)} onChange={() => toggleArrayItem("classes", opt)} className="rounded border-slate-300 text-primary focus:ring-primary/20" />
+                        <span className="text-sm text-slate-700">{opt}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-900 mb-1.5">Subjects you teach *</label>
+                  <input required type="text" placeholder="e.g. Mathematics, Physics, Chemistry" value={teacherData.subjects} onChange={e => setTeacherData({...teacherData, subjects: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-900 mb-3">Languages</label>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                    {LANGUAGE_OPTIONS.map(opt => (
+                      <label key={opt} className="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" checked={teacherData.languages.includes(opt)} onChange={() => toggleArrayItem("languages", opt)} className="rounded border-slate-300 text-primary focus:ring-primary/20" />
+                        <span className="text-sm text-slate-700">{opt}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-900 mb-1.5">About You (optional)</label>
+                  <textarea value={formData.message} onChange={e => setFormData({...formData, message: e.target.value})} rows={3} className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-900 mb-1.5">Certificates (optional)</label>
+                  <div className="mt-1 flex items-center gap-4">
+                    <label className="relative cursor-pointer bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors border border-slate-200">
+                      <span>Choose files</span>
+                      <input type="file" className="sr-only" accept="image/*,application/pdf" onChange={handlePhotoChange} />
+                    </label>
+                    <span className="text-sm text-slate-500">
+                      {photoFile ? photoFile.name : "No file chosen"}
+                    </span>
+                    {photoFile && (
+                       <button type="button" onClick={removePhoto} className="text-rose-500 hover:text-rose-600 text-sm font-medium">Remove</button>
+                    )}
+                  </div>
+                  <p className="text-xs text-slate-500 mt-2">PDF or image files, up to 10MB each.</p>
+                </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-900 mb-1.5">Current Organization</label>
-                <input type="text" value={formData.currentOrg} onChange={e => setFormData({...formData, currentOrg: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" />
+            ) : (
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-slate-900 mb-1.5">Current Organization</label>
+                  <input type="text" value={formData.currentOrg} onChange={e => setFormData({...formData, currentOrg: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-900 mb-1.5">Areas of Specialisation</label>
+                  <input type="text" value={formData.specialisation} onChange={e => setFormData({...formData, specialisation: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-900 mb-1.5">Cover Letter / Message</label>
+                  <textarea value={formData.message} onChange={e => setFormData({...formData, message: e.target.value})} rows={4} className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" />
+                </div>
               </div>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-900 mb-1.5">Areas of Specialisation</label>
-              <input type="text" value={formData.specialisation} onChange={e => setFormData({...formData, specialisation: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-900 mb-1.5">Cover Letter / Message</label>
-              <textarea value={formData.message} onChange={e => setFormData({...formData, message: e.target.value})} rows={4} className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" />
-            </div>
+            )}
+            
           </div>
         </form>
       </div>
@@ -220,16 +362,24 @@ export function ApplicationForm({ mainCategory }: { mainCategory: string }) {
             <Button type="button" onClick={() => {
               const form = document.getElementById("applicationForm") as HTMLFormElement;
               if (!form) return;
-              const isStep1Valid = Array.from(form.elements).filter(el => {
+              
+              // Only check validity of visible inputs
+              const visibleInputs = Array.from(form.elements).filter(el => {
                 const input = el as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
-                if (input.closest('.hidden')) return false;
-                return !input.checkValidity();
-              }).length === 0;
+                return !input.closest('.hidden') && input.tagName !== 'BUTTON';
+              }) as (HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement)[];
+              
+              let isValid = true;
+              for (const input of visibleInputs) {
+                if (!input.checkValidity()) {
+                  input.reportValidity();
+                  isValid = false;
+                  break;
+                }
+              }
 
-              if (isStep1Valid) {
+              if (isValid) {
                 setStep(2);
-              } else {
-                form.reportValidity();
               }
             }} className="bg-primary hover:bg-primary/90 text-white rounded-xl px-8 h-11 shadow-sm">
               Next Step
