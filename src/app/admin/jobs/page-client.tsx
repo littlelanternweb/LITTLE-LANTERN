@@ -73,6 +73,8 @@ export function JobsClient({ initialApplications }: { initialApplications: any[]
   
   const SYLLABUS_OPTIONS = ["CBSE", "ICSE", "State Boards", "NIOS", "International Boards"];
   const CLASSES_OPTIONS = [
+    "Pre Primary",
+    "Primary",
     "Middle School (Class 6-8)",
     "Secondary (Class 9-10)",
     "Higher Secondary - Science (11-12)",
