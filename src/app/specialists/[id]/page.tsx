@@ -8,7 +8,8 @@ import { Metadata } from "next";
 
 export const revalidate = 60;
 
-export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
+export async function generateMetadata(props: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const params = await props.params;
   const specialist = await getSpecialistById(params.id);
   if (!specialist) return { title: "Specialist Not Found | Little Lantern" };
 
@@ -24,7 +25,7 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
   };
 }
 
-export default async function SpecialistProfilePage(props: { params: { id: string } }) {
+export default async function SpecialistProfilePage(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   const specialist = await getSpecialistById(params.id);
 
