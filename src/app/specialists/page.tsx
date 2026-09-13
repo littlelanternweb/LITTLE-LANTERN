@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   keywords: ["Child Psychologists Kerala", "Special Educators Wandoor", "Speech Therapists Kerala", "Child Counselling Wandoor"],
 };
 
-export const revalidate = 60; // ISR
+export const dynamic = "force-dynamic"; // Ensure search params and list are always up-to-date
 
 export default async function SpecialistsPage(props: { searchParams: { q?: string; service?: string; category?: string } }) {
   const searchParams = await props.searchParams;

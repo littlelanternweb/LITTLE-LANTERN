@@ -133,31 +133,14 @@ export function SpecialistDialog({
             <div className="space-y-2">
               <Label>Professional Category</Label>
               <select name="category" value={formData.category} onChange={handleChange} className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500">
-                <optgroup label="Counselling">
-                  <option value="General Counsellor">General Counsellor</option>
-                  <option value="Child & Adolescent Counsellor">Child & Adolescent Counsellor</option>
-                  <option value="Parent & Family Counsellor">Parent & Family Counsellor</option>
-                  <option value="Career Counsellor">Career Counsellor</option>
-                </optgroup>
-                <optgroup label="Psychology">
-                  <option value="Clinical Psychologist">Clinical Psychologist</option>
-                  <option value="Child Psychologist">Child Psychologist</option>
-                  <option value="Educational Psychologist">Educational Psychologist</option>
-                </optgroup>
-                <optgroup label="Special Education & Therapy">
-                  <option value="Special / Remedial Educator">Special / Remedial Educator</option>
-                  <option value="Learning Support Specialist">Learning Support Specialist</option>
-                  <option value="Behaviour Therapist">Behaviour Therapist</option>
-                  <option value="ABA Therapist">ABA Therapist</option>
-                </optgroup>
-                <optgroup label="Education">
-                  <option value="Teacher / Faculty ( KG to 10)">Teacher / Faculty ( KG to 10)</option>
-                </optgroup>
-                <optgroup label="Allied Therapies">
-                  <option value="Occupational Therapist">Occupational Therapist</option>
-                  <option value="Speech & Language Therapist">Speech & Language Therapist</option>
-                  <option value="Audiologist">Audiologist</option>
-                </optgroup>
+                {[
+                  "Clinical Psychologist", "Child Psychologist", "Counsellor", "Child & Adolescent Counsellor", 
+                  "Special or Remedial Educator", "Educational Psychologist", "Career Counsellor", "Occupational Therapist", 
+                  "Speech & Language Therapist", "Behaviour Therapist", "ABA Therapist", "Learning Support Specialist", 
+                  "Parent & Family Counsellor", "Audiologist", "Teacher / Faculty", "Consultant"
+                ].map(cat => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
               </select>
             </div>
             <div className="space-y-2">

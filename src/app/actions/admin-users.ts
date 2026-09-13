@@ -85,11 +85,16 @@ export async function deleteUser(id: string) {
   }
   
   await prisma.$transaction(async (tx) => {
-    // Disconnect any associated specialist so we don't hit foreign key constraint
-    await tx.specialist.updateMany({
-      where: { userId: id },
-      data: { userId: null }
-    });
+    // Delete any associated specialist so we don't hit foreign key constraint
+    // and also to free up the email since specialist has its own unique email field.
+    const user = await tx.user.findUnique({ where: { id }, include: { specialist: true } });
+    if (user?.specialist) {
+      await tx.appointment.deleteMany({ where: { specialistId: user.specialist.id } });
+      await tx.availability.deleteMany({ where: { specialistId: user.specialist.id } });
+      await tx.lockedSlot.deleteMany({ where: { specialistId: user.specialist.id } });
+      await tx.slotHold.deleteMany({ where: { specialistId: user.specialist.id } });
+      await tx.specialist.delete({ where: { id: user.specialist.id } });
+    }
     
     // Now delete the user
     await tx.user.delete({ where: { id } });

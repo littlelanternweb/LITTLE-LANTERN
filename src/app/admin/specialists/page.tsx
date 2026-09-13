@@ -10,6 +10,8 @@ import { revalidatePath } from "next/cache";
 import { DeleteSpecialistButton } from "@/components/admin/DeleteSpecialistButton";
 import { SpecialistOrderSelect } from "@/components/admin/SpecialistOrderSelect";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminSpecialists() {
   const specialists = await prisma.specialist.findMany({
     include: { services: true, availability: true, lockedSlots: true },
