@@ -8,19 +8,12 @@ import { Download, FileText, ChevronDown, Loader2, Eye, UserPlus, Trash2 } from 
 import { format } from "date-fns";
 import { updateJobApplicationStatus, convertApplicationToFaculty, deleteJobApplication } from "@/app/actions/admin-applications";
 import { toast } from "sonner";
-import { Input } from "@/components/ui/input";
 
 export function JobsClient({ initialApplications }: { initialApplications: any[] }) {
   const [applications, setApplications] = useState(initialApplications);
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [categoryFilter, setCategoryFilter] = useState("ALL");
   const [positionFilter, setPositionFilter] = useState("ALL");
-  
-  // Teacher Specific Filters
-  const [teacherSubjectFilter, setTeacherSubjectFilter] = useState("");
-  const [teacherSyllabusFilter, setTeacherSyllabusFilter] = useState("ALL");
-  const [teacherStandardFilter, setTeacherStandardFilter] = useState("ALL");
-
   const [isPending, startTransition] = useTransition();
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [selectedApp, setSelectedApp] = useState<any | null>(null);
@@ -70,26 +63,9 @@ export function JobsClient({ initialApplications }: { initialApplications: any[]
   ];
 
   const POSITIONS = ["Psychologist", "Special Educator", "Teacher"];
-  
-  const SYLLABUS_OPTIONS = ["CBSE", "ICSE", "State Boards", "NIOS", "International Boards"];
-  const CLASSES_OPTIONS = [
-    "Middle School (Class 6-8)",
-    "Secondary (Class 9-10)",
-    "Higher Secondary - Science (11-12)",
-    "Higher Secondary - Commerce",
-    "Higher Secondary - Humanities/Arts",
-    "Engineering (B.Tech/Diploma)",
-    "Medical & Allied Health",
-    "Commerce & Management",
-    "Computer & IT Courses",
-    "Languages",
-    "Professional Certifications",
-    "Creative Arts",
-    "Skill Development",
-    "Competitive Exams"
-  ];
 
   const updateStatus = async (id: string, newStatus: string) => {
+    // Optimistic UI update could be done, but we'll await DB persistence
     setUpdatingId(id);
     startTransition(async () => {
       const result = await updateJobApplicationStatus(id, newStatus);
@@ -97,6 +73,7 @@ export function JobsClient({ initialApplications }: { initialApplications: any[]
         toast.error(result.error);
       } else {
         toast.success("Application status updated successfully.");
+        // Update local state to reflect DB change without full page reload
         setApplications(apps => apps.map(app => app.id === id ? { ...app, status: newStatus } : app));
       }
       setUpdatingId(null);
@@ -106,101 +83,57 @@ export function JobsClient({ initialApplications }: { initialApplications: any[]
   const statusColors: Record<string, string> = {
     NEW: "bg-blue-100 text-blue-700",
     UNDER_REVIEW: "bg-amber-100 text-amber-700",
-    REVIEWING: "bg-amber-100 text-amber-700",
+    REVIEWING: "bg-amber-100 text-amber-700", // Legacy support
     SHORTLISTED: "bg-purple-100 text-purple-700",
     INTERVIEW: "bg-indigo-100 text-indigo-700",
     ACCEPTED: "bg-emerald-100 text-emerald-700",
-    SELECTED: "bg-emerald-100 text-emerald-700",
+    SELECTED: "bg-emerald-100 text-emerald-700", // Legacy support
     DECLINED: "bg-rose-100 text-rose-700",
-    REJECTED: "bg-rose-100 text-rose-700",
+    REJECTED: "bg-rose-100 text-rose-700", // Legacy support
   };
 
   const filteredApps = applications.filter(app => {
     if (statusFilter !== "ALL" && app.status !== statusFilter) return false;
     if (categoryFilter !== "ALL" && app.category !== categoryFilter) return false;
     if (positionFilter !== "ALL" && app.position !== positionFilter) return false;
-    
-    if (positionFilter === "Teacher" && app.position === "Teacher" && app.metadata) {
-      if (teacherSubjectFilter && !app.metadata.subjects?.toLowerCase().includes(teacherSubjectFilter.toLowerCase())) {
-        return false;
-      }
-      if (teacherSyllabusFilter !== "ALL" && !app.metadata.syllabus?.includes(teacherSyllabusFilter)) {
-        return false;
-      }
-      if (teacherStandardFilter !== "ALL" && !app.metadata.classes?.includes(teacherStandardFilter)) {
-        return false;
-      }
-    }
-    
     return true;
   });
 
   return (
     <Card className="rounded-2xl border-stone-200/60 shadow-sm overflow-hidden">
-      <CardHeader className="bg-stone-50/50 border-b border-stone-100 py-4 px-6 flex flex-col justify-between gap-4">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <CardTitle className="text-lg font-medium text-stone-800">Recent Applications</CardTitle>
-          <div className="flex flex-wrap items-center gap-2">
-            <select 
-              value={positionFilter} 
-              onChange={e => setPositionFilter(e.target.value)}
-              className="px-3 py-1.5 border border-slate-200 rounded-lg text-sm bg-white"
-            >
-              <option value="ALL">All Positions</option>
-              {POSITIONS.map(p => <option key={p} value={p}>{p}</option>)}
-            </select>
-            <select 
-              value={categoryFilter} 
-              onChange={e => setCategoryFilter(e.target.value)}
-              className="px-3 py-1.5 border border-slate-200 rounded-lg text-sm bg-white"
-            >
-              <option value="ALL">All Categories</option>
-              {FACULTY_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
-            </select>
-            <select 
-              value={statusFilter} 
-              onChange={e => setStatusFilter(e.target.value)}
-              className="px-3 py-1.5 border border-slate-200 rounded-lg text-sm bg-white"
-            >
-              <option value="ALL">All Statuses</option>
-              <option value="NEW">New</option>
-              <option value="UNDER_REVIEW">Under Review</option>
-              <option value="SHORTLISTED">Shortlisted</option>
-              <option value="INTERVIEW">Interview</option>
-              <option value="ACCEPTED">Accepted</option>
-              <option value="DECLINED">Declined</option>
-            </select>
-          </div>
+      <CardHeader className="bg-stone-50/50 border-b border-stone-100 py-4 px-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <CardTitle className="text-lg font-medium text-stone-800">Recent Applications</CardTitle>
+        <div className="flex flex-wrap items-center gap-2">
+          <select 
+            value={positionFilter} 
+            onChange={e => setPositionFilter(e.target.value)}
+            className="px-3 py-1.5 border border-slate-200 rounded-lg text-sm bg-white"
+          >
+            <option value="ALL">All Positions</option>
+            {POSITIONS.map(p => <option key={p} value={p}>{p}</option>)}
+          </select>
+          <select 
+            value={categoryFilter} 
+            onChange={e => setCategoryFilter(e.target.value)}
+            className="px-3 py-1.5 border border-slate-200 rounded-lg text-sm bg-white"
+          >
+            <option value="ALL">All Categories</option>
+            {FACULTY_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+          </select>
+          <select 
+            value={statusFilter} 
+            onChange={e => setStatusFilter(e.target.value)}
+            className="px-3 py-1.5 border border-slate-200 rounded-lg text-sm bg-white"
+          >
+            <option value="ALL">All Statuses</option>
+            <option value="NEW">New</option>
+            <option value="UNDER_REVIEW">Under Review</option>
+            <option value="SHORTLISTED">Shortlisted</option>
+            <option value="INTERVIEW">Interview</option>
+            <option value="ACCEPTED">Accepted</option>
+            <option value="DECLINED">Declined</option>
+          </select>
         </div>
-        
-        {positionFilter === "Teacher" && (
-          <div className="flex flex-wrap items-center gap-2 pt-2 mt-2 border-t border-slate-200/60">
-            <span className="text-sm font-medium text-slate-600 mr-2">Teacher Filters:</span>
-            <input 
-              type="text" 
-              placeholder="Search Subject..." 
-              value={teacherSubjectFilter}
-              onChange={e => setTeacherSubjectFilter(e.target.value)}
-              className="px-3 py-1.5 border border-slate-200 rounded-lg text-sm bg-white min-w-[150px]"
-            />
-            <select 
-              value={teacherSyllabusFilter} 
-              onChange={e => setTeacherSyllabusFilter(e.target.value)}
-              className="px-3 py-1.5 border border-slate-200 rounded-lg text-sm bg-white"
-            >
-              <option value="ALL">All Syllabus</option>
-              {SYLLABUS_OPTIONS.map(s => <option key={s} value={s}>{s}</option>)}
-            </select>
-            <select 
-              value={teacherStandardFilter} 
-              onChange={e => setTeacherStandardFilter(e.target.value)}
-              className="px-3 py-1.5 border border-slate-200 rounded-lg text-sm bg-white"
-            >
-              <option value="ALL">All Standards</option>
-              {CLASSES_OPTIONS.map(s => <option key={s} value={s}>{s}</option>)}
-            </select>
-          </div>
-        )}
       </CardHeader>
       <CardContent className="p-0">
         {filteredApps.length === 0 ? (

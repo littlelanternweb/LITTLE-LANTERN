@@ -2,23 +2,47 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 
-const FACULTY_CATEGORIES = [
-  "Clinical Psychologist",
-  "Child Psychologist",
-  "Counsellor",
-  "Child & Adolescent Counsellor",
-  "Special or Remedial Educator",
-  "Educational Psychologist",
-  "Career Counsellor",
-  "Occupational Therapist",
-  "Speech & Language Therapist",
-  "Behaviour Therapist",
-  "ABA Therapist",
-  "Learning Support Specialist",
-  "Parent & Family Counsellor",
-  "Audiologist",
-  "Teacher / Faculty",
-  "Consultant"
+const CATEGORY_GROUPS = [
+  {
+    label: "Counselling",
+    options: [
+      "General Counsellor",
+      "Child & Adolescent Counsellor",
+      "Parent & Family Counsellor",
+      "Career Counsellor"
+    ]
+  },
+  {
+    label: "Psychology",
+    options: [
+      "Clinical Psychologist",
+      "Child Psychologist",
+      "Educational Psychologist"
+    ]
+  },
+  {
+    label: "Special Education & Therapy",
+    options: [
+      "Special / Remedial Educator",
+      "Learning Support Specialist",
+      "Behaviour Therapist",
+      "ABA Therapist"
+    ]
+  },
+  {
+    label: "Education",
+    options: [
+      "Teacher / Faculty ( KG to 10)"
+    ]
+  },
+  {
+    label: "Allied Therapies",
+    options: [
+      "Occupational Therapist",
+      "Speech & Language Therapist",
+      "Audiologist"
+    ]
+  }
 ];
 
 export function CategoryFilter() {
@@ -45,10 +69,14 @@ export function CategoryFilter() {
           className="appearance-none w-full px-5 py-3.5 bg-white border-2 border-slate-100 hover:border-slate-200 rounded-xl text-slate-700 text-[15px] font-medium focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary shadow-[0_2px_12px_rgb(0,0,0,0.02)] transition-all cursor-pointer"
         >
           <option value="">All Professionals</option>
-          {FACULTY_CATEGORIES.map((cat) => (
-            <option key={cat} value={cat}>
-              {cat}
-            </option>
+          {CATEGORY_GROUPS.map((group) => (
+            <optgroup key={group.label} label={group.label}>
+              {group.options.map((opt) => (
+                <option key={opt} value={opt}>
+                  {opt}
+                </option>
+              ))}
+            </optgroup>
           ))}
         </select>
         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-5 text-slate-400">

@@ -12,15 +12,7 @@ export async function getSpecialists(searchParams?: { service?: string; q?: stri
   }
   
   if (searchParams?.category) {
-    if (searchParams.category === 'General Counsellor') {
-      where.category = { in: ['General Counsellor', 'Counsellor', 'Consultant'] };
-    } else if (searchParams.category === 'Special / Remedial Educator') {
-      where.category = { in: ['Special / Remedial Educator', 'Special or Remedial Educator'] };
-    } else if (searchParams.category === 'Teacher / Faculty ( KG to 10)') {
-      where.category = { in: ['Teacher / Faculty ( KG to 10)', 'Teacher / Faculty', 'Teacher'] };
-    } else {
-      where.category = searchParams.category;
-    }
+    where.category = searchParams.category;
   }
 
   if (searchParams?.q) {
