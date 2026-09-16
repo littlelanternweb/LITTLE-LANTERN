@@ -107,18 +107,25 @@ export async function POST(req: Request) {
 
     // 6. Create Razorpay order (if keys exist)
     if (razorpay) {
-      const order = await razorpay.orders.create({
-        amount: Math.round(advanceAmount * 100), // strictly integer paise
-        currency: "INR",
-        receipt: appointment.id
-      });
+      try {
+        const order = await razorpay.orders.create({
+          amount: Math.round(advanceAmount * 100), // strictly integer paise
+          currency: "INR",
+          receipt: appointment.id
+        });
 
-      return NextResponse.json({
-        orderId: order.id,
-        amount: order.amount,
-        currency: order.currency,
-        appointmentId: appointment.id
-      });
+        return NextResponse.json({
+          orderId: order.id,
+          amount: order.amount,
+          currency: order.currency,
+          appointmentId: appointment.id
+        });
+      } catch (rzpError: any) {
+        console.error("Razorpay Error:", rzpError);
+        return NextResponse.json({ 
+          error: "Payment gateway error: " + (rzpError.error?.description || rzpError.message || "Failed to initialize payment") 
+        }, { status: 400 });
+      }
     } else {
       // Mock flow if no keys (for local development)
       return NextResponse.json({
@@ -130,8 +137,8 @@ export async function POST(req: Request) {
       });
     }
 
-  } catch (error) {
-    console.error(error);
+  } catch (error: any) {
+    console.error("CHECKOUT_ERROR:", error.stack || error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
