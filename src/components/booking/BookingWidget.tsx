@@ -98,8 +98,12 @@ export function BookingWidget({ specialistId, fee, advanceAmount }: { specialist
       }
 
       // Real Razorpay Flow
+      const RAZORPAY_KEY = (process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID === "rzp_test_TanKDNTqT7aYnp" || !process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID) 
+        ? "rzp_test_TcoUXh5qbfpKr0" 
+        : process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
+
       const options = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID, 
+        key: RAZORPAY_KEY, 
         amount: data.amount,
         currency: data.currency,
         name: "Little Lantern",
