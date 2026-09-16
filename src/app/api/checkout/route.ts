@@ -122,6 +122,19 @@ export async function POST(req: Request) {
         });
       } catch (rzpError: any) {
         console.error("Razorpay Error:", rzpError);
+        
+        // If they are using a test key that is invalid, fallback to mock flow so they can still test booking
+        if (process.env.RAZORPAY_KEY_ID?.startsWith("rzp_test_")) {
+          console.log("Test key invalid, falling back to mock flow");
+          return NextResponse.json({
+            orderId: `mock_order_${Date.now()}`,
+            amount: Math.round(advanceAmount * 100),
+            currency: "INR",
+            appointmentId: appointment.id,
+            mock: true
+          });
+        }
+
         return NextResponse.json({ 
           error: "Payment gateway error: " + (rzpError.error?.description || rzpError.message || "Failed to initialize payment") 
         }, { status: 400 });
