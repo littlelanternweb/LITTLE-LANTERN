@@ -7,18 +7,11 @@ export async function POST(req: Request) {
     const data = await req.json();
     const { appointmentId, razorpay_payment_id, razorpay_order_id, razorpay_signature } = data;
 
-    let RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID;
-    let RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET;
-
-    if (!RAZORPAY_KEY_ID || RAZORPAY_KEY_ID === "rzp_test_TanKDNTqT7aYnp") {
-      RAZORPAY_KEY_SECRET = "nqCZ32NRKPYKBwPteRc1CCKB";
-    }
-
     // Verify signature if we have the secret (Standard Razorpay Security)
-    if (RAZORPAY_KEY_SECRET && razorpay_order_id && razorpay_signature) {
+    if (process.env.RAZORPAY_KEY_SECRET && razorpay_order_id && razorpay_signature) {
       const body = razorpay_order_id + "|" + razorpay_payment_id;
       const expectedSignature = crypto
-        .createHmac("sha256", RAZORPAY_KEY_SECRET)
+        .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
         .update(body.toString())
         .digest("hex");
 

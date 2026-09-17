@@ -3,19 +3,10 @@ import Razorpay from "razorpay";
 import { prisma } from "@/lib/db";
 import { addMinutes } from "date-fns";
 
-let RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID;
-let RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET;
-
-// Use provided valid test keys if old invalid keys are found or if missing
-if (!RAZORPAY_KEY_ID || RAZORPAY_KEY_ID === "rzp_test_TanKDNTqT7aYnp") {
-  RAZORPAY_KEY_ID = "rzp_test_TcoUXh5qbfpKr0";
-  RAZORPAY_KEY_SECRET = "nqCZ32NRKPYKBwPteRc1CCKB";
-}
-
-const razorpay = new Razorpay({
-  key_id: RAZORPAY_KEY_ID,
-  key_secret: RAZORPAY_KEY_SECRET,
-});
+const razorpay = process.env.RAZORPAY_KEY_ID ? new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
+}) : null;
 
 export async function POST(req: Request) {
   try {
