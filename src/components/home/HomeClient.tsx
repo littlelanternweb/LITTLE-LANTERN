@@ -172,38 +172,7 @@ export function HomeClient({ specialists }: { specialists: any[] }) {
         </div>
       </section>
 
-      {/* 3. SERVICES SECTION (REFINED COMPACT GRID) */}
-      <section id="services" className="py-16 bg-white">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <AnimatedSection className="max-w-2xl mb-10 text-center mx-auto">
-            <h2 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Support designed around your child</h2>
-            <p className="mt-2 text-sm text-slate-500">Select a service to book a consultation</p>
-          </AnimatedSection>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4 max-w-5xl mx-auto">
-            {ALL_SERVICES.map((service, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 15 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-40px" }}
-                transition={{ duration: 0.4, delay: i * 0.04, ease: "easeOut" }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Link 
-                  href={`/specialists?service=${service.slug}`} 
-                  className="group flex items-center justify-between bg-primary/10 border border-primary/30 rounded-xl px-5 py-4 transition-all duration-250 ease-out hover:shadow-[0_4px_20px_rgba(0,166,147,0.2)] hover:border-primary/50 hover:-translate-y-0.5 hover:bg-primary/20"
-                >
-                  <span className="text-[15px] font-bold text-slate-800 group-hover:text-primary transition-colors">{service.title}</span>
-                  <ArrowRight className="w-5 h-5 text-primary transform transition-transform duration-250 ease-out group-hover:translate-x-1" />
-                </Link>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 4. SPECIALISTS SECTION */}
+      {/* 3. SPECIALISTS SECTION */}
       <section id="specialists" className="py-16 bg-slate-50/50 border-t border-slate-100">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <AnimatedSection className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-10">
@@ -267,6 +236,37 @@ export function HomeClient({ specialists }: { specialists: any[] }) {
                 Specialists directory is currently being updated.
               </div>
             )}
+          </div>
+        </div>
+      </section>
+
+      {/* 4. SERVICES SECTION (REFINED COMPACT GRID) */}
+      <section id="services" className="py-16 bg-white">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <AnimatedSection className="max-w-2xl mb-10 text-center mx-auto">
+            <h2 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Support designed around your child</h2>
+            <p className="mt-2 text-sm text-slate-500">Select a service to book a consultation</p>
+          </AnimatedSection>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4 max-w-5xl mx-auto">
+            {ALL_SERVICES.map((service, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ duration: 0.4, delay: i * 0.04, ease: "easeOut" }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Link 
+                  href={`/specialists?service=${service.slug}`} 
+                  className="group flex items-center justify-between bg-primary/10 border border-primary/30 rounded-xl px-5 py-4 transition-all duration-250 ease-out hover:shadow-[0_4px_20px_rgba(0,166,147,0.2)] hover:border-primary/50 hover:-translate-y-0.5 hover:bg-primary/20"
+                >
+                  <span className="text-[15px] font-bold text-slate-800 group-hover:text-primary transition-colors">{service.title}</span>
+                  <ArrowRight className="w-5 h-5 text-primary transform transition-transform duration-250 ease-out group-hover:translate-x-1" />
+                </Link>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
