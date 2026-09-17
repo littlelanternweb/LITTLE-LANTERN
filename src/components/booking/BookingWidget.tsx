@@ -78,26 +78,7 @@ export function BookingWidget({ specialistId, fee, advanceAmount }: { specialist
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
 
-      // 3. Initialize Razorpay Checkout (or Mock Bypass)
-      if (data.mock) {
-        // Test Mode / Local Bypass
-        await fetch("/api/verify-payment", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            appointmentId: data.appointmentId,
-            razorpay_payment_id: `mock_pay_${Date.now()}`,
-            razorpay_order_id: data.orderId,
-            razorpay_signature: "mock_signature"
-          })
-        });
-        toast.success("Test Booking confirmed successfully!");
-        setIsSuccess(true);
-        setIsSubmitting(false);
-        return;
-      }
-
-      // Real Razorpay Flow
+      // 3. Initialize Razorpay Checkout
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID, 
         amount: data.amount,
