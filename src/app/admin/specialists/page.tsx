@@ -13,10 +13,16 @@ import { SpecialistOrderSelect } from "@/components/admin/SpecialistOrderSelect"
 export const dynamic = "force-dynamic";
 
 export default async function AdminSpecialists() {
-  const specialists = await prisma.specialist.findMany({
+  const specialistsRaw = await prisma.specialist.findMany({
     include: { services: true, availability: true, lockedSlots: true },
     orderBy: [{ displayOrder: 'asc' }, { name: 'asc' }]
   });
+  
+  // Prevent Base64 strings from bloating the Server Components payload
+  const specialists = specialistsRaw.map(s => ({
+    ...s,
+    imageUrl: s.imageUrl ? `/api/specialists/${s.id}/image` : null
+  }));
   
   const services = await prisma.service.findMany({ orderBy: { name: 'asc' } });
 

@@ -71,7 +71,7 @@ export default async function SpecialistsPage(props: { searchParams: { q?: strin
                     <div className="relative aspect-[4/5] w-full max-h-[260px] sm:max-h-[320px] overflow-hidden bg-slate-50">
                       {s.imageUrl ? (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={s.imageUrl} alt={s.name} className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105" />
+                        <img src={`/api/specialists/${s.id}/image`} alt={s.name} className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105" loading="lazy" />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100">
                           <span className="text-4xl text-slate-300">{s.name.charAt(0)}</span>

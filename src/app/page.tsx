@@ -5,12 +5,18 @@ export const revalidate = 60; // ISR for homepage
 
 export default async function Home() {
   // Fetch a few featured specialists for the homepage
-  const specialists = await prisma.specialist.findMany({
+  const specialistsRaw = await prisma.specialist.findMany({
     where: { isActive: true },
     include: { services: true },
     orderBy: [{ displayOrder: 'asc' }, { name: 'asc' }],
     take: 4,
   });
+
+  // Strip massive Base64 strings to prevent client-side JSON serialization hang
+  const specialists = specialistsRaw.map(s => ({
+    ...s,
+    imageUrl: s.imageUrl ? `/api/specialists/${s.id}/image` : null
+  }));
 
   const jsonLd = {
     "@context": "https://schema.org",

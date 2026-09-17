@@ -20,7 +20,7 @@ export async function generateMetadata(props: { params: Promise<{ id: string }> 
     openGraph: {
       title: `${specialist.name} - ${specialist.designation} | Little Lantern`,
       description: `Book a consultation with ${specialist.name} in Wandoor, Kerala.`,
-      images: specialist.imageUrl ? [{ url: specialist.imageUrl }] : [],
+      images: specialist.imageUrl ? [{ url: `https://www.mylantern.in/api/specialists/${specialist.id}/image` }] : [],
     }
   };
 }
@@ -40,7 +40,7 @@ export default async function SpecialistProfilePage(props: { params: Promise<{ i
     "jobTitle": specialist.designation,
     "medicalSpecialty": specialist.category,
     "description": specialist.bio,
-    "image": specialist.imageUrl || "https://www.mylantern.in/logo.jpg",
+    "image": specialist.imageUrl ? `https://www.mylantern.in/api/specialists/${specialist.id}/image` : "https://www.mylantern.in/logo.jpg",
     "url": `https://www.mylantern.in/specialists/${specialist.id}`,
     "worksFor": {
       "@type": "MedicalClinic",
@@ -83,7 +83,7 @@ export default async function SpecialistProfilePage(props: { params: Promise<{ i
               <div className="relative h-32 w-32 sm:h-48 sm:w-48 rounded-2xl bg-[#FCFBF9] flex-shrink-0 flex items-center justify-center overflow-hidden border border-[#E7E5E4] shadow-inner">
                 {specialist.imageUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={specialist.imageUrl} alt={specialist.name} className="h-full w-full object-cover" />
+                  <img src={`/api/specialists/${specialist.id}/image`} alt={specialist.name} className="h-full w-full object-cover" />
                 ) : (
                   <span className="text-6xl font-display font-medium text-[#D6D3D1]">{specialist.name.charAt(0)}</span>
                 )}

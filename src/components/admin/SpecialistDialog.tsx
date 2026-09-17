@@ -78,11 +78,16 @@ export function SpecialistDialog({
     e.preventDefault();
     setLoading(true);
     
+    const payload = { ...formData };
+    if (payload.imageUrl && payload.imageUrl.startsWith("/api/specialists/")) {
+      delete payload.imageUrl;
+    }
+    
     let res;
     if (specialist?.id) {
-      res = await updateSpecialist(specialist.id, formData);
+      res = await updateSpecialist(specialist.id, payload);
     } else {
-      res = await createSpecialist(formData);
+      res = await createSpecialist(payload);
     }
     
     setLoading(false);
