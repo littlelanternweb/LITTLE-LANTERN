@@ -138,7 +138,7 @@ export default async function SpecialistProfilePage(props: { params: Promise<{ i
               <p className="font-light leading-relaxed">If you face any issues while booking, please contact our support desk.</p>
               <div className="mt-6 pt-6 border-t border-[#E7E5E4] space-y-2">
                 <p className="font-medium text-[#292524] flex items-center gap-2">
-                  <span className="text-[#9A3412]">+91 99617 57373</span>
+                  <span className="text-[#9A3412]">+91 90617 57373</span>
                 </p>
                 <p className="font-medium text-[#292524]">littlelanternweb@gmail.com</p>
               </div>

@@ -30,7 +30,7 @@ export default function InvoiceClient({ invoice }: { invoice: any }) {
       doc.setTextColor(100, 100, 100);
       doc.text("Child Consultation Centre", 14, 28);
       doc.text("Wandoor, Kerala 679328", 14, 33);
-      doc.text("Phone: +91 99617 57373", 14, 38);
+      doc.text("Phone: +91 90617 57373", 14, 38);
 
       doc.setFontSize(20);
       doc.setTextColor(50, 50, 50);
@@ -131,7 +131,7 @@ export default function InvoiceClient({ invoice }: { invoice: any }) {
               <p className="text-sm text-slate-500 mt-1">Child Consultation Centre</p>
               <div className="text-sm text-slate-500 mt-4 leading-relaxed">
                 Wandoor, Kerala 679328<br />
-                Phone: +91 99617 57373<br />
+                Phone: +91 90617 57373<br />
                 Email: hello@littlelantern.in
               </div>
             </div>

@@ -41,7 +41,8 @@ export function OpeningsClient({ initialOpenings }: { initialOpenings: any[] }) 
   const deleteOpening = async (id: string) => {
     if (!confirm("Are you sure you want to delete this job opening?")) return;
     try {
-      await fetch(`/api/admin/openings/${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/admin/openings/${id}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error("Failed to delete from server");
       setOpenings(openings.filter(o => o.id !== id));
       router.refresh();
     } catch (e) {

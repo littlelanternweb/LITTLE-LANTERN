@@ -25,7 +25,7 @@ export default async function Home() {
     image: "https://www.mylantern.in/logo.jpg",
     "@id": "https://www.mylantern.in",
     url: "https://www.mylantern.in",
-    telephone: "+919961757373",
+    telephone: "+919061757373",
     address: {
       "@type": "PostalAddress",
       streetAddress: "Little Lantern",

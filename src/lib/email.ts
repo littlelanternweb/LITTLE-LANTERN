@@ -113,8 +113,8 @@ const premiumWrapper = (content: string) => `
       <strong>Little Lantern</strong><br/>
       Child Consultation Centre<br/>
       Wandoor, Kerala 679328<br/><br/>
-      9961757373<br/>
-      WhatsApp: +91 99617 57373
+      9061757373<br/>
+      WhatsApp: +91 90617 57373
     </div>
   </div>
 </body>

@@ -349,7 +349,7 @@ export function HomeClient({ specialists }: { specialists: any[] }) {
                     </div>
                     <div>
                       <h3 className="text-sm font-semibold text-slate-900 mb-0.5">Contact</h3>
-                      <p className="text-[13px] text-slate-600">Phone: 99617 57373<br/>WhatsApp: +91 99617 57373</p>
+                      <p className="text-[13px] text-slate-600">Phone: 90617 57373<br/>WhatsApp: +91 90617 57373</p>
                     </div>
                   </div>
                   
@@ -366,10 +366,10 @@ export function HomeClient({ specialists }: { specialists: any[] }) {
                 
                 <div className="mt-8 flex flex-wrap gap-3">
                   <Button asChild className="bg-primary hover:bg-primary/90 text-white rounded-md h-10 px-5 text-sm">
-                    <a href="tel:+919961757373">Call Us</a>
+                    <a href="tel:+919061757373">Call Us</a>
                   </Button>
                   <Button asChild variant="outline" className="rounded-md border-slate-200 h-10 px-5 text-sm hover:bg-slate-50">
-                    <a href="https://wa.me/919961757373" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+                    <a href="https://wa.me/919061757373" target="_blank" rel="noopener noreferrer">WhatsApp</a>
                   </Button>
                 </div>
               </div>

@@ -196,7 +196,7 @@ export function BookingWidget({ specialistId, fee, advanceAmount }: { specialist
         <div className="bg-slate-50 border border-slate-100 p-3 rounded-xl text-center flex items-center justify-center gap-2 mt-4">
           <HelpCircle className="w-4 h-4 text-slate-400" />
           <a 
-            href="https://wa.me/919961757373?text=Hello%20Little%20Lantern%2C%20I%20need%20help%20with%20booking%20a%20consultation." 
+            href="https://wa.me/919061757373?text=Hello%20Little%20Lantern%2C%20I%20need%20help%20with%20booking%20a%20consultation." 
             target="_blank" 
             rel="noreferrer" 
             className="text-[13px] font-medium text-slate-500 hover:text-primary transition-colors"

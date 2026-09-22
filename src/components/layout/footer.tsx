@@ -63,8 +63,8 @@ export function Footer() {
                 Wandoor, Kerala 679328
               </li>
               <li className="pt-2">
-                <a href="tel:+919961757373" className="block text-primary hover:underline">99617 57373</a>
-                <a href="https://wa.me/919961757373" className="block text-primary hover:underline">WhatsApp Us</a>
+                <a href="tel:+919061757373" className="block text-primary hover:underline">90617 57373</a>
+                <a href="https://wa.me/919061757373" className="block text-primary hover:underline">WhatsApp Us</a>
               </li>
             </ul>
           </div>
