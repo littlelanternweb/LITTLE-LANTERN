@@ -71,9 +71,13 @@ export function Footer() {
         </div>
         
         <div className="border-t border-slate-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-slate-400 text-xs">
-            © {new Date().getFullYear()} Little Lantern. All rights reserved.
-          </p>
+          <div className="text-slate-400 text-xs flex flex-col md:flex-row md:items-center gap-2">
+            <span>© {new Date().getFullYear()} Little Lantern. All rights reserved.</span>
+            <span className="hidden md:inline">•</span>
+            <span>
+              Conceptualized by <a href="https://technexttechnologies.in" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Technext</a>
+            </span>
+          </div>
           <div className="flex gap-4 text-xs text-slate-400">
             <Link href="#" className="hover:text-slate-600">Privacy Policy</Link>
             <Link href="#" className="hover:text-slate-600">Terms of Service</Link>
