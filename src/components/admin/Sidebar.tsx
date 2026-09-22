@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Calendar, Users, Briefcase, LogOut, LayoutDashboard, UserCircle, CreditCard, BarChart, Mail, Menu, X } from "lucide-react";
+import { Calendar, Users, Briefcase, LogOut, LayoutDashboard, UserCircle, CreditCard, BarChart, Mail, Menu, X, Settings } from "lucide-react";
 import { hasPermission, PERMISSIONS } from "@/lib/permissions";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
@@ -23,7 +23,7 @@ export function AdminSidebar({ session }: { session: any }) {
     { name: "Applications", href: "/admin/jobs", icon: Users, permission: PERMISSIONS.APPLICATIONS_VIEW },
     { name: "Reports", href: "/admin/reports", icon: BarChart, permission: PERMISSIONS.REPORTS_VIEW },
     { name: "Users", href: "/admin/users", icon: Users, permission: PERMISSIONS.ADMIN_USERS_MANAGE },
-    { name: "Email Settings", href: "/admin/settings/email", icon: Mail, permission: PERMISSIONS.SETTINGS_MANAGE },
+    { name: "System Settings", href: "/admin/settings/email", icon: Settings, permission: PERMISSIONS.SETTINGS_MANAGE },
   ];
 
   const sidebarContent = (

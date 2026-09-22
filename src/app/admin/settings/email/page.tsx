@@ -39,8 +39,26 @@ export default async function AdminEmailSettingsPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-display font-medium text-stone-900 tracking-tight">Email Automation</h1>
-        <p className="text-stone-500 mt-2">Manage automated email triggers and view sending logs.</p>
+        <h1 className="text-3xl font-display font-medium text-stone-900 tracking-tight">System Settings</h1>
+        <p className="text-stone-500 mt-2">Manage automated triggers, system configurations, and technical support.</p>
+      </div>
+
+      <div className="bg-white border border-slate-200 shadow-sm rounded-xl p-6 relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-1 h-full bg-primary"></div>
+        <h2 className="text-lg font-semibold text-slate-900 mb-2">Technical Support & Maintenance</h2>
+        <p className="text-sm text-slate-600 mb-5">
+          For website service, feature updates, and technical maintenance, please contact our technology partner.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-8">
+          <div>
+            <p className="text-[11px] uppercase tracking-wider font-semibold text-slate-400 mb-1">Partner</p>
+            <a href="https://technexttechnologies.in" target="_blank" rel="noopener noreferrer" className="text-[15px] font-semibold text-primary hover:underline">TECHNEXT TECHNOLOGIES</a>
+          </div>
+          <div>
+            <p className="text-[11px] uppercase tracking-wider font-semibold text-slate-400 mb-1">Support Contact</p>
+            <a href="tel:+919496590984" className="text-[15px] font-semibold text-slate-900 hover:text-primary transition-colors">+91 94965 90984</a>
+          </div>
+        </div>
       </div>
 
       <EmailSettingsClient initialSettings={finalSettings} logs={logs} />
