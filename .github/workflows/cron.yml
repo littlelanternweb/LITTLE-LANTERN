@@ -1,0 +1,13 @@
+name: Hourly Email Reminders
+on:
+  schedule:
+    - cron: '0 * * * *' # Runs at the top of every hour
+  workflow_dispatch: # Allows manual trigger
+
+jobs:
+  run-reminders:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Cron Endpoint
+        run: |
+          curl -s -D - "https://www.mylantern.in/api/cron/reminders"
