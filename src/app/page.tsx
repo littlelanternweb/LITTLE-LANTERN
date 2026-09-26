@@ -21,14 +21,14 @@ export default async function Home() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "MedicalClinic",
-    name: "Little Lantern",
+    name: "My Lantern",
     image: "https://www.mylantern.in/logo.jpg",
     "@id": "https://www.mylantern.in",
     url: "https://www.mylantern.in",
     telephone: "+919061757373",
     address: {
       "@type": "PostalAddress",
-      streetAddress: "Little Lantern",
+      streetAddress: "My Lantern",
       addressLocality: "Wandoor",
       addressRegion: "Kerala",
       postalCode: "679328",

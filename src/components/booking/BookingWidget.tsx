@@ -83,7 +83,7 @@ export function BookingWidget({ specialistId, fee, advanceAmount }: { specialist
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID, 
         amount: data.amount,
         currency: data.currency,
-        name: "Little Lantern",
+        name: "My Lantern",
         description: "Consultation Booking",
         image: "/logo.jpg",
         order_id: data.orderId,

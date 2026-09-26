@@ -11,7 +11,7 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Our Specialists | Best Child Psychologists & Special Educators in Kerala",
-  description: "Meet our multidisciplinary team of child psychologists, special educators, speech therapists, and counsellors at Little Lantern, Wandoor, Kerala.",
+  description: "Meet our multidisciplinary team of child psychologists, special educators, speech therapists, and counsellors at My Lantern, Wandoor, Kerala.",
   keywords: ["Child Psychologists Kerala", "Special Educators Wandoor", "Speech Therapists Kerala", "Child Counselling Wandoor"],
 };
 

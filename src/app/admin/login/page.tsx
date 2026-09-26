@@ -42,7 +42,7 @@ export default function AdminLogin() {
       <Card className="w-full max-w-md shadow-xl border-slate-100">
         <CardHeader className="space-y-1 text-center">
           <div className="mx-auto flex justify-center mb-4">
-            <Image src="/logo.jpg" alt="Little Lantern Logo" width={48} height={48} className="rounded-lg object-cover" />
+            <Image src="/logo.jpg" alt="My Lantern Logo" width={48} height={48} className="rounded-lg object-cover" />
           </div>
           <CardTitle className="text-2xl font-bold tracking-tight text-slate-900">Admin Login</CardTitle>
           <CardDescription>Enter your credentials to access the dashboard</CardDescription>

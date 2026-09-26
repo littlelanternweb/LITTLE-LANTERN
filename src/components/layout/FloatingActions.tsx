@@ -69,7 +69,7 @@ export function FloatingActions() {
               href={WHATSAPP_LINK}
               target="_blank"
               rel="noreferrer"
-              aria-label="Chat with Little Lantern on WhatsApp"
+              aria-label="Chat with My Lantern on WhatsApp"
               onMouseEnter={() => setShowTooltip(true)}
               onMouseLeave={() => setShowTooltip(false)}
               animate={prefersReducedMotion ? {} : { scale: [1, 1.03, 1] }}

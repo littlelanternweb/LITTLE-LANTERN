@@ -85,7 +85,7 @@ export function ReportsClient({ initialAppointments, initialTransactions, specia
     
     doc.setFontSize(18);
     doc.setTextColor(0, 166, 147);
-    doc.text(`Little Lantern - ${title}`, 14, 20);
+    doc.text(`My Lantern - ${title}`, 14, 20);
     doc.setFontSize(10);
     doc.setTextColor(100, 100, 100);
     doc.text(`Generated: ${format(new Date(), "PPpp")}`, 14, 26);

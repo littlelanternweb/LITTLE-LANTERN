@@ -6,7 +6,7 @@ import { prisma } from "@/lib/db";
 import { CustomerDetailClient } from "./CustomerDetailClient";
 
 export const metadata = {
-  title: "Customer Details | Little Lantern Admin",
+  title: "Customer Details | My Lantern Admin",
 };
 
 export default async function CustomerDetailPage({ params }: { params: Promise<{ id: string }> }) {

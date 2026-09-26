@@ -339,7 +339,7 @@ export function HomeClient({ specialists }: { specialists: any[] }) {
                     </div>
                     <div>
                       <h3 className="text-sm font-semibold text-slate-900 mb-0.5">Location</h3>
-                      <p className="text-[13px] text-slate-600">Little Lantern<br/>Wandoor, Kerala 679328</p>
+                      <p className="text-[13px] text-slate-600">My Lantern<br/>Wandoor, Kerala 679328</p>
                     </div>
                   </div>
                   

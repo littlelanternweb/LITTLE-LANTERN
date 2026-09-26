@@ -60,7 +60,7 @@ export function AppointmentDetailClient({ appointment, specialists, isAdmin }: a
     
     const message = `Hello ${appointment.customer.name},
 
-Thank you for choosing Little Lantern.
+Thank you for choosing My Lantern.
 
 Your invoice for appointment ${appointment.id} is ready.
 
@@ -71,7 +71,7 @@ Balance: ₹${bal}
 Please find your secure invoice here:
 ${invoiceUrl}
 
-Little Lantern — Child Consultation Centre
+My Lantern — Child Consultation Centre
 +91 90617 57373`;
 
     const waLink = `https://wa.me/${appointment.customer.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`;

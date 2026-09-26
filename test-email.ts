@@ -26,14 +26,14 @@ const premiumWrapper = (content: string) => `
 <body>
   <div class="container">
     <div class="header">
-      <img src="${baseUrl}/logo.jpg" alt="Little Lantern" class="logo-img" />
-      <div class="logo">Little Lantern</div>
+      <img src="${baseUrl}/logo.jpg" alt="My Lantern" class="logo-img" />
+      <div class="logo">My Lantern</div>
     </div>
     <div class="content">
       ${content}
     </div>
     <div class="footer">
-      <strong>Little Lantern</strong><br/>
+      <strong>My Lantern</strong><br/>
       Child Consultation Centre<br/>
       Wandoor, Kerala 679328<br/><br/>
       9961757373<br/>
@@ -55,8 +55,8 @@ const transporter = nodemailer.createTransport({
 async function run() {
   const to = "technexttechnologies@gmail.com";
   const html = premiumWrapper(`
-    <h2 class="title">Welcome to Little Lantern</h2>
-    <p>This is a modern UI test for Little Lantern emails.</p>
+    <h2 class="title">Welcome to My Lantern</h2>
+    <p>This is a modern UI test for My Lantern emails.</p>
     <div class="box">
       <div class="box-row">
         <div class="box-label">Testing:</div>
@@ -67,9 +67,9 @@ async function run() {
 
   console.log("Sending email...");
   await transporter.sendMail({
-    from: '"Little Lantern" <littlelanternweb@gmail.com>',
+    from: '"My Lantern" <littlelanternweb@gmail.com>',
     to,
-    subject: "Theme & Logo Test - Little Lantern",
+    subject: "Theme & Logo Test - My Lantern",
     html,
   });
   console.log("Sent successfully!");

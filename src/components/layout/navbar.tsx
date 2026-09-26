@@ -46,12 +46,12 @@ export function Navbar() {
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 lg:px-8" aria-label="Global">
         <div className="flex lg:flex-1">
           <Link href="/" className="-m-1.5 p-1.5 flex items-center gap-3.5 group">
-            <span className="sr-only">Little Lantern</span>
+            <span className="sr-only">My Lantern</span>
             <div className="relative overflow-hidden rounded-[0.4rem] h-10 w-10 sm:h-11 sm:w-11 shadow-sm border border-slate-100 group-hover:shadow-md transition-all bg-white">
-              <img src="/logo.jpg" alt="Little Lantern Logo" className="w-full h-full object-cover" />
+              <img src="/logo.jpg" alt="My Lantern Logo" className="w-full h-full object-cover" />
             </div>
             <div className="hidden sm:flex flex-col justify-center">
-              <span className="font-display font-semibold text-xl sm:text-[22px] tracking-tight text-slate-900 leading-tight">Little Lantern</span>
+              <span className="font-display font-semibold text-xl sm:text-[22px] tracking-tight text-slate-900 leading-tight">My Lantern</span>
               <span className="text-[10px] sm:text-[11px] text-slate-500 font-medium tracking-wide mt-0.5">Guiding Minds, Transforming Lives.</span>
             </div>
           </Link>
@@ -114,10 +114,10 @@ export function Navbar() {
               <div className="flex items-center justify-between">
                 <Link href="/" className="-m-1.5 p-1.5 flex items-center gap-3" onClick={() => setMobileMenuOpen(false)}>
                   <div className="relative h-12 w-12 rounded-lg overflow-hidden shadow-sm border border-slate-100 bg-white">
-                    <img src="/logo.jpg" alt="Little Lantern Logo" className="w-full h-full object-cover" />
+                    <img src="/logo.jpg" alt="My Lantern Logo" className="w-full h-full object-cover" />
                   </div>
                   <div className="flex flex-col justify-center">
-                    <span className="font-display font-semibold text-xl text-slate-900 leading-tight">Little Lantern</span>
+                    <span className="font-display font-semibold text-xl text-slate-900 leading-tight">My Lantern</span>
                     <span className="text-[10px] text-slate-500 font-medium tracking-wide mt-0.5">Guiding Minds, Transforming Lives.</span>
                   </div>
                 </Link>

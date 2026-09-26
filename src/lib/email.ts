@@ -46,7 +46,7 @@ const sendEmail = async (
       status = "SUCCESS";
     } else {
       await transporter.sendMail({
-        from: `"Little Lantern" <${process.env.EMAIL_USER || "littlelanternweb@gmail.com"}>`,
+        from: `"My Lantern" <${process.env.EMAIL_USER || "littlelanternweb@gmail.com"}>`,
         to,
         subject,
         html,
@@ -103,14 +103,14 @@ const premiumWrapper = (content: string) => `
 <body>
   <div class="container">
     <div class="header">
-      <img src="${baseUrl}/logo.jpg" alt="Little Lantern" class="logo-img" />
-      <div class="logo">Little Lantern</div>
+      <img src="${baseUrl}/logo.jpg" alt="My Lantern" class="logo-img" />
+      <div class="logo">My Lantern</div>
     </div>
     <div class="content">
       ${content}
     </div>
     <div class="footer">
-      <strong>Little Lantern</strong><br/>
+      <strong>My Lantern</strong><br/>
       Child Consultation Centre<br/>
       Wandoor, Kerala 679328<br/><br/>
       9061757373<br/>
@@ -133,7 +133,7 @@ export const emailTemplates = {
   ) => {
     if (!(await isEmailEnabled("email_booking_confirmation"))) return { success: true, disabled: true };
 
-    const subject = `Your Little Lantern booking details`;
+    const subject = `Your My Lantern booking details`;
     const content = `
       <h2 class="title">Booking Confirmed</h2>
       <p>Dear ${customerName},</p>
@@ -153,7 +153,7 @@ export const emailTemplates = {
   applicationReceived: async (to: string, applicantName: string, position: string, applicationId: string) => {
     if (!(await isEmailEnabled("email_application_confirmation"))) return { success: true, disabled: true };
 
-    const subject = `We received your application — Little Lantern`;
+    const subject = `We received your application — My Lantern`;
     const content = `
       <h2 class="title">Thank you for your interest</h2>
       <p>Dear ${applicantName},</p>
@@ -162,7 +162,7 @@ export const emailTemplates = {
       <div class="box">
         <div class="box-row"><div class="box-label">Reference ID</div><div class="box-value">${applicationId}</div></div>
       </div>
-      <p>Thank you for your interest in joining Little Lantern.</p>
+      <p>Thank you for your interest in joining My Lantern.</p>
     `;
     return sendEmail(to, subject, premiumWrapper(content), "APPLICATION_CONFIRMATION", applicationId);
   },
@@ -181,10 +181,10 @@ export const emailTemplates = {
 
   // 4. Test Email
   testEmail: async (to: string) => {
-    const subject = `Little Lantern Email Test`;
+    const subject = `My Lantern Email Test`;
     const content = `
       <h2 class="title">Connection Successful</h2>
-      <p>This is a test email from Little Lantern's system.</p>
+      <p>This is a test email from My Lantern's system.</p>
       <p>If you are receiving this, your SMTP configuration is perfectly set up and ready for production.</p>
     `;
     return sendEmail(to, subject, premiumWrapper(content), "SYSTEM_TEST");
@@ -198,11 +198,11 @@ export const emailTemplates = {
     token: string,
     financials: { total: number, paid: number, balance: number }
   ) => {
-    const subject = `Little Lantern — Invoice ${invoiceNumber}`;
+    const subject = `My Lantern — Invoice ${invoiceNumber}`;
     const content = `
       <h2 class="title">Invoice Available</h2>
       <p>Dear ${customerName},</p>
-      <p>Thank you for choosing Little Lantern. Your invoice is ready for download.</p>
+      <p>Thank you for choosing My Lantern. Your invoice is ready for download.</p>
       
       <div class="box">
         <div class="box-row"><div class="box-label">Invoice No</div><div class="box-value">${invoiceNumber}</div></div>
@@ -223,7 +223,7 @@ export const emailTemplates = {
     const type = is24h ? "REMINDER_24H" : "REMINDER_2H";
     if (!(await isEmailEnabled(`email_${is24h ? '24h' : '2h'}_reminder`))) return { success: true, disabled: true };
 
-    const subject = `Your Little Lantern appointment reminder`;
+    const subject = `Your My Lantern appointment reminder`;
     const content = `
       <h2 class="title">Upcoming Appointment</h2>
       <p>Dear ${customerName},</p>
@@ -279,11 +279,11 @@ export const emailTemplates = {
   // 9. Faculty Welcome
   facultyWelcome: async (to: string, name: string, tempPassword: string) => {
     if (!(await isEmailEnabled("email_faculty_welcome"))) return { success: true, disabled: true };
-    const subject = `Set Up Your Little Lantern Faculty Account`;
+    const subject = `Set Up Your My Lantern Faculty Account`;
     const content = `
-      <h2 class="title">Welcome to Little Lantern!</h2>
+      <h2 class="title">Welcome to My Lantern!</h2>
       <p>Dear ${name},</p>
-      <p>Your application has been approved and your faculty account has been created successfully. You can now log in to the Little Lantern portal to view your assigned appointments.</p>
+      <p>Your application has been approved and your faculty account has been created successfully. You can now log in to the My Lantern portal to view your assigned appointments.</p>
       <div class="box">
         <div class="box-row"><div class="box-label">Login Email</div><div class="box-value">${to}</div></div>
         <div class="box-row"><div class="box-label">Temporary Password</div><div class="box-value">${tempPassword}</div></div>
@@ -299,7 +299,7 @@ export const emailTemplates = {
   // 10. Assignment Notification
   assignmentNotification: async (to: string, name: string, apptDetails: any) => {
     if (!(await isEmailEnabled("email_faculty_assignment"))) return { success: true, disabled: true };
-    const subject = `New Appointment Assigned — Little Lantern`;
+    const subject = `New Appointment Assigned — My Lantern`;
     const content = `
       <h2 class="title">New Appointment Assigned</h2>
       <p>Dear ${name},</p>
@@ -310,7 +310,7 @@ export const emailTemplates = {
         <div class="box-row"><div class="box-label">Child/Patient</div><div class="box-value">${apptDetails.patient}</div></div>
         <div class="box-row"><div class="box-label">Service</div><div class="box-value">${apptDetails.service}</div></div>
       </div>
-      <p>Please log in to your Little Lantern faculty dashboard to view complete details.</p>
+      <p>Please log in to your My Lantern faculty dashboard to view complete details.</p>
     `;
     return sendEmail(to, subject, premiumWrapper(content), "ASSIGNMENT_NOTIFICATION", apptDetails.id);
   },
@@ -393,7 +393,7 @@ export const emailTemplates = {
 
     if (!(await isEmailEnabled("email_payment_reminder"))) return { success: true, disabled: true };
 
-    const subject = `Payment Reminder — Little Lantern`;
+    const subject = `Payment Reminder — My Lantern`;
     const content = `
       <h2 class="title">Payment Reminder</h2>
       <p>Hello ${customerName},</p>
@@ -421,11 +421,11 @@ export const emailTemplates = {
   applicationApproved: async (to: string, applicantName: string, category: string, applicationId: string) => {
     if (!(await isEmailEnabled("email_application_approval"))) return { success: true, disabled: true };
 
-    const subject = `Application Approved — Little Lantern`;
+    const subject = `Application Approved — My Lantern`;
     const content = `
       <h2 class="title">Application Approved</h2>
       <p>Hello ${applicantName},</p>
-      <p>We are pleased to inform you that your application to join Little Lantern has been approved.</p>
+      <p>We are pleased to inform you that your application to join My Lantern has been approved.</p>
       
       <div class="box">
         <div class="box-row"><div class="box-label">Category</div><div class="box-value">${category}</div></div>
@@ -442,11 +442,11 @@ export const emailTemplates = {
   applicationDeclined: async (to: string, applicantName: string, applicationId: string) => {
     if (!(await isEmailEnabled("email_application_declined"))) return { success: true, disabled: true };
 
-    const subject = `Application Update — Little Lantern`;
+    const subject = `Application Update — My Lantern`;
     const content = `
       <h2 class="title">Application Update</h2>
       <p>Hello ${applicantName},</p>
-      <p>Thank you for taking the time to apply to Little Lantern.</p>
+      <p>Thank you for taking the time to apply to My Lantern.</p>
       <p>After reviewing your application, we will not be proceeding with your application at this stage.</p>
       <p>We appreciate your interest and wish you success in your professional journey.</p>
     `;

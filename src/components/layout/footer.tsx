@@ -20,9 +20,9 @@ export function Footer() {
           <div className="lg:col-span-4 space-y-6">
             <div className="flex items-center gap-3">
               <div className="relative h-10 w-10 rounded-md overflow-hidden border border-slate-100 bg-white">
-                <img src="/logo.jpg" alt="Little Lantern Logo" className="w-full h-full object-cover" />
+                <img src="/logo.jpg" alt="My Lantern Logo" className="w-full h-full object-cover" />
               </div>
-              <span className="font-semibold text-xl text-slate-900">Little Lantern</span>
+              <span className="font-semibold text-xl text-slate-900">My Lantern</span>
             </div>
             <p className="text-sm leading-relaxed text-slate-500 max-w-sm">
               Expert guidance for every child's unique journey. A premium child development and consultation centre.
@@ -59,7 +59,7 @@ export function Footer() {
             <h3 className="text-slate-900 font-semibold mb-4 text-sm">Contact Us</h3>
             <ul className="space-y-3 text-sm">
               <li className="text-slate-500">
-                Little Lantern<br/>
+                My Lantern<br/>
                 Wandoor, Kerala 679328
               </li>
               <li className="pt-2">
@@ -72,7 +72,7 @@ export function Footer() {
         
         <div className="border-t border-slate-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="text-slate-400 text-xs flex flex-col md:flex-row md:items-center gap-2">
-            <span>© {new Date().getFullYear()} Little Lantern. All rights reserved.</span>
+            <span>© {new Date().getFullYear()} My Lantern. All rights reserved.</span>
             <span className="hidden md:inline">•</span>
             <span>
               Conceptualized by <a href="https://technexttechnologies.in" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Technext</a>

@@ -11,14 +11,14 @@ export const revalidate = 60;
 export async function generateMetadata(props: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const params = await props.params;
   const specialist = await getSpecialistById(params.id);
-  if (!specialist) return { title: "Specialist Not Found | Little Lantern" };
+  if (!specialist) return { title: "Specialist Not Found | My Lantern" };
 
   return {
-    title: `${specialist.name} - ${specialist.designation} | Little Lantern, Kerala`,
-    description: `Book a consultation with ${specialist.name}, ${specialist.designation} at Little Lantern Child Consultation Centre in Wandoor, Kerala. Expertise: ${specialist.specialization}.`,
-    keywords: [specialist.name, specialist.designation, specialist.category, "Wandoor", "Kerala", "Little Lantern"],
+    title: `${specialist.name} - ${specialist.designation} | My Lantern, Kerala`,
+    description: `Book a consultation with ${specialist.name}, ${specialist.designation} at My Lantern Child Consultation Centre in Wandoor, Kerala. Expertise: ${specialist.specialization}.`,
+    keywords: [specialist.name, specialist.designation, specialist.category, "Wandoor", "Kerala", "My Lantern"],
     openGraph: {
-      title: `${specialist.name} - ${specialist.designation} | Little Lantern`,
+      title: `${specialist.name} - ${specialist.designation} | My Lantern`,
       description: `Book a consultation with ${specialist.name} in Wandoor, Kerala.`,
       images: specialist.imageUrl ? [{ url: `https://www.mylantern.in/api/specialists/${specialist.id}/image` }] : [],
     }
@@ -44,7 +44,7 @@ export default async function SpecialistProfilePage(props: { params: Promise<{ i
     "url": `https://www.mylantern.in/specialists/${specialist.id}`,
     "worksFor": {
       "@type": "MedicalClinic",
-      "name": "Little Lantern Child Consultation Centre",
+      "name": "My Lantern Child Consultation Centre",
       "address": {
         "@type": "PostalAddress",
         "addressLocality": "Wandoor",

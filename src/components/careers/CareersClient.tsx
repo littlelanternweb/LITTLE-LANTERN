@@ -32,7 +32,7 @@ export function CareersClient({ initialOpenings }: { initialOpenings: any[] }) {
               Become Our Faculty
             </h1>
             <p className="mt-6 text-lg text-slate-600 font-light max-w-2xl mx-auto leading-relaxed">
-              Join the Little Lantern professional team. We are a premium child development centre seeking skilled, caring professionals. Make a meaningful difference alongside a world-class multidisciplinary team.
+              Join the My Lantern professional team. We are a premium child development centre seeking skilled, caring professionals. Make a meaningful difference alongside a world-class multidisciplinary team.
             </p>
           </motion.div>
         </div>

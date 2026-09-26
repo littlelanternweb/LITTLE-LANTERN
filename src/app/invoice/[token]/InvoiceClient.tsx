@@ -24,7 +24,7 @@ export default function InvoiceClient({ invoice }: { invoice: any }) {
       doc.setFont("helvetica");
       doc.setFontSize(22);
       doc.setTextColor(0, 166, 147); // Primary color
-      doc.text("Little Lantern", 14, 22);
+      doc.text("My Lantern", 14, 22);
       
       doc.setFontSize(10);
       doc.setTextColor(100, 100, 100);
@@ -127,7 +127,7 @@ export default function InvoiceClient({ invoice }: { invoice: any }) {
           
           <div className="flex flex-col sm:flex-row justify-between border-b pb-8">
             <div>
-              <h2 className="text-3xl font-bold text-[#00A693] tracking-tight">Little Lantern</h2>
+              <h2 className="text-3xl font-bold text-[#00A693] tracking-tight">My Lantern</h2>
               <p className="text-sm text-slate-500 mt-1">Child Consultation Centre</p>
               <div className="text-sm text-slate-500 mt-4 leading-relaxed">
                 Wandoor, Kerala 679328<br />

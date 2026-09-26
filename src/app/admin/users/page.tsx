@@ -6,7 +6,7 @@ import { getUsers } from "@/app/actions/admin-users";
 import { UsersClient } from "./UsersClient";
 
 export const metadata = {
-  title: "Users Management | Little Lantern Admin",
+  title: "Users Management | My Lantern Admin",
 };
 
 export default async function UsersPage() {

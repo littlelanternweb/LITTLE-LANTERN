@@ -16,10 +16,10 @@ export function FacultySidebar({ session }: { session: any }) {
       <div className="p-6 border-b border-slate-100 flex items-center justify-between">
         <Link href="/faculty/dashboard" className="flex items-center gap-3 text-slate-900 group" onClick={() => setMobileOpen(false)}>
           <div className="relative h-10 w-10 overflow-hidden rounded-lg shadow-sm border border-slate-100 group-hover:shadow-md transition-shadow">
-            <Image src="/logo.jpg" alt="Little Lantern Logo" fill className="object-cover" />
+            <Image src="/logo.jpg" alt="My Lantern Logo" fill className="object-cover" />
           </div>
           <div className="flex flex-col">
-            <span className="font-semibold text-lg tracking-tight leading-tight">Little Lantern</span>
+            <span className="font-semibold text-lg tracking-tight leading-tight">My Lantern</span>
             <span className="text-[11px] font-medium text-emerald-600 tracking-wider uppercase">Faculty Portal</span>
           </div>
         </Link>
