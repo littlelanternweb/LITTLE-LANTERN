@@ -40,9 +40,18 @@ model Specialist {
   status           String         @default("ACTIVE")
   userId           String?        @unique
   displayOrder     Int            @default(999)
+  
+  // Subscription Fields
+  subscriptionStatus String         @default("PENDING")
+  subscriptionId     String?        @unique
+  subscriptionPlanId String?
+  nextBillingDate    DateTime?
+  subscriptionFee    Float?
+
   appointments     Appointment[]
   availability     Availability[]
   lockedSlots      LockedSlot[]
+  subscriptionLogs SubscriptionLog[]
   user             User?          @relation(fields: [userId], references: [id])
   services         Service[]      @relation("SpecialistToService")
 }
@@ -252,3 +261,13 @@ model Invoice {
   appointment   Appointment @relation(fields: [appointmentId], references: [id])
   customer      Customer    @relation(fields: [customerId], references: [id])
 }
+  
+model SubscriptionLog {  
+  id                String      @id @default(cuid())  
+  specialistId      String  
+  razorpayPaymentId String  
+  amount            Float  
+  status            String  
+  date              DateTime    @default(now())  
+  specialist        Specialist  @relation(fields: [specialistId], references: [id])  
+} 

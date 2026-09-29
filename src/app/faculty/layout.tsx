@@ -2,6 +2,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { FacultySidebar } from "@/components/faculty/FacultySidebar";
+import { prisma } from "@/lib/db";
+import { SubscriptionRedirect } from "@/components/faculty/SubscriptionRedirect";
 
 export default async function FacultyLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
@@ -14,8 +16,13 @@ export default async function FacultyLayout({ children }: { children: React.Reac
     redirect("/admin");
   }
 
+  const specialist = await prisma.specialist.findUnique({
+    where: { userId: session.user.id }
+  });
+
   return (
     <div className="min-h-screen bg-slate-50 flex font-inter selection:bg-primary/20 selection:text-primary">
+      <SubscriptionRedirect status={specialist?.subscriptionStatus || "ACTIVE"} />
       <FacultySidebar session={session} />
 
       <main className="flex-1 flex flex-col h-screen overflow-hidden">

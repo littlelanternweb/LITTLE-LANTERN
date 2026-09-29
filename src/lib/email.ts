@@ -283,14 +283,14 @@ export const emailTemplates = {
     const content = `
       <h2 class="title">Welcome to My Lantern!</h2>
       <p>Dear ${name},</p>
-      <p>Your application has been approved and your faculty account has been created successfully. You can now log in to the My Lantern portal to view your assigned appointments.</p>
+      <p>Your application has been approved and your faculty account has been created successfully. To activate your account and start accepting appointments, you must complete your subscription payment.</p>
       <div class="box">
         <div class="box-row"><div class="box-label">Login Email</div><div class="box-value">${to}</div></div>
         <div class="box-row"><div class="box-label">Temporary Password</div><div class="box-value">${tempPassword}</div></div>
       </div>
-      <p>For your security, please log in and update your password immediately.</p>
+      <p>For your security, please log in and update your password immediately after subscribing.</p>
       <div style="text-align: center; margin-top: 32px;">
-        <a href="${baseUrl}/admin/login" class="btn">Log In to Faculty Dashboard</a>
+        <a href="${baseUrl}/faculty/subscribe" class="btn">Pay Subscription & Log In</a>
       </div>
     `;
     return sendEmail(to, subject, premiumWrapper(content), "FACULTY_WELCOME");

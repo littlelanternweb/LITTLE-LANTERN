@@ -109,7 +109,8 @@ export async function convertApplicationToFaculty(id: string) {
         consultationType: "In-Person",
         consultationFee: 1500, // Default
         advanceAmount: 500,
-        isActive: true,
+        isActive: false,
+        subscriptionStatus: "PENDING",
         imageUrl: application.photoUrl || null,
         userId: user.id
       }

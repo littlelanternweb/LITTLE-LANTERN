@@ -24,6 +24,7 @@ export function AdminSidebar({ session }: { session: any }) {
     { name: "Reports", href: "/admin/reports", icon: BarChart, permission: PERMISSIONS.REPORTS_VIEW },
     { name: "Users", href: "/admin/users", icon: Users, permission: PERMISSIONS.ADMIN_USERS_MANAGE },
     { name: "System Settings", href: "/admin/settings/email", icon: Settings, permission: PERMISSIONS.SETTINGS_MANAGE },
+    { name: "Subscription Fees", href: "/admin/settings/fees", icon: CreditCard, permission: PERMISSIONS.SETTINGS_MANAGE },
   ];
 
   const sidebarContent = (

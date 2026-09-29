@@ -69,6 +69,16 @@ export default async function AdminSpecialists() {
                   </span>
                 </div>
                 <p className="text-sm font-medium text-amber-600 mt-0.5">{specialist.designation} • {specialist.category}</p>
+                <div className="mt-2 flex flex-wrap items-center gap-2">
+                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${specialist.subscriptionStatus === "ACTIVE" ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
+                    Subscription: {specialist.subscriptionStatus}
+                  </span>
+                  {specialist.subscriptionFee && (
+                    <span className="text-xs font-medium text-slate-500">
+                      ₹{specialist.subscriptionFee} / month
+                    </span>
+                  )}
+                </div>
                 <div className="mt-2 text-sm text-slate-500">
                   <p><strong>Fee:</strong> ₹{specialist.consultationFee} ({specialist.consultationType})</p>
                   <div className="flex gap-1 mt-1 flex-wrap">
