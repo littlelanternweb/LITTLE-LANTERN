@@ -9,6 +9,7 @@ import { toggleSpecialistStatus } from "@/app/actions/admin-specialists";
 import { revalidatePath } from "next/cache";
 import { DeleteSpecialistButton } from "@/components/admin/DeleteSpecialistButton";
 import { SpecialistOrderSelect } from "@/components/admin/SpecialistOrderSelect";
+import { ManageSubscriptionDialog } from "@/components/admin/ManageSubscriptionDialog";
 
 export const dynamic = "force-dynamic";
 
@@ -101,6 +102,7 @@ export default async function AdminSpecialists() {
                   </Button>
                 </SpecialistDialog>
                 
+                <ManageSubscriptionDialog specialist={specialist} defaultFee={specialist.subscriptionFee || 1500} />
                 <AvailabilityDialog specialist={specialist} />
                 <LockSlotDialog specialist={specialist} />
 

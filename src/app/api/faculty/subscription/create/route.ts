@@ -12,12 +12,12 @@ const razorpay = new Razorpay({
 export async function POST(req: Request) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session || session.user.role !== "FACULTY") {
+    if (!session || (session.user as any).role !== "FACULTY") {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
     const specialist = await prisma.specialist.findUnique({
-      where: { userId: session.user.id }
+      where: { userId: (session.user as any).id }
     });
 
     if (!specialist) {

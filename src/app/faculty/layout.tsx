@@ -17,7 +17,7 @@ export default async function FacultyLayout({ children }: { children: React.Reac
   }
 
   const specialist = await prisma.specialist.findUnique({
-    where: { userId: session.user.id }
+    where: { userId: (session.user as any).id }
   });
 
   return (

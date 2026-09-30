@@ -27,14 +27,16 @@ function AnimatedSection({ children, className = "", delay = 0 }: { children: Re
 // Animation Variants
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } }
+  visible: { opacity: 1, y: 0, transition: { // @ts-ignore
+ duration: 0.6, ease: [0.22, 1, 0.36, 1] } }
 };
 
 const staggerContainer = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.12, delayChildren: 0.05 }
+    transition: { // @ts-ignore
+ staggerChildren: 0.12, delayChildren: 0.05 }
   }
 };
 
