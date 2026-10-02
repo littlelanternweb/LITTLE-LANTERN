@@ -71,7 +71,7 @@ export function ApplicationForm({ mainCategory }: { mainCategory: string }) {
     languages: [] as string[],
   });
 
-  const isTeacher = mainCategory === "Teacher";
+  const isTeacher = mainCategory === "Remedial Teacher";
 
   useEffect(() => {
     setFormData(prev => ({ ...prev, category: "" }));

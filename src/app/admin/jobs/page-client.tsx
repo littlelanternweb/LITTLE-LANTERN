@@ -66,10 +66,10 @@ export function JobsClient({ initialApplications }: { initialApplications: any[]
     "Educational Psychologist", "Career Counsellor", "Occupational Therapist", 
     "Speech & Language Therapist", "Behaviour Therapist", "ABA Therapist", 
     "Learning Support Specialist", "Parent & Family Counsellor", 
-    "Audiologist", "Teacher / Faculty", "Consultant", "Teacher"
+    "Audiologist", "Teacher / Faculty", "Consultant", "Remedial Teacher"
   ];
 
-  const POSITIONS = ["Psychologist", "Special Educator", "Teacher"];
+  const POSITIONS = ["Psychologist", "Special Educator", "Remedial Teacher"];
   
   const SYLLABUS_OPTIONS = ["CBSE", "ICSE", "State Boards", "NIOS", "International Boards"];
   const CLASSES_OPTIONS = [
@@ -122,7 +122,7 @@ export function JobsClient({ initialApplications }: { initialApplications: any[]
     if (categoryFilter !== "ALL" && app.category !== categoryFilter) return false;
     if (positionFilter !== "ALL" && app.position !== positionFilter) return false;
     
-    if (positionFilter === "Teacher" && app.position === "Teacher" && app.metadata) {
+    if (positionFilter === "Remedial Teacher" && app.position === "Remedial Teacher" && app.metadata) {
       if (teacherSubjectFilter && !app.metadata.subjects?.toLowerCase().includes(teacherSubjectFilter.toLowerCase())) {
         return false;
       }
@@ -175,7 +175,7 @@ export function JobsClient({ initialApplications }: { initialApplications: any[]
           </div>
         </div>
         
-        {positionFilter === "Teacher" && (
+        {positionFilter === "Remedial Teacher" && (
           <div className="flex flex-wrap items-center gap-2 pt-2 mt-2 border-t border-slate-200/60">
             <span className="text-sm font-medium text-slate-600 mr-2">Teacher Filters:</span>
             <input 
@@ -266,7 +266,7 @@ export function JobsClient({ initialApplications }: { initialApplications: any[]
                             rel="noreferrer"
                             className="inline-flex items-center gap-1.5 text-sm font-medium text-[#047857] hover:text-[#065F46] hover:bg-[#F0FDF4] px-3 py-1.5 rounded-lg transition-colors"
                           >
-                            <FileText className="w-4 h-4" /> {app.position === "Teacher" ? "Certificate" : "Resume"}
+                            <FileText className="w-4 h-4" /> {app.position === "Remedial Teacher" ? "Certificate" : "Resume"}
                           </a>
                         ) : (
                           <span className="text-stone-400 text-xs">No File</span>
@@ -315,7 +315,7 @@ export function JobsClient({ initialApplications }: { initialApplications: any[]
               <div className="grid grid-cols-2 gap-4 text-sm bg-slate-50 p-4 rounded-xl border">
                 <div><span className="text-slate-500 font-medium block">Experience</span> {selectedApp.experience}</div>
                 <div><span className="text-slate-500 font-medium block">Qualifications</span> {selectedApp.qualifications}</div>
-                {selectedApp.position !== "Teacher" && (
+                {selectedApp.position !== "Remedial Teacher" && (
                   <>
                     <div><span className="text-slate-500 font-medium block">Current Org</span> {selectedApp.currentOrg || "-"}</div>
                     <div><span className="text-slate-500 font-medium block">Specialisation</span> {selectedApp.specialisation || "-"}</div>
@@ -323,9 +323,9 @@ export function JobsClient({ initialApplications }: { initialApplications: any[]
                 )}
               </div>
 
-              {selectedApp.position === "Teacher" && selectedApp.metadata && (
+              {selectedApp.position === "Remedial Teacher" && selectedApp.metadata && (
                 <div className="text-sm bg-indigo-50/50 p-4 rounded-xl border border-indigo-100 space-y-4">
-                  <h4 className="font-semibold text-indigo-900 pb-2 border-b border-indigo-100">Teacher Profile</h4>
+                  <h4 className="font-semibold text-indigo-900 pb-2 border-b border-indigo-100">Remedial Teacher Profile</h4>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <span className="text-indigo-600/70 font-medium block">Teaching Mode</span> 

@@ -27,6 +27,9 @@ export default async function AdminSpecialists() {
   
   const services = await prisma.service.findMany({ orderBy: { name: 'asc' } });
 
+  const feeSettings = await prisma.setting.findMany({ where: { key: { startsWith: 'fee_' } } });
+  const getFee = (cat) => { const s = feeSettings.find(f => f.key === 'fee_' + cat); return s ? parseInt(s.value, 10) : 1500; };
+
   // A tiny inline form to toggle status
   async function toggleStatus(formData: FormData) {
     "use server";
@@ -102,7 +105,7 @@ export default async function AdminSpecialists() {
                   </Button>
                 </SpecialistDialog>
                 
-                <ManageSubscriptionDialog specialist={specialist} defaultFee={specialist.subscriptionFee || 1500} />
+                <ManageSubscriptionDialog specialist={specialist} defaultFee={specialist.subscriptionFee || getFee(specialist.category)} />
                 <AvailabilityDialog specialist={specialist} />
                 <LockSlotDialog specialist={specialist} />
 

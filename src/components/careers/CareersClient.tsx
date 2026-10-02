@@ -8,7 +8,7 @@ import { ApplicationForm } from "./ApplicationForm";
 const CATEGORIES = [
   { id: "Psychologist", label: "Psychologist", icon: Brain },
   { id: "Special Educator", label: "Special Educator", icon: BookOpen },
-  { id: "Teacher", label: "Teacher", icon: GraduationCap },
+  { id: "Remedial Teacher", label: "Remedial Teacher", icon: GraduationCap },
 ];
 
 export function CareersClient({ initialOpenings }: { initialOpenings: any[] }) {

@@ -19,12 +19,9 @@ export default async function AdminFeeSettingsPage() {
   }, {} as Record<string, string>);
 
   const categories = [
-    "Special Educator",
     "Psychologist",
-    "Speech Therapist",
-    "Occupational Therapist",
-    "Consultant",
-    "Psychiatrist"
+    "Special Educator",
+    "Remedial Teacher"
   ];
 
   return (
