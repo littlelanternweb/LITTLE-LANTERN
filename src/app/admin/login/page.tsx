@@ -44,14 +44,14 @@ export default function AdminLogin() {
           <div className="mx-auto flex justify-center mb-4">
             <Image src="/logo.jpg" alt="My Lantern Logo" width={48} height={48} className="rounded-lg object-cover" />
           </div>
-          <CardTitle className="text-2xl font-bold tracking-tight text-slate-900">Admin Login</CardTitle>
-          <CardDescription>Enter your credentials to access the dashboard</CardDescription>
+          <CardTitle className="text-2xl font-bold tracking-tight text-slate-900">FACULTY LOGIN</CardTitle>
+          <CardDescription>Enter your credentials to access the portal</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" placeholder="admin@littlelantern.com" value={email} onChange={e => setEmail(e.target.value)} required />
+              <Input id="email" type="email" placeholder="faculty@my-lantern.com" value={email} onChange={e => setEmail(e.target.value)} required />
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
