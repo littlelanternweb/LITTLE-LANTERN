@@ -10,12 +10,16 @@ export function SubscribeClient({
   specialistName, 
   category, 
   fee, 
-  razorpayKey 
+  razorpayKey,
+  status,
+  nextBillingDate
 }: { 
   specialistName: string, 
   category: string, 
   fee: number,
-  razorpayKey: string
+  razorpayKey: string,
+  status?: string,
+  nextBillingDate?: string | null
 }) {
   const [isProcessing, setIsProcessing] = useState(false);
   const router = useRouter();
@@ -78,6 +82,48 @@ export function SubscribeClient({
       setIsProcessing(false);
     }
   };
+
+  if (status === "ACTIVE") {
+    return (
+      <Card className="rounded-3xl border-slate-100 shadow-xl overflow-hidden bg-white">
+        <CardHeader className="text-center p-8 pb-4">
+          <div className="mx-auto w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 mb-4">
+            <CheckCircle2 className="w-8 h-8" />
+          </div>
+          <CardTitle className="text-2xl font-semibold text-slate-900">Subscription Active</CardTitle>
+          <CardDescription className="text-slate-500 mt-2 text-base">
+            Your faculty portal is fully activated.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="p-8 pt-4">
+          <div className="bg-slate-50 border border-slate-100 rounded-2xl p-6 mb-6">
+            <div className="flex justify-between items-center py-2 border-b border-slate-200">
+              <span className="text-sm text-slate-500">Plan</span>
+              <span className="font-medium text-slate-900">{category}</span>
+            </div>
+            <div className="flex justify-between items-center py-2 border-b border-slate-200">
+              <span className="text-sm text-slate-500">Amount</span>
+              <span className="font-medium text-slate-900">₹{fee} / month</span>
+            </div>
+            {nextBillingDate && (
+              <div className="flex justify-between items-center py-2">
+                <span className="text-sm text-slate-500">Next Billing Date</span>
+                <span className="font-medium text-slate-900">
+                  {new Date(nextBillingDate).toLocaleDateString()}
+                </span>
+              </div>
+            )}
+          </div>
+          <Button 
+            onClick={() => router.push("/faculty/dashboard")}
+            className="w-full bg-slate-900 hover:bg-slate-800 text-white h-14 rounded-xl text-lg font-medium shadow-md transition-all"
+          >
+            Go to Dashboard
+          </Button>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="rounded-3xl border-slate-100 shadow-xl overflow-hidden bg-white">

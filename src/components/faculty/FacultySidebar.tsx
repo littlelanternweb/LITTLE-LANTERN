@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { LogOut, Calendar, User, Menu, X } from "lucide-react";
+import { LogOut, Calendar, User, Menu, X, CreditCard } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 
@@ -57,6 +57,19 @@ export function FacultySidebar({ session }: { session: any }) {
         >
           <User className={cn("w-5 h-5", pathname === "/faculty/profile" ? "text-[#047857]" : "text-slate-500 group-hover:text-slate-700")} />
           My Profile
+        </Link>
+        <Link 
+          href="/faculty/subscription" 
+          onClick={() => setMobileOpen(false)}
+          className={cn(
+            "flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group font-medium",
+            pathname === "/faculty/subscription" 
+              ? "bg-[#D1FAE5] text-[#047857] shadow-sm"
+              : "hover:bg-slate-100 text-slate-700"
+          )}
+        >
+          <CreditCard className={cn("w-5 h-5", pathname === "/faculty/subscription" ? "text-[#047857]" : "text-slate-500 group-hover:text-slate-700")} />
+          Subscription
         </Link>
       </nav>
 

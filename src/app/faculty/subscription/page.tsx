@@ -21,10 +21,6 @@ export default async function FacultySubscribePage() {
     redirect("/admin/login");
   }
 
-  if (specialist.subscriptionStatus === "ACTIVE" && specialist.isActive) {
-    redirect("/faculty/dashboard");
-  }
-
   const settingKey = `fee_${specialist.designation}`;
   const setting = await prisma.setting.findUnique({
     where: { key: settingKey }
@@ -39,6 +35,8 @@ export default async function FacultySubscribePage() {
         category={specialist.category} 
         fee={amount} 
         razorpayKey={process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || ""}
+        status={specialist.subscriptionStatus}
+        nextBillingDate={specialist.nextBillingDate?.toISOString() || null}
       />
     </div>
   );
