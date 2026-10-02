@@ -25,7 +25,7 @@ export default async function FacultySubscribePage() {
     redirect("/faculty/dashboard");
   }
 
-  const settingKey = `fee_${specialist.category}`;
+  const settingKey = `fee_${specialist.designation}`;
   const setting = await prisma.setting.findUnique({
     where: { key: settingKey }
   });

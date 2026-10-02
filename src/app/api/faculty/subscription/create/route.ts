@@ -24,8 +24,8 @@ export async function POST(req: Request) {
       return new NextResponse("Specialist not found", { status: 404 });
     }
 
-    // Fetch the fee for the specialist's category
-    const settingKey = `fee_${specialist.category}`;
+    // Fetch the fee for the specialist's designation
+    const settingKey = `fee_${specialist.designation}`;
     const setting = await prisma.setting.findUnique({
       where: { key: settingKey }
     });

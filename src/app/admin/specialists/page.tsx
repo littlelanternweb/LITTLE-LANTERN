@@ -105,7 +105,7 @@ export default async function AdminSpecialists() {
                   </Button>
                 </SpecialistDialog>
                 
-                <ManageSubscriptionDialog specialist={specialist} defaultFee={specialist.subscriptionFee || getFee(specialist.category)} />
+                <ManageSubscriptionDialog specialist={specialist} defaultFee={specialist.subscriptionFee || getFee(specialist.designation)} />
                 <AvailabilityDialog specialist={specialist} />
                 <LockSlotDialog specialist={specialist} />
 
