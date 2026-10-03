@@ -166,8 +166,12 @@ export function SpecialistDialog({
               </select>
             </div>
             <div className="space-y-2">
-              <Label>Designation</Label>
-              <Input name="designation" value={formData.designation} onChange={handleChange} required />
+              <Label>Designation (Main Subscription Category)</Label>
+              <select name="designation" value={formData.designation} onChange={handleChange} required className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500">
+                <option value="Psychologist">Psychologist</option>
+                <option value="Special Educator">Special Educator</option>
+                <option value="Remedial Teacher">Remedial Teacher</option>
+              </select>
             </div>
           </div>
           
