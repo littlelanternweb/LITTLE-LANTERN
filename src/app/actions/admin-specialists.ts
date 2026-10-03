@@ -102,19 +102,35 @@ export async function updateSpecialistOrder(id: string, newOrder: number) {
 
 export async function deleteSpecialist(id: string) {
   try {
+    const specialist = await prisma.specialist.findUnique({ where: { id } });
     const apps = await prisma.appointment.findMany({ where: { specialistId: id }, select: { id: true } });
     const appIds = apps.map(a => a.id);
     
-    await prisma.$transaction([
-      prisma.payment.deleteMany({ where: { appointmentId: { in: appIds } } }),
-      prisma.transaction.deleteMany({ where: { appointmentId: { in: appIds } } }),
-      prisma.invoice.deleteMany({ where: { appointmentId: { in: appIds } } }),
-      prisma.appointment.deleteMany({ where: { specialistId: id } }),
-      prisma.availability.deleteMany({ where: { specialistId: id } }),
-      prisma.lockedSlot.deleteMany({ where: { specialistId: id } }),
-      prisma.slotHold.deleteMany({ where: { specialistId: id } }),
-      prisma.specialist.delete({ where: { id } })
-    ]);
+    await prisma.$transaction(async (tx) => {
+      if (appIds.length > 0) {
+        await tx.payment.deleteMany({ where: { appointmentId: { in: appIds } } });
+        await tx.transaction.deleteMany({ where: { appointmentId: { in: appIds } } });
+        await tx.invoice.deleteMany({ where: { appointmentId: { in: appIds } } });
+      }
+
+      await tx.appointment.deleteMany({ where: { specialistId: id } });
+      await tx.availability.deleteMany({ where: { specialistId: id } });
+      await tx.lockedSlot.deleteMany({ where: { specialistId: id } });
+      await tx.slotHold.deleteMany({ where: { specialistId: id } });
+      await tx.subscriptionLog.deleteMany({ where: { specialistId: id } });
+
+      await tx.jobApplication.updateMany({
+        where: { convertedSpecialistId: id },
+        data: { convertedSpecialistId: null }
+      });
+
+      await tx.specialist.delete({ where: { id } });
+
+      if (specialist?.userId) {
+        await tx.user.deleteMany({ where: { id: specialist.userId } });
+      }
+    });
+
     revalidatePath("/admin/specialists");
     revalidatePath("/specialists");
     return { success: true };

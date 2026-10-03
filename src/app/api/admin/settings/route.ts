@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import Razorpay from "razorpay";
+import { revalidatePath } from "next/cache";
 
 const razorpay = new Razorpay({
   key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "",
@@ -70,6 +71,9 @@ export async function POST(request: Request) {
       }
     }
 
+    revalidatePath("/admin/settings");
+    revalidatePath("/admin/specialists");
+    revalidatePath("/admin/specialists/[id]", "page");
     return NextResponse.json({ success: true, setting });
   } catch (error) {
     console.error("Failed to save setting:", error);
