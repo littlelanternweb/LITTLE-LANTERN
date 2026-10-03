@@ -82,6 +82,11 @@ export default async function AdminSpecialists() {
                       ₹{specialist.subscriptionFee} / month
                     </span>
                   )}
+                  {specialist.nextBillingDate && (
+                    <span className="text-xs font-medium text-slate-500">
+                      • Renews: {specialist.nextBillingDate.toLocaleDateString()}
+                    </span>
+                  )}
                 </div>
                 <div className="mt-2 text-sm text-slate-500">
                   <p><strong>Fee:</strong> ₹{specialist.consultationFee} ({specialist.consultationType})</p>

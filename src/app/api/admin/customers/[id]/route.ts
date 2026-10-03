@@ -23,8 +23,8 @@ export async function DELETE(
       prisma.payment.deleteMany({ where: { appointmentId: { in: appIds } } }),
       prisma.transaction.deleteMany({ where: { appointmentId: { in: appIds } } }),
       prisma.invoice.deleteMany({ where: { appointmentId: { in: appIds } } }),
-      prisma.child.deleteMany({ where: { customerId: id } }),
       prisma.appointment.deleteMany({ where: { customerId: id } }),
+      prisma.child.deleteMany({ where: { customerId: id } }),
       prisma.customerNote.deleteMany({ where: { customerId: id } }),
       prisma.customer.delete({ where: { id } }),
     ]);

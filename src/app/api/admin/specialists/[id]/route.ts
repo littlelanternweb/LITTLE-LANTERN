@@ -19,10 +19,26 @@ export async function DELETE(
     const specialist = await prisma.specialist.findUnique({ where: { id } });
 
     await prisma.$transaction(async (tx) => {
+      const apps = await tx.appointment.findMany({ where: { specialistId: id }, select: { id: true } });
+      const appIds = apps.map(a => a.id);
+      
+      if (appIds.length > 0) {
+        await tx.payment.deleteMany({ where: { appointmentId: { in: appIds } } });
+        await tx.transaction.deleteMany({ where: { appointmentId: { in: appIds } } });
+        await tx.invoice.deleteMany({ where: { appointmentId: { in: appIds } } });
+      }
+
       await tx.appointment.deleteMany({ where: { specialistId: id } });
       await tx.availability.deleteMany({ where: { specialistId: id } });
       await tx.lockedSlot.deleteMany({ where: { specialistId: id } });
       await tx.slotHold.deleteMany({ where: { specialistId: id } });
+      await tx.subscriptionLog.deleteMany({ where: { specialistId: id } });
+
+      await tx.jobApplication.updateMany({
+        where: { convertedSpecialistId: id },
+        data: { convertedSpecialistId: null }
+      });
+
       await tx.specialist.delete({ where: { id } });
 
       if (specialist?.userId) {
